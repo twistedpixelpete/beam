@@ -119,4 +119,4 @@ class PS_PT_main(bpy.types.Panel):
         box=section(layout,'metadata','Project Details',True)
         if box:
             for key in ('project_name','venue','revision','client','author'):box.prop(settings,key)
-            box.label(text='Beam 0.7 · Twisted Pixel',icon='INFO')
+            box.label(text='Beam 0.8 · Twisted Pixel',icon='INFO')

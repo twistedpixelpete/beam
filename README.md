@@ -1,12 +1,12 @@
 # Beam
 
-**Beam 0.7.0 — maintained by Twisted Pixel.** A lightweight Blender tool for projection studies, projector management and nominal blend-group planning.
+**Beam 0.8.0 — maintained by Twisted Pixel.** A lightweight Blender tool for projection studies, projector management and nominal blend-group planning.
 
 Beam retains the tested Projection Study engineering and GPU projection core. It adds a reversible Presentation View, project metadata, practical blend groups, clearer image-export naming and management shortcuts. See [the 0.5 guide](docs/UPDATE-BEAM-0.5.md) for architecture, changed files, migration and acceptance tests.
 
 ## Install / upgrade
 
-Install `dist/beam-0.7.0.zip` through Blender **Preferences → Get Extensions → Install from Disk**, then restart Blender. Open the **Beam** tab in the 3D View sidebar. Maintainer metadata is **Twisted Pixel**.
+Install `dist/beam-0.8.0.zip` through Blender **Preferences → Get Extensions → Install from Disk**, then restart Blender. Open the **Beam** tab in the 3D View sidebar. Maintainer metadata is **Twisted Pixel**.
 
 This is an in-place upgrade: the technical extension ID remains `projection_study` so existing stored `Object.ps`, `Scene.ps_study`, operator identifiers and files continue to work. Do not install an additional copy beside an enabled older version. The source directory retains its existing `projection_study/` name for compatibility; the product, sidebar, About label and release archives are Beam.
 
@@ -87,3 +87,7 @@ The group panel now lists members and supports Add Selected, Add New, Remove Sel
 ## Beauty and usability (0.7.0)
 
 Collapsible sidebar sections, compact calculated readouts, restrained PJ accents and discreet outside-edge dimensions. Display offers Off / Minimal / Full; Presentation temporarily selects Minimal. Group overlap controls are easier to scan. Engineering and export contracts are unchanged. See UPDATE-BEAM-0.7.md (under docs in the source archive) for modified files, test instructions and limitations.
+
+## Screen Builder (0.8.0)
+
+Create and edit Flat, Arc, Curve, Closed and Surface screens, plus cabinet-based flat/smooth/faceted LED walls. Includes distance-based UVs, source extraction/conforming, packed test charts, diagnostics, independent screen IDs, separate cabinet detail and isolated OBJ/FBX export. Open Screen Builder in the Beam sidebar. See `SCREEN-BUILDER.md` (under `docs/` in the source repository) for units, arc/joint conventions, export axes, practical limitations and acceptance tests. The demonstration file and screenshots are under `examples/0.8/`.

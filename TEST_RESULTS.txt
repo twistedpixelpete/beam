@@ -65,3 +65,10 @@ Beam 0.7.0 beauty and usability — 2026-10-03
 27 Python tests and all 15 Blender integration milestones PASS.
 Beauty acceptance PASS: Off/Minimal/Full annotation counts; retained PJ IDs; unchanged technical JSON and materials; Presentation/save restoration.
 Sidebar and Minimal/Full/Presentation GPU screenshots inspected on Blender 5.2.2 LTS/macOS Metal.
+
+Beam 0.8.0 Screen Builder — 2026-10-04
+33 pure Python tests PASS. Seven families: creation, edits, UVs, normals, dimensions and 14 OBJ/FBX geometry/UV/normal round trips PASS in background Blender and live MCP.
+Selected Edit Mode faces, source preservation, failure cleanup, Poly/NURBS, rectangular distance mapping, detailed exports, centimetre/non-unit scale, clipboard identities and save/reload PASS.
+Conformed surface OBJ and FBX round trips PASS through live MCP. Native sidebar and all expanded draw branches PASS; each required type visually inspected with charts.
+Existing 15 Blender integration milestones, group lifecycle, independent-copy/local-axis regression and frustum first-hit regression PASS.
+Blender 5.2.2 LTS macOS Metal. External playback application imports and other Blender versions/platforms remain unverified.

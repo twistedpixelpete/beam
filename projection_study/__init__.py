@@ -1,15 +1,17 @@
 """Beam: Blender 4.5+ extension. GPL-3.0-or-later."""
 import bpy
+from . import screens
 from . import blend_groups, presentation, local_orientation, group_lifecycle
 from . import projector_data, operators, ui, runtime, viewport_display, export_disguise, study_data, study_views, export_json
 
-CLASSES = (*group_lifecycle.CLASSES,*blend_groups.CLASSES,*presentation.CLASSES,*study_data.CLASSES, projector_data.PS_Settings, *operators.CLASSES, export_disguise.PS_OT_export, *study_views.CLASSES, export_json.PS_OT_export_json, ui.PS_PT_main)
+CLASSES = (*screens.CLASSES,*group_lifecycle.CLASSES,*blend_groups.CLASSES,*presentation.CLASSES,*study_data.CLASSES, projector_data.PS_Settings, *operators.CLASSES, export_disguise.PS_OT_export, *study_views.CLASSES, export_json.PS_OT_export_json, ui.PS_PT_main)
 
 def register():
     for cls in CLASSES:
         bpy.utils.register_class(cls)
     bpy.types.Object.ps = bpy.props.PointerProperty(type=projector_data.PS_Settings)
     bpy.types.Scene.ps_study = bpy.props.PointerProperty(type=study_data.PS_SceneSettings)
+    screens.register()
     runtime.register()
     local_orientation.register()
     viewport_display.register()
@@ -22,6 +24,7 @@ def register():
     bpy.app.handlers.save_post.append(presentation.after_save)
 
 def unregister():
+    screens.unregister()
     local_orientation.unregister()
     presentation.cleanup()
     for handlers,fn in ((bpy.app.handlers.save_pre,presentation.before_save),(bpy.app.handlers.save_post,presentation.after_save)):

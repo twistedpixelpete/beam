@@ -44,7 +44,7 @@ def prepare():
     for instance in graph.object_instances:
         obj=instance.object; original=obj.original; key=original.as_pointer()
         if not full and key not in _dirty_keys: continue
-        if obj.type not in SURFACE_TYPES or original.ps.is_projector or original.get('ps_helper'): continue
+        if obj.type not in SURFACE_TYPES or original.ps.is_projector or original.get('ps_helper') or original.get('beam_screen_detail'): continue
         if not instance.show_self or (not instance.is_instance and not original.visible_get()): continue
         names[key]=original.name
         vertices,triangles=grouped.setdefault(key,([],[]))
