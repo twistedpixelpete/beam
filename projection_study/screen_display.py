@@ -1,9 +1,11 @@
 """Screen-only overlays reuse Beam typography; never exported as geometry."""
 import json
+from itertools import product
 import bpy,gpu
 from mathutils import Vector
 from gpu_extras.batch import batch_for_shader
-from . import typography
+from . import typography,presentation
+from .display_units import dimension
 
 _cache={}
 _shader=None
@@ -32,7 +34,9 @@ def geometry(obj):
                 for loop in tri.loops:
                     positions.append(points[mesh.loops[loop].vertex_index]);uvs.append(tuple(mesh.uv_layers.active.data[loop].uv))
         centre=sum(points,Vector())/max(len(points),1)
-        _cache[key]=dict(border=border,edges=all_edges,normal=normal,positions=positions,uvs=uvs,centre=centre,faces=[f.center.copy() for f in mesh.polygons])
+        # Project only eight envelope corners per frame, even for dense surfaces.
+        bounds=[Vector(v) for v in product(*[(min(v[i] for v in points),max(v[i] for v in points)) for i in range(3)])] if points else []
+        _cache[key]=dict(bounds=bounds,border=border,edges=all_edges,normal=normal,positions=positions,uvs=uvs,centre=centre,faces=[f.center.copy() for f in mesh.polygons])
         return _cache[key]
     finally:ev.to_mesh_clear()
 
@@ -64,12 +68,14 @@ def draw_3d(options):
                 image=next((n.image for n in mat.node_tree.nodes if n.type=='TEX_IMAGE' and n.image),None) if mat and mat.use_nodes and mat.get('beam_screen_pattern') else None
                 if image and options.get('grids',True) and data['positions']:
                     batch=batch_for_shader(_texture_shader,'TRIS',{'pos':data['positions'],'texCoord':data['uvs']});_texture_shader.bind();_texture_shader.uniform_float('mvp',gpu.matrix.get_projection_matrix()@gpu.matrix.get_model_view_matrix());_texture_shader.uniform_sampler('image',gpu.texture.from_image(image));batch.draw(_texture_shader)
-                lines=(data['border'] if p.show_outline else [])+(data['normal'] if p.show_normal else [])
-                if p.show_cabinet_lines and p.category=='LED':lines+=cabinet_overlay(obj,data)[0]
-                if p.show_centre:
+                technical=bpy.context.scene.ps_study.label_detail=='FULL' and not presentation.active(bpy.context.area)
+                lines=list(data['border']) if p.show_outline else []
+                if technical and p.show_normal:lines+=data['normal']
+                if technical and p.show_cabinet_lines and p.category=='LED':lines+=cabinet_overlay(obj,data)[0]
+                if technical and p.show_centre:
                     z=[v.z for v in data['positions']];c=data['centre'];lines+=[Vector((c.x,c.y,min(z,default=0))),Vector((c.x,c.y,max(z,default=0)))]
                 if lines:
-                    batch=batch_for_shader(_shader,'LINES',{'pos':lines});_shader.bind();_shader.uniform_float('viewportSize',gpu.state.viewport_get()[2:]);_shader.uniform_float('lineWidth',1.);_shader.uniform_float('color',(.72,.77,.8,.5));batch.draw(_shader)
+                    batch=batch_for_shader(_shader,'LINES',{'pos':lines});_shader.bind();_shader.uniform_float('viewportSize',gpu.state.viewport_get()[2:]);_shader.uniform_float('lineWidth',1.);_shader.uniform_float('color',(.65,.76,.79,.72) if obj==bpy.context.view_layer.objects.active else (.72,.77,.8,.4));batch.draw(_shader)
     finally:gpu.state.depth_mask_set(True);gpu.state.depth_test_set('NONE');gpu.state.blend_set('NONE')
 
 
@@ -78,18 +84,29 @@ def labels(projection,width,height,options):
     def screen(v):
         c=projection@Vector((*v,1))
         return ((c.x/c.w+1)*width/2,(c.y/c.w+1)*height/2) if c.w>0 else None
+    settings=bpy.context.scene.ps_study
+    detail='MINIMAL' if presentation.active(bpy.context.area) else settings.label_detail
     for obj in screens():
-        p=obj.beam_screen
-        if not p.show_label:continue
-        point=screen(obj.matrix_world.translation)
-        if point:
-            x,y=point;typography.label(p.identifier+' · '+p.name[:36],x+12,y-25,14,(.5,.65,.68,1))
-            if p.show_dimensions:
-                m=json.loads(p.metrics);text=('Nominal ' if obj.modifiers or any(abs(s-1)>1e-5 for s in obj.matrix_world.to_scale()) else 'Bounds ' if m.get('surface_bounds') else '')+f"{m.get('width',0):.2f} × {m.get('height',0):.2f} m · {m.get('rx',p.resolution_x)} × {m.get('ry',p.resolution_y)}"
-                if 'pitch_x' in m:text+=f" · {m['pitch_x']:.3f} mm"
-                typography.annotation(text,x+12,y-44,12)
-        if p.show_cabinet_ids and p.category=='LED':
-            centres=cabinet_overlay(obj,geometry(obj))[1]
+        p=obj.beam_screen;data=geometry(obj)
+        points=[point for v in data['bounds'] if (point:=screen(obj.matrix_world@v))]
+        if not points:continue
+        left=min(v[0] for v in points);right=max(v[0] for v in points)
+        bottom=min(v[1] for v in points);top=max(v[1] for v in points)
+        active=obj==bpy.context.view_layer.objects.active
+        if p.show_label:
+            text=p.identifier+(' · '+p.name[:36] if detail=='FULL' else '')
+            typography.label(text,left+6,top+17,14,(.5,.65,.68,1),active=active)
+        m=json.loads(p.metrics)
+        if p.show_dimensions and detail!='OFF':
+            prefix='Nominal ' if obj.modifiers or any(abs(s-1)>1e-5 for s in obj.matrix_world.to_scale()) else 'Bounds ' if m.get('surface_bounds') else ''
+            typography.annotation(prefix+dimension(m.get('width',0),settings.display_units),(left+right)/2,bottom-22,12,align='CENTER')
+            typography.annotation(prefix+dimension(m.get('height',0),settings.display_units),right+14,(bottom+top)/2,12)
+        if detail=='FULL':
+            text=f"{m.get('rx',p.resolution_x):,} × {m.get('ry',p.resolution_y):,} px"
+            if 'pitch_x' in m:text+=f" · {m['pitch_x']:.3f} mm pitch"
+            typography.annotation(text,left+6,top+43,12)
+        if detail=='FULL' and p.show_cabinet_ids and p.category=='LED':
+            centres=cabinet_overlay(obj,data)[1]
             if len(centres)<=400:
                 for i,centre in centres.items():
                     point=screen(obj.matrix_world@centre)

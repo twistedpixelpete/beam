@@ -24,12 +24,13 @@ def parameters(layout,p,editing=False):
                 layout.prop(p,'radius');layout.label(text='Arc length = columns × cabinet width')
             layout.prop(p,'curvature')
     else:
+        if p.screen_type=='FLAT':layout.prop(p,'width')
         if p.screen_type=='FLAT' and p.aspect!='FREE':
             ratio=p.aspect_ratio if p.aspect=='CUSTOM' else float(p.aspect.split(':')[0])/float(p.aspect.split(':')[1])
             readout(layout,'Height',f'{p.width/ratio:.3f} m')
         elif p.screen_type!='SURFACE':layout.prop(p,'height')
         if p.screen_type=='FLAT':
-            layout.prop(p,'width');layout.prop(p,'aspect')
+            layout.prop(p,'aspect')
             if p.aspect=='CUSTOM':layout.prop(p,'aspect_ratio')
         elif p.screen_type in {'ARC','CLOSED'}:
             if p.screen_type=='ARC':layout.prop(p,'arc_input')
@@ -82,22 +83,35 @@ class BEAM_PT_screens(bpy.types.Panel):
             action(create,'Use Selected Source','SOURCE','EYEDROPPER');create.operator('beam.screen_create',icon='ADD')
         if not obj:return
         p=obj.beam_screen
-        edit=section(layout,'screen_edit',p.identifier+' · '+p.screen_type.title())
+        edit=section(layout,'screen_edit','Screen · '+p.identifier)
         if edit:
             edit.prop(p,'name');parameters(edit,p,True)
-            row=edit.row(align=True)
-            action(row,'Update Screen','UPDATE','FILE_REFRESH')
-            action(row,'Duplicate','DUPLICATE','DUPLICATE')
+            action(edit,'Update Screen','UPDATE','FILE_REFRESH')
             if abs(p.unit_scale-context.scene.unit_settings.scale_length)>1e-8:edit.label(text='Scene units changed · update required',icon='ERROR')
             if p.built_signature!=screen_objects.signature(p):edit.label(text='Parameters changed · update required',icon='INFO')
-            row=edit.row(align=True);action(row,'Flip','FLIP');action(row,'Test Pattern','PATTERN')
             if any(abs(s-1)>1e-5 for s in obj.matrix_world.to_scale()):edit.label(text='Scaled object: parameter sizes are local',icon='ERROR')
-        display=section(layout,'screen_display','Display',True)
-        if display:
-            for key in ('show_label','show_dimensions','show_outline','show_normal','show_wire','show_centre'):display.prop(p,key)
+        appearance=section(layout,'screen_display','Appearance')
+        if appearance:
+            row=appearance.row(align=True)
+            action(row,'Clean Pattern','PATTERN');action(row,'Neutral Surface','NEUTRAL')
+            appearance.prop(p,'show_outline',text='Border')
+            if p.category=='LED':appearance.prop(p,'show_detail')
+        labels=section(layout,'screen_labels','Labels')
+        if labels:
+            row=labels.row(align=True);row.prop(p,'show_label',text='Screen ID');row.prop(p,'show_dimensions',text='Dimensions')
+            labels.prop(context.scene.ps_study,'label_detail',text='Detail')
+            row=labels.row(align=True);row.prop(context.scene.ps_study,'display_units',text='Units',expand=True)
+        actions=section(layout,'screen_actions','Actions',True)
+        if actions:
+            row=actions.row(align=True);action(row,'Duplicate','DUPLICATE','DUPLICATE');action(row,'Flip Front','FLIP')
+        technical=section(layout,'screen_technical','Technical Overlays',True)
+        if technical:
+            technical.prop(p,'show_wire')
+            markers=technical.column();markers.enabled=context.scene.ps_study.label_detail=='FULL'
+            markers.label(text='Markers · Full detail')
+            for key in ('show_normal','show_centre'):markers.prop(p,key)
             if p.category=='LED':
-                for key in ('show_detail','show_cabinet_lines','show_cabinet_ids'):display.prop(p,key)
-            action(display,'Neutral Material','NEUTRAL')
+                for key in ('show_cabinet_lines','show_cabinet_ids'):markers.prop(p,key)
         mapping=section(layout,'screen_mapping','Mapping / Surface',True)
         if mapping:
             mapping.prop(p,'uv_method')

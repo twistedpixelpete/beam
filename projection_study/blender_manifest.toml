@@ -1,6 +1,6 @@
 schema_version = "1.0.0"
 id = "projection_study"
-version = "0.8.0"
+version = "0.8.1"
 name = "Beam"
 tagline = "Realtime projector geometry and projection planning"
 maintainer = "Twisted Pixel"

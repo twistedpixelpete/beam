@@ -72,3 +72,16 @@ Selected Edit Mode faces, source preservation, failure cleanup, Poly/NURBS, rect
 Conformed surface OBJ and FBX round trips PASS through live MCP. Native sidebar and all expanded draw branches PASS; each required type visually inspected with charts.
 Existing 15 Blender integration milestones, group lifecycle, independent-copy/local-axis regression and frustum first-hit regression PASS.
 Blender 5.2.2 LTS macOS Metal. External playback application imports and other Blender versions/platforms remain unverified.
+
+
+Beam 0.8.1 — Screen Builder visual refresh (2026-10-04)
+Blender 5.2.2 LTS, macOS Metal.
+PASS: 33 pure Python tests; all 15 existing Blender integration milestones.
+PASS: Screen Builder integration including 14 OBJ/FBX round trips.
+PASS: screen edge tests: units, selected faces, UV diagnostics, cabinet detail, save/reopen.
+PASS: antialiased bundled-font text, 4.5-compatible file buffer path, image reuse.
+PASS: pattern application leaves vertices, UVs, transforms, UUID, SCR ID, metrics and geometry signature identical.
+PASS: Off/Minimal/Full, independent ID/dimension controls and live m/mm labels.
+PASS: native sidebar, expanded sections, Presentation enter/restore, screenshots inspected.
+Screen-only implementation changes; no projector or engineering implementation changed.
+Full Blender 4.5 runtime and non-macOS validation remain untested.

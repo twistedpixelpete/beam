@@ -1,56 +1,87 @@
-"""Packed orientation test charts; no pixel geometry or external dependencies."""
-import bpy,json
-import numpy as np
-from .output_patterns import FONT
+"""Beam Clean screen chart, packed with Blender's bundled sans-serif typography.
 
-GLYPHS=dict(FONT)
-GLYPHS.update({
-'S':['01111','10000','10000','01110','00001','00001','11110'],
-'C':['01111','10000','10000','10000','10000','10000','01111'],
-'R':['11110','10001','10001','11110','10100','10010','10001'],
-'L':['10000','10000','10000','10000','10000','10000','11111'],
-'T':['11111','00100','00100','00100','00100','00100','00100'],
-'B':['11110','10001','10001','11110','10001','10001','11110'],
-'U':['10001','10001','10001','10001','10001','10001','01110'],
-'V':['10001','10001','10001','10001','10001','01010','00100'],
-'M':['10001','11011','10101','10101','10001','10001','10001'],
-'X':['10001','10001','01010','00100','01010','10001','10001'],
-'-':['00000','00000','00000','11111','00000','00000','00000'],
-'.':['00000','00000','00000','00000','00000','00100','00100'],
-'>':['10000','01000','00100','00010','00100','01000','10000'],
-'^':['00100','01010','10001','00000','00000','00000','00000'],
-})
+CPU rasterization also works in background Blender. This is display content only;
+no geometry, UVs, screen parameters or production export are changed.
+"""
+import json
+import tempfile
+from pathlib import Path
+import bpy
+import blf
+import imbuf
+import numpy as np
+from . import typography
+
+
+def text_layer(width,height,labels):
+    """Rasterize BLF text without requiring a GPU or a platform-specific font."""
+    buffer=imbuf.new((width,height))
+    font=typography.font()
+    try:
+        with blf.bind_imbuf(font,buffer):
+            for text,x,y,size,colour,align in labels:
+                blf.size(font,size)
+                extent=blf.dimensions(font,text)[0]
+                if align=='CENTER':x-=extent/2
+                elif align=='RIGHT':x-=extent
+                blf.color(font,*colour);blf.position(font,x,y,0)
+                blf.draw_buffer(font,text)
+        if hasattr(buffer,'with_buffer'):
+            with buffer.with_buffer() as pixels:
+                return np.asarray(pixels,dtype=np.float32).copy()/255
+        # Blender 4.5 has BLF image drawing but no Python pixel-buffer accessor.
+        with tempfile.TemporaryDirectory(prefix='beam-type-') as directory:
+            path=str(Path(directory)/'type.png');imbuf.write(buffer,filepath=path)
+            image=bpy.data.images.load(path,check_existing=False)
+            try:
+                pixels=np.empty(width*height*4,dtype=np.float32)
+                image.pixels.foreach_get(pixels)
+                return pixels.reshape(height,width,4)
+            finally:bpy.data.images.remove(image)
+    finally:buffer.free()
 
 
 def apply(obj):
     p=obj.beam_screen;m=json.loads(p.metrics);rx=m.get('rx',p.resolution_x);ry=m.get('ry',p.resolution_y)
-    w=1536;h=max(256,min(1536,round(w*ry/rx)));a=np.empty((h,w,4),dtype=np.float32);a[:]=(.035,.04,.05,1)
-    def line(x0,y0,x1,y1,c,thick=2):
-        a[max(0,int(y0)):min(h,int(y1)+thick),max(0,int(x0)):min(w,int(x1)+thick)]=c
-    def text(s,x,y,scale=3,c=(.9,.92,.95,1)):
-        for i,ch in enumerate(s.upper()):
-            for row,bits in enumerate(GLYPHS.get(ch,GLYPHS[' '])):
-                for col,bit in enumerate(bits):
-                    if bit=='1':line(x+(i*6+col)*scale,y+(6-row)*scale,x+(i*6+col)*scale,y+(6-row)*scale,c,scale)
-    for i in range(17):line(i*(w-3)/16,0,i*(w-3)/16,h-1,(.17,.2,.23,1))
-    for j in range(9):line(0,j*(h-3)/8,w-1,j*(h-3)/8,(.17,.2,.23,1))
-    for x in (1,w-5):line(x,1,x,h-3,(.8,.83,.86,1),4)
-    for y in (1,h-5):line(1,y,w-3,y,(.8,.83,.86,1),4)
-    line(w/2,0,w/2,h-1,(.55,.65,.65,1),3);line(0,h/2,w-1,h/2,(.55,.65,.65,1),3)
-    for x in (.25,.75):
-        for y in (.25,.75):line(x*w-10,y*h,x*w+10,y*h,(.7,.7,.7,1));line(x*w,y*h-10,x*w,y*h+10,(.7,.7,.7,1))
-    if p.category=='LED':
-        for i in range(1,p.columns):line(i*w/p.columns,0,i*w/p.columns,h-1,(.25,.38,.3,1),1)
-        for j in range(1,p.rows):line(0,j*h/p.rows,w-1,j*h/p.rows,(.25,.38,.3,1),1)
-        if p.columns<=30 and p.rows<=20:
-            for j in range(p.rows):
-                for i in range(p.columns):text(str(j*p.columns+i+1),int((i+.2)*w/p.columns),int((j+.2)*h/p.rows),1)
-    text('BL 0 0',20,20,3,(.9,.4,.32,1));text(f'BR {rx} 0',w-330,20,3,(.35,.7,.4,1))
-    text(f'TL 0 {ry}',20,h-45,3,(.35,.55,.9,1));text(f'TR {rx} {ry}',w-400,h-45,3,(.8,.7,.35,1))
-    text(p.identifier,w//2-len(p.identifier)*15,h*3//4,5)
-    text(f'{rx} X {ry}',w//2-150,h//4,3)
-    text('U >',w//2+25,h//2+15,3);text('V ^',w//2-90,h//2+55,3)
-    text(f'{m.get("width",0):.2f} M',w//2-110,65,3)
+    w=1536;h=max(256,min(1536,round(w*ry/rx)))
+    a=np.empty((h,w,4),dtype=np.float32);a[:]=(.055,.064,.075,1)
+    labels=[]
+    def line(x0,y0,x1,y1,c,thick=1):
+        a[max(0,int(y0)):min(h,int(y1)+thick),max(0,int(x0)):min(w,int(x1)+thick)]=(*c,1)
+    def text(value,x,y,size,colour=(.9,.92,.94),align='CENTER'):
+        labels.append((value,x,y,size,(*colour,1),align))
+    # Quiet minor grid, clearer major divisions, and a precise outer boundary.
+    for i in range(1,16):line(i*w/16,0,i*w/16,h-1,(.105,.12,.135))
+    for j in range(1,8):line(0,j*h/8,w-1,j*h/8,(.105,.12,.135))
+    for i in (4,8,12):line(i*w/16,0,i*w/16,h-1,(.21,.24,.27))
+    for j in (2,4,6):line(0,j*h/8,w-1,j*h/8,(.21,.24,.27))
+    for x in (3,w-5):line(x,3,x,h-5,(.59,.64,.68),2)
+    for y in (3,h-5):line(3,y,w-5,y,(.59,.64,.68),2)
+    # Small centre cross and ring; no giant target or decorative colour blocks.
+    yy,xx=np.ogrid[:h,:w];radius=max(9,min(18,h*.023))
+    ring=np.abs(np.sqrt((xx-w/2)**2+(yy-h/2)**2)-radius)<.8
+    a[ring]=(.48,.58,.6,1)
+    line(w/2-28,h/2,w/2+28,h/2,(.63,.7,.72))
+    line(w/2,h/2-28,w/2,h/2+28,(.63,.7,.72))
+    # A quiet, centred title field gives typography breathing room over the grid.
+    title_size=max(32,min(76,h*.095));small=max(17,min(28,h*.034))
+    y=h*.74;half= min(w*.38,max(260,title_size*len(p.identifier)*.4))
+    line(w/2-half,y-small*1.9,w/2+half,y+title_size*1.12,(.055,.064,.075))
+    text(p.identifier,w/2,y,title_size)
+    text(f"{m.get('width',0):.2f} × {m.get('height',0):.2f} m",w/2,y-small*1.5,small,(.64,.7,.74))
+    # Resolution remains secondary; corner labels provide orientation references.
+    footer=max(18,h*.09)
+    line(w/2-220,footer-8,w/2+220,footer+small+6,(.055,.064,.075))
+    text(f'{rx:,} × {ry:,} px',w/2,footer,small,(.57,.64,.68))
+    margin=26;corner_size=max(14,min(20,h*.027))
+    for label,x,y,align,colour in (
+        ('TL',margin,h-margin-corner_size,'LEFT',(.5,.64,.75)),
+        ('TR',w-margin,h-margin-corner_size,'RIGHT',(.72,.68,.52)),
+        ('BL',margin,margin,'LEFT',(.7,.55,.53)),
+        ('BR',w-margin,margin,'RIGHT',(.52,.68,.61))):
+        text(label,x,y,corner_size,colour,align)
+    layer=text_layer(w,h,labels);alpha=layer[:,:,3:4]
+    a[:,:,:3]=layer[:,:,:3]*alpha+a[:,:,:3]*(1-alpha)
     old=bpy.data.materials.get('.Beam Pattern '+p.uuid)
     image=next((n.image for n in old.node_tree.nodes if n.type=='TEX_IMAGE' and n.image),None) if old and old.use_nodes else None
     if image is None:image=bpy.data.images.new('.Beam Chart '+p.uuid,width=w,height=h)
