@@ -1,0 +1,688 @@
+{
+  "product": "Beam",
+  "maintainer": "Twisted Pixel",
+  "project_metadata": {
+    "project_name": "Melbourne Town Hall",
+    "venue": "Main Hall",
+    "revision": "R02",
+    "client": "Example Client",
+    "author": "Twisted Pixel"
+  },
+  "blend_groups": [
+    {
+      "uuid": "efeed9c6-92e1-4545-9f0f-5b84cb6fc0e3",
+      "name": "BG01",
+      "layout": "HORIZONTAL",
+      "anchor_projector_uuid": "838e241d-b11f-4f77-8d34-3cbd9b8afc03",
+      "rows": 1,
+      "columns": 4,
+      "input_mode": "PERCENT",
+      "desired_horizontal_overlap": 20.0,
+      "desired_vertical_overlap": 20.0,
+      "reference_plane": {
+        "distance_m": 9.999999046325684,
+        "width_m": 9.999999046325684,
+        "height_m": 5.624999523162842
+      },
+      "transform": {
+        "position_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation_quaternion_wxyz": [
+          0.7071067690849304,
+          0.7071067690849304,
+          0.0,
+          0.0
+        ]
+      },
+      "members": [
+        {
+          "projector_uuid": "838e241d-b11f-4f77-8d34-3cbd9b8afc03",
+          "local_offset_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_rotation_quaternion_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "projector_uuid": "cf73515d-20f1-42dc-af98-258bfdcee47c",
+          "local_offset_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_rotation_quaternion_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "projector_uuid": "e1de7280-5a88-469f-8847-85f5b1919f34",
+          "local_offset_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_rotation_quaternion_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "projector_uuid": "ba22f60b-0fca-4487-a56a-667d70eea613",
+          "local_offset_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_rotation_quaternion_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ],
+      "adjacent_pairs": [
+        {
+          "a": "PJ01",
+          "b": "PJ02",
+          "a_uuid": "838e241d-b11f-4f77-8d34-3cbd9b8afc03",
+          "b_uuid": "cf73515d-20f1-42dc-af98-258bfdcee47c",
+          "axis": "H",
+          "reference_status": "target",
+          "actual_plane_distance_m": 9.999999046325684,
+          "desired": {
+            "pixels": 384.0,
+            "percent": 20.0,
+            "metres": 1.9999998092651368,
+            "fraction": 0.2
+          },
+          "actual": {
+            "metres": 1.9999990463256845,
+            "pixels": 383.99985351561116,
+            "percent": 19.99999237060475
+          }
+        },
+        {
+          "a": "PJ02",
+          "b": "PJ03",
+          "a_uuid": "cf73515d-20f1-42dc-af98-258bfdcee47c",
+          "b_uuid": "e1de7280-5a88-469f-8847-85f5b1919f34",
+          "axis": "H",
+          "reference_status": "target",
+          "actual_plane_distance_m": 9.999999046325684,
+          "desired": {
+            "pixels": 384.0,
+            "percent": 20.0,
+            "metres": 1.9999998092651368,
+            "fraction": 0.2
+          },
+          "actual": {
+            "metres": 1.9999990463256836,
+            "pixels": 383.99985351561105,
+            "percent": 19.99999237060474
+          }
+        },
+        {
+          "a": "PJ03",
+          "b": "PJ04",
+          "a_uuid": "e1de7280-5a88-469f-8847-85f5b1919f34",
+          "b_uuid": "ba22f60b-0fca-4487-a56a-667d70eea613",
+          "axis": "H",
+          "reference_status": "target",
+          "actual_plane_distance_m": 9.999999046325684,
+          "desired": {
+            "pixels": 384.0,
+            "percent": 20.0,
+            "metres": 1.9999998092651368,
+            "fraction": 0.2
+          },
+          "actual": {
+            "metres": 2.0,
+            "pixels": 384.0000366210972,
+            "percent": 20.000001907348814
+          }
+        }
+      ],
+      "notes": "",
+      "preview_edge_blend": true,
+      "combined_preview": true
+    }
+  ],
+  "schema": "projection-study",
+  "schema_version": "1.0",
+  "exported_at": "2026-10-03T10:14:55+00:00",
+  "scene_name": "Beam Blend Acceptance",
+  "helper_visibility": {
+    "show_frustums": false,
+    "show_centre_rays": false,
+    "show_projected_identifiers": true,
+    "show_labels": false,
+    "show_outputs": true,
+    "show_study_cameras": true
+  },
+  "projection_model": {
+    "receivers": "visible_evaluated_surfaces",
+    "coordinates": "perspective_raster",
+    "occlusion": "gpu_first_depth",
+    "target_role": "automatic_centre_reference_only",
+    "shadow_max_dimension": 1024
+  },
+  "units": {
+    "internal_length": "m",
+    "display_length": "mm",
+    "disguise_length": "mm",
+    "pixel_density": "px/m",
+    "pixel_size": "m/px",
+    "illuminance": "lux",
+    "coordinate_space": "blender_world"
+  },
+  "projectors": [
+    {
+      "uuid": "838e241d-b11f-4f77-8d34-3cbd9b8afc03",
+      "name": "PJ01",
+      "object_name": "PJ01",
+      "include_in_disguise_export": true,
+      "notes": "",
+      "resolution": {
+        "x": 1920,
+        "y": 1080
+      },
+      "throw_ratio": 1.0,
+      "lens_shift_percent": {
+        "horizontal": 0.0,
+        "vertical": 0.0,
+        "basis": "full_image_dimensions"
+      },
+      "stack_quantity": 1,
+      "brightness_percent": 100.0,
+      "nominal_lumens": 20000.0,
+      "total_lumens": 20000.0,
+      "position_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": {
+        "space": "blender_world",
+        "order": "XYZ",
+        "unit": "degrees",
+        "euler": [
+          89.999995674289,
+          -0.0,
+          0.0
+        ]
+      },
+      "transform_valid": true,
+      "target": {
+        "status": "hit",
+        "point_m": [
+          0.0,
+          10.0,
+          -3.4228546041958907e-07
+        ],
+        "object_name": "Venue wall",
+        "filter_object_name": null,
+        "automatic": true
+      },
+      "calculated": {
+        "throw_distance_m": 9.999999046325684,
+        "centre_ray_distance_m": 10.000000000000005,
+        "image_width_m": 9.999999046325684,
+        "image_height_m": 5.624999463558197,
+        "pixel_density_px_per_m": 192.00001831054863,
+        "pixel_size_m_per_px": 0.00520833283662796,
+        "pixel_size_mm_per_px": 5.20833283662796,
+        "dpi": 4.876800465087935,
+        "estimated_illuminance_lux": 355.55562337240553
+      },
+      "display_units": "mm",
+      "study_colour_linear_rgb": [
+        0.7699999809265137,
+        0.38999998569488525,
+        0.36000001430511475
+      ],
+      "output_mode": "COLOR_GRID",
+      "visibility": {
+        "identifier": true,
+        "projected_identifier": true,
+        "frustum": true,
+        "centre_ray": true,
+        "target_marker": true,
+        "grid": true,
+        "output": true
+      }
+    },
+    {
+      "uuid": "cf73515d-20f1-42dc-af98-258bfdcee47c",
+      "name": "PJ02",
+      "object_name": "PJ02",
+      "include_in_disguise_export": true,
+      "notes": "",
+      "resolution": {
+        "x": 1920,
+        "y": 1080
+      },
+      "throw_ratio": 1.0,
+      "lens_shift_percent": {
+        "horizontal": 0.0,
+        "vertical": 0.0,
+        "basis": "full_image_dimensions"
+      },
+      "stack_quantity": 1,
+      "brightness_percent": 100.0,
+      "nominal_lumens": 20000.0,
+      "total_lumens": 20000.0,
+      "position_m": [
+        7.999999046325684,
+        0.0,
+        0.0
+      ],
+      "rotation": {
+        "space": "blender_world",
+        "order": "XYZ",
+        "unit": "degrees",
+        "euler": [
+          89.999995674289,
+          -0.0,
+          0.0
+        ]
+      },
+      "transform_valid": true,
+      "target": {
+        "status": "hit",
+        "point_m": [
+          7.999999046325684,
+          10.0,
+          -3.4228546041958907e-07
+        ],
+        "object_name": "Venue wall",
+        "filter_object_name": null,
+        "automatic": true
+      },
+      "calculated": {
+        "throw_distance_m": 9.999999046325684,
+        "centre_ray_distance_m": 10.000000000000005,
+        "image_width_m": 9.999999046325684,
+        "image_height_m": 5.624999463558197,
+        "pixel_density_px_per_m": 192.00001831054863,
+        "pixel_size_m_per_px": 0.00520833283662796,
+        "pixel_size_mm_per_px": 5.20833283662796,
+        "dpi": 4.876800465087935,
+        "estimated_illuminance_lux": 355.55562337240553
+      },
+      "display_units": "mm",
+      "study_colour_linear_rgb": [
+        0.4399999976158142,
+        0.6499999761581421,
+        0.49000000953674316
+      ],
+      "output_mode": "COLOR_GRID",
+      "visibility": {
+        "identifier": true,
+        "projected_identifier": true,
+        "frustum": true,
+        "centre_ray": true,
+        "target_marker": true,
+        "grid": true,
+        "output": true
+      }
+    },
+    {
+      "uuid": "e1de7280-5a88-469f-8847-85f5b1919f34",
+      "name": "PJ03",
+      "object_name": "PJ03",
+      "include_in_disguise_export": true,
+      "notes": "",
+      "resolution": {
+        "x": 1920,
+        "y": 1080
+      },
+      "throw_ratio": 1.0,
+      "lens_shift_percent": {
+        "horizontal": 0.0,
+        "vertical": 0.0,
+        "basis": "full_image_dimensions"
+      },
+      "stack_quantity": 1,
+      "brightness_percent": 100.0,
+      "nominal_lumens": 20000.0,
+      "total_lumens": 20000.0,
+      "position_m": [
+        15.999998092651367,
+        0.0,
+        0.0
+      ],
+      "rotation": {
+        "space": "blender_world",
+        "order": "XYZ",
+        "unit": "degrees",
+        "euler": [
+          89.999995674289,
+          -0.0,
+          0.0
+        ]
+      },
+      "transform_valid": true,
+      "target": {
+        "status": "hit",
+        "point_m": [
+          15.999998092651367,
+          10.0,
+          -3.4228546041958907e-07
+        ],
+        "object_name": "Venue wall",
+        "filter_object_name": null,
+        "automatic": true
+      },
+      "calculated": {
+        "throw_distance_m": 9.999999046325684,
+        "centre_ray_distance_m": 10.000000000000005,
+        "image_width_m": 9.999999046325684,
+        "image_height_m": 5.624999463558197,
+        "pixel_density_px_per_m": 192.00001831054863,
+        "pixel_size_m_per_px": 0.00520833283662796,
+        "pixel_size_mm_per_px": 5.20833283662796,
+        "dpi": 4.876800465087935,
+        "estimated_illuminance_lux": 355.55562337240553
+      },
+      "display_units": "mm",
+      "study_colour_linear_rgb": [
+        0.4000000059604645,
+        0.5799999833106995,
+        0.7599999904632568
+      ],
+      "output_mode": "COLOR_GRID",
+      "visibility": {
+        "identifier": true,
+        "projected_identifier": true,
+        "frustum": true,
+        "centre_ray": true,
+        "target_marker": true,
+        "grid": true,
+        "output": true
+      }
+    },
+    {
+      "uuid": "ba22f60b-0fca-4487-a56a-667d70eea613",
+      "name": "PJ04",
+      "object_name": "PJ04",
+      "include_in_disguise_export": true,
+      "notes": "",
+      "resolution": {
+        "x": 1920,
+        "y": 1080
+      },
+      "throw_ratio": 1.0,
+      "lens_shift_percent": {
+        "horizontal": 0.0,
+        "vertical": 0.0,
+        "basis": "full_image_dimensions"
+      },
+      "stack_quantity": 1,
+      "brightness_percent": 100.0,
+      "nominal_lumens": 20000.0,
+      "total_lumens": 20000.0,
+      "position_m": [
+        23.999996185302734,
+        0.0,
+        0.0
+      ],
+      "rotation": {
+        "space": "blender_world",
+        "order": "XYZ",
+        "unit": "degrees",
+        "euler": [
+          89.999995674289,
+          -0.0,
+          0.0
+        ]
+      },
+      "transform_valid": true,
+      "target": {
+        "status": "hit",
+        "point_m": [
+          23.999996185302734,
+          10.0,
+          -3.4228546041958907e-07
+        ],
+        "object_name": "Venue wall",
+        "filter_object_name": null,
+        "automatic": true
+      },
+      "calculated": {
+        "throw_distance_m": 9.999999046325684,
+        "centre_ray_distance_m": 10.000000000000005,
+        "image_width_m": 9.999999046325684,
+        "image_height_m": 5.624999463558197,
+        "pixel_density_px_per_m": 192.00001831054863,
+        "pixel_size_m_per_px": 0.00520833283662796,
+        "pixel_size_mm_per_px": 5.20833283662796,
+        "dpi": 4.876800465087935,
+        "estimated_illuminance_lux": 355.55562337240553
+      },
+      "display_units": "mm",
+      "study_colour_linear_rgb": [
+        0.4300000071525574,
+        0.7200000286102295,
+        0.7200000286102295
+      ],
+      "output_mode": "COLOR_GRID",
+      "visibility": {
+        "identifier": true,
+        "projected_identifier": true,
+        "frustum": true,
+        "centre_ray": true,
+        "target_marker": true,
+        "grid": true,
+        "output": true
+      }
+    }
+  ],
+  "study_views": [
+    {
+      "uuid": "87dc8abd-e691-405c-a864-63f0a5d820e9",
+      "name": "Blend Overview",
+      "camera_name": "Study \u00b7 Blend Overview",
+      "camera": {
+        "position_m": [
+          33.48500442504883,
+          -32.10175323486328,
+          18.682615280151367
+        ],
+        "rotation_quaternion_wxyz": [
+          0.8048320412635803,
+          0.5434686541557312,
+          0.13347509503364563,
+          0.19766554236412048
+        ],
+        "type": "PERSP",
+        "lens_mm": 25.0,
+        "ortho_scale_m": 6.0
+      },
+      "resolution": {
+        "x": 1600,
+        "y": 900
+      },
+      "overlays": {
+        "projected_identifiers": true,
+        "enabled": true,
+        "labels": true,
+        "frustums": true,
+        "grids": true
+      },
+      "expected_image_filename": "Melbourne_Town_Hall_R02_Blend_Overview.png",
+      "exported_image_filename": "beam-combined-feather.png",
+      "exported_at": "2026-10-03T10:14:55+00:00"
+    }
+  ],
+  "current_view_image": {
+    "filename": "beam-presentation-current.png",
+    "exported_at": "2026-10-03T10:14:54+00:00"
+  },
+  "disguise": {
+    "transform_convention": "UNVALIDATED: raw Blender XYZ / XYZ Euler baseline",
+    "validated": false,
+    "columns": [
+      "Projector_Name",
+      "Projector_Qte(Stack)",
+      "Projector_Native-Rez-X",
+      "Projector_Native-Rez-Y",
+      "Projector_Lumens(lux)",
+      "Projector_Brightness(%)",
+      "Projector_Total_Lumens(lux)",
+      "Projector_Trow-Ratio",
+      "Lens_Shift-H(%)",
+      "Lens_Shift-V(%)",
+      "Lens_X",
+      "Lens_Y",
+      "Lens_Z",
+      "Pitch(deg)",
+      "Yaw(deg)",
+      "Roll(deg)",
+      "Target_X",
+      "Target_Y",
+      "Target_Z",
+      "Target_Distance",
+      "Target_Width",
+      "Target_Height",
+      "Target_Illuminance",
+      "Target_DPI",
+      "Unit_Dim",
+      "Unit_Illuminance",
+      "Projector_UUID"
+    ],
+    "rows": [
+      [
+        "PJ01",
+        1,
+        1920,
+        1080,
+        20000.0,
+        100.0,
+        20000.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        89.999995674289,
+        -0.0,
+        0.0,
+        0.0,
+        10000.0,
+        -0.00034228546041958907,
+        9999.999046325684,
+        9999.999046325684,
+        5624.999463558197,
+        355.55562337240553,
+        4.876800465087935,
+        "mm",
+        "lux",
+        "838e241d-b11f-4f77-8d34-3cbd9b8afc03"
+      ],
+      [
+        "PJ02",
+        1,
+        1920,
+        1080,
+        20000.0,
+        100.0,
+        20000.0,
+        1.0,
+        0.0,
+        0.0,
+        7999.999046325684,
+        0.0,
+        0.0,
+        89.999995674289,
+        -0.0,
+        0.0,
+        7999.999046325684,
+        10000.0,
+        -0.00034228546041958907,
+        9999.999046325684,
+        9999.999046325684,
+        5624.999463558197,
+        355.55562337240553,
+        4.876800465087935,
+        "mm",
+        "lux",
+        "cf73515d-20f1-42dc-af98-258bfdcee47c"
+      ],
+      [
+        "PJ03",
+        1,
+        1920,
+        1080,
+        20000.0,
+        100.0,
+        20000.0,
+        1.0,
+        0.0,
+        0.0,
+        15999.998092651367,
+        0.0,
+        0.0,
+        89.999995674289,
+        -0.0,
+        0.0,
+        15999.998092651367,
+        10000.0,
+        -0.00034228546041958907,
+        9999.999046325684,
+        9999.999046325684,
+        5624.999463558197,
+        355.55562337240553,
+        4.876800465087935,
+        "mm",
+        "lux",
+        "e1de7280-5a88-469f-8847-85f5b1919f34"
+      ],
+      [
+        "PJ04",
+        1,
+        1920,
+        1080,
+        20000.0,
+        100.0,
+        20000.0,
+        1.0,
+        0.0,
+        0.0,
+        23999.996185302734,
+        0.0,
+        0.0,
+        89.999995674289,
+        -0.0,
+        0.0,
+        23999.996185302734,
+        10000.0,
+        -0.00034228546041958907,
+        9999.999046325684,
+        9999.999046325684,
+        5624.999463558197,
+        355.55562337240553,
+        4.876800465087935,
+        "mm",
+        "lux",
+        "ba22f60b-0fca-4487-a56a-667d70eea613"
+      ]
+    ],
+    "error": null
+  }
+}

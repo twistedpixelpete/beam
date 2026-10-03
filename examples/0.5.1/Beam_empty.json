@@ -1,0 +1,162 @@
+{
+  "producer": {
+    "beam_version": "0.5.1",
+    "exporter_version": "1.0.0",
+    "blender_version": "5.2.2 LTS",
+    "blender_build_hash": "d13f752e3b9c"
+  },
+  "conventions": {
+    "world": {
+      "space": "blender_world",
+      "handedness": "right",
+      "up_axis": "+Z",
+      "position_unit": "m"
+    },
+    "projector_local": {
+      "origin": "optical_origin",
+      "forward_axis": "-Z",
+      "up_axis": "+Y"
+    },
+    "euler": {
+      "order": "XYZ",
+      "unit": "degrees",
+      "matrix_composition": "Rz @ Ry @ Rx",
+      "vectors": "column"
+    },
+    "quaternion_order": "wxyz",
+    "matrix": {
+      "storage": "row_major",
+      "vectors": "column",
+      "translation_unit": "m",
+      "scale": "dimensionless"
+    },
+    "reconstruction_authority": "projector_world_pose",
+    "group_composition": "projector_world_matrix = group.transform.matrix @ member.transform_in_group",
+    "member_order": {
+      "basis": "stored_members_array",
+      "index_base": 0,
+      "layout": "row_major",
+      "column_axis": "+X",
+      "row_axis": "-Y",
+      "space": "group_local"
+    },
+    "throw_distance": "axial_depth_of_current_centre_hit_along_projector_local_minus_Z",
+    "image_dimensions": "nominal_rectangle_perpendicular_to_optical_axis_at_throw_distance",
+    "pixel_density": "horizontal_resolution_divided_by_nominal_image_width",
+    "illuminance": "total_lumens_divided_by_nominal_image_area_no_surface_angle_or_loss_correction",
+    "colour": "linear_RGB_sRGB_primaries_to_standard_sRGB_no_view_transform",
+    "ui_state": "visibility_and_preview_fields_are_presentation_hints_not_technical_filters",
+    "output_modes": [
+      "SOLID",
+      "GRID",
+      "ID",
+      "CHECKER",
+      "UV_GRID",
+      "COLOR_GRID",
+      "IMAGE"
+    ]
+  },
+  "product": "Beam",
+  "maintainer": "Twisted Pixel",
+  "project_metadata": {
+    "project_name": "",
+    "venue": "",
+    "revision": "",
+    "client": "",
+    "author": ""
+  },
+  "blend_groups": [],
+  "schema": "projection-study",
+  "schema_version": "1.0",
+  "exported_at": "2026-10-03T10:45:24+00:00",
+  "scene_name": "Empty audit study",
+  "helper_visibility": {
+    "show_frustums": true,
+    "show_centre_rays": true,
+    "show_projected_identifiers": true,
+    "show_labels": true,
+    "show_outputs": true,
+    "show_study_cameras": true
+  },
+  "projection_model": {
+    "receivers": "visible_evaluated_surfaces",
+    "coordinates": "perspective_raster",
+    "occlusion": "gpu_first_depth",
+    "target_role": "automatic_centre_reference_only",
+    "shadow_max_dimension": 1024
+  },
+  "units": {
+    "internal_length": "m",
+    "display_length": "mm",
+    "disguise_length": "mm",
+    "pixel_density": "px/m",
+    "pixel_size": "m/px",
+    "illuminance": "lux",
+    "coordinate_space": "blender_world",
+    "rotation": "degrees",
+    "quaternion": "unitless_wxyz",
+    "resolution": "px",
+    "luminous_flux": "lm",
+    "brightness": "percent",
+    "lens_shift": "percent_of_full_image",
+    "dpi": "px/in",
+    "overlap_by_input_mode": {
+      "PIXELS": "px",
+      "PERCENT": "percent",
+      "METRES": "m"
+    }
+  },
+  "projectors": [],
+  "study_views": [],
+  "current_view_image": {
+    "filename": null,
+    "exported_at": null
+  },
+  "disguise": {
+    "transform_convention": "UNVALIDATED: raw Blender XYZ / XYZ Euler baseline",
+    "validated": false,
+    "convention_id": "blender_xyz_euler_xyz_unvalidated_v1",
+    "columns": [
+      "Projector_Name",
+      "Projector_Qte(Stack)",
+      "Projector_Native-Rez-X",
+      "Projector_Native-Rez-Y",
+      "Projector_Lumens(lux)",
+      "Projector_Brightness(%)",
+      "Projector_Total_Lumens(lux)",
+      "Projector_Trow-Ratio",
+      "Lens_Shift-H(%)",
+      "Lens_Shift-V(%)",
+      "Lens_X",
+      "Lens_Y",
+      "Lens_Z",
+      "Pitch(deg)",
+      "Yaw(deg)",
+      "Roll(deg)",
+      "Target_X",
+      "Target_Y",
+      "Target_Z",
+      "Target_Distance",
+      "Target_Width",
+      "Target_Height",
+      "Target_Illuminance",
+      "Target_DPI",
+      "Unit_Dim",
+      "Unit_Illuminance",
+      "Projector_UUID"
+    ],
+    "rows": [],
+    "error": "Export: No active projectors to export",
+    "validation": {
+      "scope": "disguise_rows",
+      "errors": [
+        {
+          "projector_uuid": null,
+          "projector_name": null,
+          "code": "NO_ACTIVE_PROJECTORS",
+          "message": "No active projectors to export"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,707 @@
+Update the existing Blender Projection Study add-on with the following focused improvements.
+
+Do not redesign or replace the working core unless necessary.
+
+Preserve all currently working functionality, including:
+
+- PJ01 / PJ02 naming
+- projector creation
+- projector body mesh
+- throw ratio maths
+- realtime frustum
+- current projection outputs
+- study colours
+- UUID handling
+- existing calculations
+- existing export logic unless explicitly changed below
+
+The maintainer metadata for the Blender extension should be:
+
+**Twisted Pixel**
+
+This pass should focus on projection behaviour, usability, readability, duplication behaviour, study-view navigation, and export cleanup.
+
+---
+
+# 1. TRUE PROJECTOR BEHAVIOUR
+
+The projection must behave like a real projector.
+
+The key distinction is:
+
+**Target = centre-ray reference for calculations**
+
+**Projection receivers = any geometry intersecting the projector frustum**
+
+These must remain separate concepts.
+
+## Automatic centre target
+
+Do not require manual target assignment during normal use.
+
+Cast a ray from the projector lens through the exact centre of the projector raster.
+
+The **first scene geometry hit by this centre ray** becomes the current projector target.
+
+Automatically determine:
+
+- target object
+- target point
+- target X/Y/Z
+- target distance
+
+Recalculate whenever:
+
+- projector moves
+- projector rotates
+- relevant geometry moves
+
+If the centre ray hits nothing:
+
+- show `No Target`
+- do not retain stale target values
+- do not display misleading zero calculations
+- keep the projection frustum visible
+
+The target is a calculation reference only.
+
+It must never act as a clipping plane.
+
+---
+
+# 2. ANY GEOMETRY IN THE RASTER RECEIVES PROJECTION
+
+Any scene geometry entering the projector raster/frustum should immediately receive the appropriate portion of the projected image.
+
+The object must not need to be:
+
+- the centre target
+- selected
+- manually assigned
+- tagged as a screen
+- registered as a receiver
+
+If geometry intersects any part of the projector frustum, it should receive projection automatically.
+
+Example:
+
+- centre raster hits a screen at 10 m
+- left edge misses the screen
+- left edge continues
+- left edge hits a wall at 15 m
+
+Expected result:
+
+- screen receives the centre area of the raster
+- wall receives the correct left portion
+- image remains one continuous perspective projection
+
+---
+
+# 3. OCCLUSION
+
+Projection must respect line-of-sight.
+
+Foreground geometry should block only the rays it physically intercepts.
+
+If a foreground object blocks part of the raster:
+
+- the foreground object receives that part
+- geometry behind it should not receive those blocked rays
+
+However:
+
+- rays passing beside the object continue farther
+- those rays may hit geometry behind it
+
+Do not stop the whole projection because one object or the centre ray was hit.
+
+---
+
+# 4. CONTINUOUS IMAGE COORDINATES
+
+The projected raster must remain spatially continuous across multiple surfaces and depths.
+
+Do not restart, stretch, refit, or remap the image separately per object.
+
+The same projector raster must drive all receiving geometry.
+
+This applies to all output modes.
+
+Moving geometry through the frustum should reveal the appropriate portion of the same image.
+
+---
+
+# 5. REALTIME PROJECTION
+
+Realtime viewport behaviour is a hard requirement.
+
+When:
+
+- projector moves
+- projector rotates
+- geometry moves into the beam
+- geometry moves out of the beam
+- geometry crosses the centre ray
+
+the following should update immediately or close to realtime:
+
+- visible projection
+- target object
+- target point
+- throw distance
+- image width
+- image height
+- pixel density
+- pixel size
+- DPI
+- illuminance
+- labels
+
+Normal study work must not require rendering after every change.
+
+Use an efficient EEVEE / GPU / viewport-friendly method where practical.
+
+Do not brute-force raycast every projector pixel in Python.
+
+---
+
+# 6. PERSISTENT ACTIVE PROJECTOR
+
+The Projection Study panel should not disappear or change just because the user selects ordinary geometry.
+
+Introduce:
+
+**Active Study Projector**
+
+Workflow:
+
+1. Select PJ01
+2. PJ01 becomes active
+3. Select a screen or wall
+4. Move that geometry
+5. PJ01 data remains visible
+6. PJ01 calculations continue updating
+
+Selecting non-projector geometry must not clear the active projector.
+
+When another projector is selected, that projector becomes active.
+
+Provide:
+
+- Active Projector display
+- dropdown if practical
+- `Use Selected Projector`
+- clear/pin option if useful
+
+---
+
+# 7. PIXEL SIZE
+
+Add **Pixel Size** alongside Pixel Density.
+
+Pixel Density:
+
+`px/m`
+
+Pixel Size:
+
+`mm/px`
+
+Formula:
+
+`Pixel Size = Image Width / Resolution X`
+
+Example:
+
+Image width = 10 m  
+Resolution = 3840 px
+
+Pixel size ≈ 2.60 mm/px
+
+Display both:
+
+- Pixel Density
+- Pixel Size
+
+Keep the calculation modular for possible future horizontal/vertical pixel-size analysis.
+
+---
+
+# 8. UNIT DISPLAY SWITCHING
+
+Add a unit display toggle:
+
+- Metres
+- Millimetres
+
+This should affect displayed dimensional values such as:
+
+- throw distance
+- image width
+- image height
+- target coordinates
+- projector coordinates
+- pixel size
+- future dimensions
+
+Keep one consistent internal unit system.
+
+Convert only for display/export.
+
+---
+
+# 9. PROJECTOR DUPLICATION MUST FEEL NATIVE
+
+Copying, pasting, duplicating, or Shift-D duplicating a projector in Blender must produce the same logical result as using the add-on’s `+ Projector` button.
+
+A duplicated projector must:
+
+- receive the next available PJ name
+- receive a new UUID
+- preserve the source projector’s technical settings
+- preserve resolution
+- preserve throw ratio
+- preserve lens shift
+- preserve brightness
+- preserve lumens
+- preserve stack quantity
+- preserve output mode
+- preserve all valid projector settings
+- remain fully independent
+- not share mutable internal data in a way that links changes between projectors
+
+In addition:
+
+**the duplicated projector must receive the next study colour in the soft palette**, not inherit the source colour.
+
+Example:
+
+PJ02 duplicated  
+→ PJ03  
+→ new UUID  
+→ same technical settings  
+→ next available study colour
+
+Manual colour override remains possible afterward.
+
+---
+
+# 10. SOFT STUDY COLOUR PALETTE
+
+Keep the soft, muted palette.
+
+Do not use harsh fully saturated RGB defaults.
+
+Suggested palette:
+
+- Dusty Coral
+- Sage Green
+- Slate Blue
+- Pale Aqua
+- Mauve
+- Warm Ochre
+- Terracotta
+- Lavender
+
+Try to keep similar perceived brightness across colours.
+
+Use the study colour consistently for:
+
+- calibration grid
+- frustum
+- viewport footprint
+- projector accent
+- identifier accents
+
+Automatically cycle through the palette for newly created or duplicated projectors.
+
+---
+
+# 11. IMPROVE PROJECTOR IDENTIFIERS AND LABELS
+
+Current viewport text is hard to read.
+
+Improve all projector-related labels, including:
+
+- PJ01 / PJ02 text near projector bodies
+- projected identifier text
+- target distance
+- throw distance
+- calculation overlays
+- future viewport annotations
+
+Style should feel clean and modern, similar to a macOS system UI.
+
+Do not require Apple’s SF Pro font.
+
+Use a clean sans-serif look similar to:
+
+- SF Pro
+- Helvetica Neue
+- Inter
+- modern system sans-serif
+
+Requirements:
+
+- slightly larger default text
+- medium or semibold appearance
+- clean spacing
+- high contrast
+- avoid thin raw coloured text floating over geometry
+- use subtle dark translucent backing plates or soft shadows where useful
+- keep study colour as an accent rather than the only text colour
+- remain readable against both dark and bright geometry
+- remain readable over projected grids
+
+Visual hierarchy:
+
+- projector ID = largest
+- major distance/calculation = medium
+- secondary/debug data = smaller
+
+The text should feel like a polished planning tool, not a debug overlay.
+
+---
+
+# 12. PROJECTED OUTPUT MODES
+
+Support the following output modes:
+
+1. Solid Colour
+2. Calibration Grid
+3. Identifier
+4. Checkerboard
+5. Blender UV Grid
+6. Blender Color Grid
+7. Custom Image
+
+---
+
+# 13. BLENDER UV GRID
+
+Add Blender’s familiar UV Grid as a projection option.
+
+If Blender’s generated UV Grid can be reused reliably, use it.
+
+Otherwise reproduce it closely.
+
+Requirements:
+
+- preserve projector aspect ratio
+- preserve projector resolution
+- maintain continuous raster coordinates
+- work across multiple surfaces
+- update in realtime
+- not refit per object
+- behave identically to all other projection modes in terms of occlusion and perspective
+
+This mode should be useful for:
+
+- distortion checking
+- orientation
+- stretching
+- perspective behaviour
+
+---
+
+# 14. BLENDER COLOR GRID
+
+Add Blender’s generated Color Grid as another projection option.
+
+Prefer the familiar Blender grid with:
+
+- colours
+- numbers
+- letters
+- reference markers
+
+Requirements:
+
+- preserve projector aspect ratio
+- preserve projector resolution
+- maintain continuous image coordinates
+- project correctly across multiple surfaces and depths
+- update in realtime
+- respect occlusion
+- not restart per object
+
+This should be a useful visual reference for identifying which part of the projector raster is landing where.
+
+---
+
+# 15. STUDY VIEW NAVIGATION
+
+The current Study View system needs a simpler way to view saved cameras, especially on Macs without a numpad.
+
+For each saved Study View, add a one-click:
+
+**View**
+
+button.
+
+This button should:
+
+- make that Study View camera the active scene camera
+- switch the current viewport into that camera view
+- require no numpad shortcuts
+- work cleanly on macOS
+
+Also provide, if practical:
+
+- View Selected Study View
+- Previous Study View
+- Next Study View
+- Exit Study View
+
+Do not make this unnecessarily complex.
+
+The priority is one-click access.
+
+---
+
+# 16. EXPORT CSV
+
+Rename the existing disguise export control to:
+
+**Export CSV**
+
+Do not label it “Export disguise”.
+
+The exporter must create an actual:
+
+`.csv`
+
+file.
+
+Do not export `.txt`.
+
+Keep the existing disguise-compatible Mapping Matter schema.
+
+Use this exact header:
+
+Projector_Name,Projector_Qte(Stack),Projector_Native-Rez-X,Projector_Native-Rez-Y,Projector_Lumens(lux),Projector_Brightness(%),Projector_Total_Lumens(lux),Projector_Trow-Ratio,Lens_Shift-H(%),Lens_Shift-V(%),Lens_X,Lens_Y,Lens_Z,Pitch(deg),Yaw(deg),Roll(deg),Target_X,Target_Y,Target_Z,Target_Distance,Target_Width,Target_Height,Target_Illuminance,Target_DPI,Unit_Dim,Unit_Illuminance,Projector_UUID
+
+Preserve the typo exactly:
+
+`Projector_Trow-Ratio`
+
+Export dimensions in millimetres.
+
+Use:
+
+`Unit_Dim = mm`
+
+and:
+
+`Unit_Illuminance = lux`
+
+Include persistent projector UUIDs.
+
+Default filename must end in `.csv`.
+
+After export, show useful feedback:
+
+- where the file was saved
+- how many projectors were exported
+
+---
+
+# 17. PROJECTOR LOCK
+
+Add a simple way to lock a projector once it is positioned.
+
+The lock should protect against accidental movement.
+
+At minimum, lock:
+
+- location
+- rotation
+
+Provide an easy way to unlock again.
+
+Do not break internal calculations while locked.
+
+---
+
+# 18. HELPER VISIBILITY CONTROLS
+
+Add easy visibility controls for:
+
+- projector frustum
+- centre ray
+- projector labels
+- projected output
+- Study View cameras
+
+A global toggle or compact set of toggles is sufficient.
+
+Do not overbuild visibility management.
+
+---
+
+# 19. RENAME SAFETY
+
+Renaming a projector object must not break:
+
+- UUID
+- internal helpers
+- projection output
+- target tracking
+- calculations
+- export
+
+Object name and persistent identity must remain separate concepts.
+
+---
+
+# 20. STUDY VIEW EXPORT — KEEP LIGHTWEIGHT
+
+Do not deeply expand reporting yet.
+
+Retain or add lightweight support for:
+
+- export current view
+- export selected Study View
+- export all Study Views
+
+Use predictable filenames.
+
+Keep output suitable for later PATCH Documents ingestion.
+
+Do not build PDF generation in this pass.
+
+---
+
+# 21. KEEP PATCH DOCUMENTS IN MIND
+
+Blender should remain the technical source.
+
+PATCH Documents should later be able to consume:
+
+- projector data
+- UUIDs
+- calculations
+- named Study Views
+- exported images
+- notes
+- units
+- target data
+- CSV data
+
+Where structured export already exists or is easy to maintain, prefer stable JSON-compatible data.
+
+Do not overbuild direct PATCH integration yet.
+
+---
+
+# 22. PERFORMANCE
+
+Keep realtime performance a priority.
+
+Avoid:
+
+- full-scene recalculation when unnecessary
+- dense Python ray grids every frame
+- expensive geometry rebuilds
+- unnecessary shader recreation
+
+Engineering calculations and visual projection should remain separate systems.
+
+Recommended:
+
+**Engineering layer**
+- centre ray
+- target
+- throw distance
+- calculated values
+
+**Visual layer**
+- GPU / EEVEE / projective texture
+- multiple receiving surfaces
+- continuous raster coordinates
+- depth-aware projection
+
+---
+
+# 23. MINIMUM ACCEPTANCE TESTS
+
+This pass is successful if:
+
+1. PJ01 stays active in the panel while another object is selected.
+2. Moving a screen updates PJ01’s calculated values live.
+3. The first object hit by the centre raster ray becomes the target.
+4. Geometry elsewhere inside the raster receives projection even if it is not the target.
+5. Projection continues beyond the centre target where rays are not blocked.
+6. Foreground geometry occludes only the rays it physically blocks.
+7. The same projected grid remains continuous across multiple objects.
+8. Blender UV Grid works as a projection output.
+9. Blender Color Grid works as a projection output.
+10. Pixel Density is shown.
+11. Pixel Size is shown.
+12. Display units can switch between metres and millimetres.
+13. Projector labels are clearly readable.
+14. Duplicating a projector creates a new PJ name.
+15. Duplicating a projector creates a new UUID.
+16. Duplicating a projector assigns the next study colour.
+17. Technical settings are preserved when duplicating.
+18. Duplicated projectors are independent.
+19. Saved Study Views have a one-click View button.
+20. View navigation works without a numpad.
+21. Export control is named `Export CSV`.
+22. Export produces a `.csv` file.
+23. CSV retains the disguise-compatible schema.
+24. Projector locking prevents accidental movement.
+25. Existing working functionality remains intact.
+
+---
+
+# 24. DO NOT OVERBUILD THIS PASS
+
+Do not add:
+
+- projector manufacturer database
+- lens database
+- exact manufacturer projector bodies
+- rigging frames
+- advanced photometric simulation
+- dense engineering raster analysis
+- automatic projector recommendation
+- blend-zone tools
+- full PDF reporting
+- complicated PATCH Documents integration
+- major UI redesign
+
+Keep this pass focused.
+
+---
+
+# 25. DEVELOPMENT APPROACH
+
+Work incrementally.
+
+Suggested order:
+
+1. Fix target / projection receiver behaviour
+2. Fix multi-surface projection / occlusion
+3. Add persistent Active Study Projector
+4. Add Pixel Size and unit switching
+5. Improve labels / identifiers
+6. Add Blender UV Grid
+7. Add Blender Color Grid
+8. Fix duplicate / copy / paste behaviour
+9. Add new-colour assignment on duplication
+10. Add Study View one-click navigation
+11. Change export to proper `.csv`
+12. Add helper visibility / projector locking
+13. Regression-test existing features
+
+At the end, provide:
+
+- concise summary of changes
+- files modified
+- test procedure
+- any migration notes
+- known limitations
+- current projection implementation notes
+- confirmation that maintainer metadata now reads `Twisted Pixel`

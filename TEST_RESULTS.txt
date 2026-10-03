@@ -1,0 +1,67 @@
+Projection Study 0.2.0 — verified 2026-10-03
+
+Environment: Blender 5.2.2 LTS (d13f752e3b9c), macOS / Metal
+Standalone Python suite: 22 tests PASS
+Blender 1: shell, body, PJ naming and UUID PASS
+Blender 2: throw maths, camera optics / lens shift PASS
+Blender 3: receiver raycast and aim PASS
+Blender 4: five output modes / GPU shaders and smooth-text batches PASS
+Blender 5: duplicate / native duplicate repair, movement and locks PASS
+Blender 6: disguise export values, mm, DPI, UUID, no-hit refusal PASS
+Blender 7: save/load, scene-unit scaling, portrait optics and idle cache PASS
+Blender 8: look-through camera/aspect restoration PASS
+Blender 9: persistent active projector, moving receiver metrics, unaffected receiver cache,
+           display-unit-independent disguise rows, notes and JSON, persistence PASS
+Blender 10: perspective + orthographic framing, selected/all PNG export, dimensions,
+            overlay switches, overwrite protection and saved-view persistence PASS
+Separate-process UI QA: fully composited current-view capture and saved-view PNGs PASS
+Visual inspection: exported images show grids, frustums and smooth identifiers;
+                   selected screen with Active Projector PJ02 and mm/px sidebar PASS
+Final simple-wall CPU update check: ~1.06 ms / 32 projectors (excludes GPU drawing)
+
+User's running Blender session was only inspected, not modified.
+Tests ran in separate factory-startup background/UI processes.
+
+Not validated: actual PATCH importer; actual disguise Designer transforms/shift;
+Blender 4.5; Windows/Linux; large complex venues; material-preview/rendered export.
+Current view includes editor chrome/sidebar; saved views are the clean camera path.
+Coverage remains centre-ray/tangent-plane approximation.
+
+0.3.0 — 2026-10-03 — Blender 5.2.2 LTS macOS Metal
+22 Python tests PASS. Blender milestones 1–11 PASS (background 1/2/3/5/6/7/9; UI 4/8/10/11). Six mode camera exports, actual solid projection pixel checks, auto target and GPU depth samples PASS. Current composited viewport capture PASS. CPU 32-projector simple-wall update 1.30 ms, GPU excluded. See docs/UPDATE-0.3.md for limitations.
+
+0.4.0 — 2026-10-03 — Blender 5.2.2 LTS/macOS Metal
+22 pure tests PASS. All milestones 1–13 PASS in one disposable UI process. Native/linked duplication, actual copy/paste and cross-scene paste PASS; palette, UUID, settings/data independence PASS. View/Next/Previous/Exit and restoration PASS. CSV operator exact schema and .csv suffix PASS. Seven-mode surface exports and foreground/blocked-wall pixel checks PASS. Global label/output hiding matches clean view. Current viewport/saved views PASS. CPU simple-wall 32-projector updates ~1.4–1.6ms, excludes GPU. Maintainer Twisted Pixel.
+
+0.4.1: 22 pure tests PASS; GPU projection acceptance PASS; independent projected-name toggles (object/global/saved view) verified by exported pixel comparisons. Visually checked unboxed projected text.
+
+0.4.2: GPU acceptance and visibility image checks PASS. Exported nominal width/height labels visually verified.
+
+Beam 0.5.0 — 2026-10-03 — Blender 5.2.2 LTS/macOS Metal
+Maintainer Twisted Pixel. 27 pure tests PASS. Full Blender milestones 1–15 PASS. Horizontal/vertical/3x2 groups, fixed anchor position+orientation, uniform overlap, px/%/m conversion, actual pair overlap, controller motion, preserved local tweaks, reset, ungroup, grouped native duplication, persistence and no-hit preview labeling PASS. Reversible Presentation preset/Matcap/save lifecycle PASS, materials unchanged. Current/selected/batch native filename dialogs visible/editable/cancellable PASS; edited single and batch output names preserved. Seven-mode GPU projection/occlusion and independent projected-name checks PASS. Four-projector individual/combined/feather images visually inspected. CSV/JSON examples verified. Native live Presentation viewport screenshot verified with Beam overlays retained and native overlays hidden.
+
+Beam 0.5.1 JSON audit — 2026-10-03
+27 Python tests PASS; all Blender integration milestones 1–15 PASS.
+New Blender JSON contract test PASS (non-default units, matrix reconstruction, mixed valid/invalid rows, stale hit clearing, layouts/order/removal, views, empty metadata/scenes).
+Draft 2020-12 validation + UUID cross-reference validation PASS for five fresh fixtures and original 0.5.0 reference.
+Negative schema and dangling-reference checks PASS.
+Blender 5.2.2 LTS d13f752e3b9c / macOS. Disguise Designer transforms remain UNVALIDATED.
+
+Beam 0.5.2 frustum helper termination — 2026-10-03
+Background first-hit helper tests PASS: angled receiver, closer occluder, partial/missed rays, receiver motion/visibility, 0.01 scene scale.
+Technical record comparison with helper clipping disabled/enabled PASS (metrics, centre hit, nominal corners, beam extent, slant).
+27 Python tests and all 15 Blender integration milestones PASS.
+GPU projection acceptance PASS: first-depth occlusion, multi-surface receivers, no-centre-hit side receivers and output modes.
+
+Beam 0.6.0 lifecycle — 2026-10-03
+27 pure Python tests and all 15 existing Blender integration milestones PASS.
+New lifecycle acceptance PASS: membership/anchor/removal/new/reset; independent data; linked/native hierarchy/cross-scene clipboard; local X translation and XYZ rotations; SI scales; save/library reload; valid JSON identities.
+UI acceptance PASS: native duplicate undo/redo and real interactive hierarchy duplicate / Escape deferral, expected counts, visible membership controls.
+First-hit frustum regression and unchanged technical-record comparison PASS.
+BG01/PJ01–PJ03 to BG02/PJ04–PJ06 example with 150 mm local offset PASS. JSON schema and UUID resolution PASS.
+Blender 5.2.2 LTS d13f752e3b9c, macOS/Metal; other runtimes unverified.
+
+Beam 0.7.0 beauty and usability — 2026-10-03
+27 Python tests and all 15 Blender integration milestones PASS.
+Beauty acceptance PASS: Off/Minimal/Full annotation counts; retained PJ IDs; unchanged technical JSON and materials; Presentation/save restoration.
+Sidebar and Minimal/Full/Presentation GPU screenshots inspected on Blender 5.2.2 LTS/macOS Metal.

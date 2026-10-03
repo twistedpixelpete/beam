@@ -1,0 +1,425 @@
+Update the existing Blender Projection Study add-on with the following focused improvements.
+
+Do not redesign or replace the working core unless necessary.
+
+Preserve all currently working functionality, including:
+
+- PJ01/PJ02 naming
+- projector creation
+- projector mesh/body
+- throw ratio maths
+- realtime frustum
+- target raycast
+- calibration grid
+- study colours
+- disguise export
+- UUID handling
+
+This pass is about improving usability, presentation and data output.
+
+---
+
+# 1. ADD PIXEL SIZE
+
+The add-on already calculates pixel density.
+
+Add **Pixel Size** as a separate calculated value.
+
+Definitions:
+
+Pixel Density:
+`pixels per metre`
+
+Pixel Size:
+`physical size of one projected pixel`
+
+Calculate nominal pixel size from projected image width:
+
+`Pixel Size = Image Width / Resolution X`
+
+Display Pixel Size in:
+
+`mm/px`
+
+Example:
+
+Image Width = 10 m  
+Resolution X = 3840
+
+Pixel Size ≈ 2.60 mm/px
+
+Show both:
+
+- Pixel Density: px/m
+- Pixel Size: mm/px
+
+Keep the calculation modular so later we can support separate horizontal and vertical pixel size if projection distortion is analysed.
+
+---
+
+# 2. UNIT DISPLAY SWITCHING
+
+Add a user setting to switch displayed dimensional units between:
+
+- metres
+- millimetres
+
+This should affect displayed values such as:
+
+- throw distance
+- image width
+- image height
+- target coordinates
+- projector coordinates
+- pixel size
+- future dimensional measurements
+
+Do not change the underlying internal calculation system.
+
+Keep one consistent internal unit convention and convert only for display/output.
+
+Important:
+
+The disguise export must continue to use:
+
+`Unit_Dim = mm`
+
+regardless of the user's display-unit preference.
+
+---
+
+# 3. CLEANER IDENTIFIER TYPOGRAPHY
+
+Improve the visual style of projector identifier text.
+
+The current identifier should feel cleaner and more like a native macOS interface.
+
+Do not rely on Apple's proprietary SF Pro font.
+
+Instead use a clean, modern sans-serif style with a visual feel similar to:
+
+- SF Pro
+- Helvetica Neue
+- Inter
+- other clean system sans-serif fonts
+
+Style direction:
+
+- medium or semibold weight
+- clean spacing
+- minimal
+- polished
+- no heavy outline unless needed for readability
+- subtle shadow or translucent backing only if required
+- understated rather than "debug text"
+
+PJ01 / PJ02 labels should look like part of a professional planning tool.
+
+---
+
+# 4. STUDY VIEW EXPORT
+
+Add an easy way to export the current working view.
+
+There should be two concepts:
+
+## A. Export Current View
+
+Allow the user to export exactly what they are currently looking at in the 3D viewport as a study image.
+
+Suggested operator:
+
+`Export Current View`
+
+This should be useful for quick ad-hoc study captures.
+
+Where possible, preserve relevant overlays such as:
+
+- projector labels
+- frustums
+- grids
+- target visualisation
+
+depending on current visibility settings.
+
+---
+
+## B. Saved Study Views
+
+Allow users to create named repeatable study views based on Blender cameras.
+
+Suggested workflow:
+
+- user positions viewport
+- presses `Create Study View From Current View`
+- add-on creates or configures a Blender camera
+- user names the study view
+
+Examples:
+
+- Overview
+- PJ01 Coverage
+- PJ02 Coverage
+- Front Elevation
+- Side Elevation
+- Client View
+
+Provide operators such as:
+
+- Create Study View From Current View
+- Export Selected Study View
+- Export All Study Views
+
+Each saved study view should have at minimum:
+
+- view name
+- camera reference
+- export resolution
+
+If practical, allow per-view settings for:
+
+- include projector labels
+- include frustums
+- include grids
+- include overlays
+
+Keep this lightweight in this pass.
+
+---
+
+# 5. DESIGN WITH PATCH DOCUMENTS IN MIND
+
+All study data and exported assets should continue to be structured so they can later be imported into **PATCH Documents**.
+
+Do not tightly couple Blender directly to PATCH yet unless already implemented.
+
+Instead, ensure that:
+
+- data fields have stable names
+- projector UUIDs remain persistent
+- study view names are predictable
+- exported image filenames are predictable
+- units are explicit
+- calculated values are structured
+- projector notes/data can be serialised
+
+Blender should remain the technical source.
+
+PATCH Documents should later be able to consume:
+
+- projector data
+- calculations
+- study images
+- named views
+- notes
+- units
+- UUIDs
+- target information
+- disguise export data
+
+Prefer JSON as the future structured interchange format.
+
+---
+
+# 6. PATCH-READY EXPORT DATA
+
+Add or prepare a structured export suitable for later PATCH Documents import.
+
+A simple JSON export is acceptable.
+
+Suggested contents per projector:
+
+- projector UUID
+- projector name
+- resolution
+- throw ratio
+- lens shift
+- stack quantity
+- brightness
+- lumens
+- total lumens
+- position
+- rotation
+- target point
+- target object name
+- throw distance
+- image width
+- image height
+- pixel density
+- pixel size
+- DPI
+- estimated illuminance
+- display units
+- study colour
+- output mode
+
+Suggested project-level contents:
+
+- scene/project name
+- units
+- export timestamp
+- list of saved study views
+- exported image filenames
+
+Do not overcomplicate the schema.
+
+Keep it clean and easy to extend.
+
+---
+
+# 7. PERSISTENT ACTIVE PROJECTOR
+
+This is an important workflow improvement.
+
+Currently, projector details disappear when the user selects another piece of geometry.
+
+Change this behaviour.
+
+Introduce the concept of:
+
+`Active Study Projector`
+
+This must be independent of Blender's current selected object.
+
+Workflow example:
+
+1. Select PJ01
+2. PJ01 becomes the Active Study Projector
+3. Select a screen or venue object
+4. Move the screen
+5. Projection Study panel still displays PJ01
+6. PJ01 values continue updating live as the target geometry moves
+
+Selecting non-projector geometry must NOT clear the current Active Study Projector.
+
+The panel should clearly show:
+
+`Active Projector: PJ01`
+
+Provide a way to change it, such as:
+
+- dropdown
+- `Use Selected Projector`
+- pin button
+- clear button
+
+Recommended behaviour:
+
+When a projector is selected, automatically set it as the Active Study Projector.
+
+After that, keep it active until:
+
+- another projector is chosen
+- user explicitly clears it
+
+This allows users to manipulate screens, surfaces and venue geometry while continuously monitoring projector calculations.
+
+---
+
+# 8. LIVE UPDATE WHEN TARGET GEOMETRY MOVES
+
+Ensure calculated projector values update not only when the projector moves, but also when relevant target geometry moves.
+
+At minimum update:
+
+- throw distance
+- target centre
+- image width
+- image height
+- pixel density
+- pixel size
+- DPI
+- illuminance
+
+when:
+
+- projector transform changes
+- target object transform changes
+
+Do this efficiently.
+
+Avoid expensive full-scene recalculation on every dependency graph update.
+
+Only update affected projectors where practical.
+
+---
+
+# 9. STUDY COLOUR PALETTE
+
+Retain the softer study-colour system.
+
+Do not revert to fully saturated RGB colours.
+
+The default palette should remain visually pleasant and easy to distinguish.
+
+Suggested palette direction:
+
+- Dusty Coral
+- Sage Green
+- Slate Blue
+- Pale Aqua
+- Mauve
+- Warm Ochre
+- Terracotta
+- Lavender
+
+Keep similar perceived brightness across the palette.
+
+Use the selected study colour consistently for:
+
+- calibration grid
+- frustum
+- footprint
+- projector label
+- identifier
+
+Manual colour override must persist.
+
+---
+
+# 10. DO NOT OVERBUILD THIS PASS
+
+Do not add:
+
+- projector manufacturer database
+- lens database
+- advanced photometric model
+- dense raster analysis
+- blend-zone tools
+- PDF report generation
+- complex PATCH integration
+- exact manufacturer projector bodies
+
+This is a usability and workflow pass.
+
+---
+
+# ACCEPTANCE CRITERIA
+
+This pass is successful if:
+
+1. Pixel Size is shown in mm/px
+2. Pixel Density is still shown in px/m
+3. User can switch displayed units between m and mm
+4. disguise export still uses mm
+5. PJ identifier typography looks clean and professional
+6. Current viewport can be exported as a study image
+7. Named camera-based study views can be created
+8. Named study views can be exported
+9. Study data remains structured for future PATCH Documents use
+10. A PATCH-ready JSON export exists or the architecture clearly supports it
+11. PJ01 remains visible in the panel after selecting another object
+12. Moving a target screen updates PJ01's calculated values live
+13. Selecting PJ02 changes the Active Study Projector to PJ02
+14. Selecting ordinary geometry does not clear PJ02
+15. Soft projector colours remain consistent and readable
+16. Existing v0.1 functionality remains intact
+
+When complete, provide:
+
+- summary of changes
+- files modified
+- any migration notes
+- test procedure
+- JSON schema example if added
+- any known limitations

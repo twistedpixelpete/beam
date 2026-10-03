@@ -1,0 +1,615 @@
+Build a new Blender add-on for projection planning and projection studies.
+
+The goal is to create a lightweight, technically correct first version of a tool that can eventually replace parts of Mapping Matter for projection planning.
+
+Do not overbuild this first version.
+
+The priorities are:
+
+1. Correct projection geometry and maths
+2. Fast realtime viewport feedback
+3. Easy projector positioning and manipulation
+4. Clear projector identification
+5. Reliable export of projector data for disguise Designer
+
+Target modern Blender only. Do not carry old Blender compatibility code unless genuinely necessary.
+
+Use clean modular architecture so later features such as a projector/lens library can be added without rewriting the core.
+
+---
+
+# CORE PROJECTOR OBJECT
+
+Each projector should appear to the user as a single logical object named:
+
+PJ01  
+PJ02  
+PJ03  
+etc.
+
+Creating a new projector should automatically increment the identifier.
+
+A projector should contain:
+
+- a simple generic large-format projector body mesh
+- a clearly visible lens/front direction marker
+- the projection camera/frustum
+- any hidden helper objects required internally
+- projector settings stored as structured custom properties
+- a persistent UUID generated at creation
+
+The user should manipulate one obvious projector object.
+
+Internal helper objects should not clutter normal selection or workflow.
+
+Do not create manufacturer-specific meshes in v0.1.
+
+The generic body only needs to give a useful visual sense of position, orientation and approximate physical footprint.
+
+---
+
+# PROJECTION MATHS
+
+Implement accurate projector geometry based on:
+
+Throw Ratio = Throw Distance / Image Width
+
+Therefore:
+
+Image Width = Throw Distance / Throw Ratio
+
+Image Height = Image Width × Resolution Y / Resolution X
+
+The projector camera/frustum must update correctly when throw ratio or resolution changes.
+
+Support:
+
+- custom native resolution X/Y
+- throw ratio
+- horizontal lens shift
+- vertical lens shift
+- projector stack quantity
+- brightness percentage
+- nominal lumens
+
+Use real-world units.
+
+Blender scenes should be treated as metric.
+
+Prefer metres internally where practical.
+
+The calculations must remain correct regardless of projector position and rotation.
+
+---
+
+# TARGET / RAYCAST SYSTEM
+
+A projector should be able to target real imported venue geometry.
+
+Implement at minimum:
+
+- projector centre ray
+- raycast against scene geometry
+- current target hit position
+- throw distance to target
+- image width
+- image height
+- target centre point
+
+These values must update as the projector moves.
+
+Do not build a huge analysis engine yet.
+
+For v0.1, prioritise a correct centre-ray based system and projection frustum.
+
+Structure the code so denser raster raycasting can be added later.
+
+---
+
+# REALTIME VIEWPORT
+
+Realtime viewport behaviour is a hard requirement.
+
+When a projector is moved, rotated or aimed, the following should update immediately or close to realtime:
+
+- projector frustum
+- target centre
+- throw distance
+- image width
+- image height
+- projected coverage representation
+- projector identifier
+- sidebar numerical values
+
+The workflow must not depend on rendering after every movement.
+
+Normal study work should be possible directly in the 3D viewport.
+
+Prefer EEVEE / viewport-friendly techniques.
+
+Do not make Cycles a requirement for basic functionality.
+
+---
+
+# PROJECTED OUTPUT MODES
+
+Each projector should have an Output Mode.
+
+Implement these first:
+
+1. Solid Colour
+2. Calibration Grid
+3. Identifier
+4. Checkerboard
+5. Custom Image
+
+The Calibration Grid is important.
+
+It should feel more like a professional projector test grid than a Blender checker texture.
+
+Include:
+
+- strong outer border
+- centre crosshair
+- regular subdivisions
+- diagonal guides if practical
+- projector identifier
+- native resolution text if practical
+- aspect-ratio-appropriate layout
+
+The output should remain clear and useful when many projectors are visible at the same time.
+
+---
+
+# STUDY COLOUR PALETTE
+
+Each projector should have a selectable Study Colour.
+
+Use this colour consistently for:
+
+- calibration grid
+- frustum
+- viewport footprint
+- projector label
+- identifier where appropriate
+
+Do not use harsh, fully saturated RGB colours as the defaults.
+
+The default palette should be softer, slightly muted and visually pleasant while still making different projectors easy to distinguish.
+
+The intention is similar to a polished architectural / projection planning visualisation rather than a bright debug overlay.
+
+Suggested palette direction:
+
+- Soft Red / Dusty Coral
+- Sage Green
+- Slate / Sky Blue
+- Pale Cyan / Aqua
+- Mauve / Soft Magenta
+- Warm Yellow / Ochre
+- Terracotta Orange
+- Lavender / Soft Purple
+
+Avoid default colours such as:
+
+- 255, 0, 0
+- 0, 255, 0
+- 0, 0, 255
+
+Prefer slightly desaturated colours with broadly similar perceived brightness.
+
+The palette should still remain distinct when several projector grids overlap.
+
+Automatically cycle through the palette as new projectors are created.
+
+For example:
+
+PJ01 → Soft Red / Coral  
+PJ02 → Sage Green  
+PJ03 → Slate Blue  
+PJ04 → Pale Cyan  
+PJ05 → Mauve  
+PJ06 → Warm Yellow  
+PJ07 → Terracotta  
+PJ08 → Lavender
+
+Then repeat or generate sensible variations if more projectors are created.
+
+Allow the user to manually override the Study Colour at any time.
+
+The user's manually selected colour should persist.
+
+---
+
+# PROJECTOR MANIPULATION
+
+Make projector movement easy.
+
+Implement useful operators such as:
+
+- Aim at selected point / clicked surface
+- Aim at selected object centre
+- Look through projector
+- Move along optical axis
+- Move closer/further while maintaining aim
+- Duplicate projector
+- Duplicate and automatically increment PJ number
+- Lock projector transform
+- Toggle frustum visibility
+- Toggle projected output visibility
+- Isolate selected projector
+
+If a full custom interactive gizmo system is too much for v0.1, use simple reliable operators first.
+
+Do not delay the core engine for fancy UI manipulation.
+
+---
+
+# UI
+
+Create a clean sidebar panel in the 3D View.
+
+Suggested structure:
+
+PROJECTION STUDY
+
+Selected Projector:  
+PJ01
+
+Projection
+
+- Resolution X
+- Resolution Y
+- Throw Ratio
+- Horizontal Lens Shift
+- Vertical Lens Shift
+- Stack Quantity
+- Brightness %
+- Lumens
+
+Calculated
+
+- Throw Distance
+- Image Width
+- Image Height
+- Pixel Density
+- Estimated Illuminance
+
+Output
+
+- Output Mode
+- Study Colour
+- Custom Image
+- Show Grid
+- Show Identifier
+- Show Frustum
+
+Target
+
+- Target object
+- Aim at selected
+- Look through projector
+
+Export
+
+- Export disguise CSV/TXT
+
+Keep the panel compact and practical.
+
+---
+
+# PIXEL DENSITY
+
+Calculate:
+
+Pixels per metre = Resolution X / Image Width in metres
+
+Also calculate DPI for disguise export:
+
+DPI = Resolution X / Image Width in inches
+
+Image Width in inches = image width mm / 25.4
+
+Show pixels per metre in the Blender UI.
+
+Store/export DPI for disguise compatibility.
+
+---
+
+# BASIC ILLUMINANCE
+
+For v0.1 use the same simple relationship used by Mapping Matter-style workflows.
+
+Total Lumens:
+
+Total Lumens = Nominal Lumens × Brightness Percentage × Stack Quantity
+
+Projected Area:
+
+Area = Image Width × Image Height
+
+Estimated Illuminance:
+
+Lux ≈ Total Lumens / Projected Area
+
+This is only a simple planning estimate.
+
+Keep this calculation modular so a more sophisticated photometric model can replace it later.
+
+---
+
+# UUID
+
+Every projector must receive a persistent UUID at creation.
+
+Example:
+
+xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+The UUID must not change if the projector is renamed.
+
+Duplicating a projector must generate a new UUID.
+
+---
+
+# DISGUISE EXPORT
+
+Implement export compatible with disguise Designer's supported Mapping Matter-style projector CSV format.
+
+The export should default to a .txt extension containing comma-separated values.
+
+Use this exact header:
+
+Projector_Name,Projector_Qte(Stack),Projector_Native-Rez-X,Projector_Native-Rez-Y,Projector_Lumens(lux),Projector_Brightness(%),Projector_Total_Lumens(lux),Projector_Trow-Ratio,Lens_Shift-H(%),Lens_Shift-V(%),Lens_X,Lens_Y,Lens_Z,Pitch(deg),Yaw(deg),Roll(deg),Target_X,Target_Y,Target_Z,Target_Distance,Target_Width,Target_Height,Target_Illuminance,Target_DPI,Unit_Dim,Unit_Illuminance,Projector_UUID
+
+Important:
+
+Preserve the disguise-compatible typo exactly:
+
+Projector_Trow-Ratio
+
+For dimensional export use:
+
+Unit_Dim = mm
+
+For illuminance use:
+
+Unit_Illuminance = lux
+
+Convert Blender metre values to millimetres on export.
+
+Include all active projectors in the scene.
+
+Use PJ01, PJ02 etc. as Projector_Name.
+
+Target_Distance, Target_Width and Target_Height should use the actual calculated values.
+
+Target_DPI should use the calculated DPI.
+
+Projector_Total_Lumens should use the calculated total output.
+
+Include the persistent UUID.
+
+---
+
+# COORDINATE CONVERSION
+
+Do not guess the disguise coordinate and rotation conversion.
+
+Create the export system with a dedicated transform-conversion module.
+
+For now:
+
+- clearly isolate Blender-to-disguise axis conversion logic
+- clearly isolate Pitch / Yaw / Roll conversion logic
+- document assumptions
+- make it easy to adjust after validation testing
+
+Do not scatter coordinate conversion through the rest of the codebase.
+
+We will validate the final transform convention using a controlled test scene imported into disguise.
+
+---
+
+# ARCHITECTURE
+
+Keep the code modular.
+
+Suggested modules:
+
+projector_data.py  
+projection_math.py  
+projector_object.py  
+target_raycast.py  
+viewport_display.py  
+output_patterns.py  
+operators.py  
+ui.py  
+export_disguise.py  
+utils.py
+
+Avoid tightly coupling:
+
+- projection maths
+- viewport rendering
+- shader nodes
+- export logic
+
+The projection maths should be independently testable.
+
+Do not make engineering calculations dependent on Blender shader node names.
+
+---
+
+# TESTING
+
+Add unit-style tests where practical.
+
+At minimum test:
+
+Throw ratio maths
+
+Example:
+
+Throw Distance = 10 m  
+Throw Ratio = 1.0
+
+Expected width = 10 m
+
+1920 × 1080
+
+Expected height = 5.625 m
+
+Also test:
+
+- 16:10 aspect ratio
+- DPI calculation
+- pixels per metre
+- brightness percentage
+- stack quantity
+- total lumens
+- illuminance calculation
+- UUID uniqueness
+- PJ naming/increment
+- duplicate generates new UUID
+
+Keep test calculations separated from Blender visual code where possible.
+
+---
+
+# PROJECTOR BODY
+
+Create a simple generic installation projector body.
+
+Requirements:
+
+- clean rectangular chassis
+- obvious front direction
+- visible lens opening
+- sensible size for a large-format projector
+- easy to select
+- projector body follows the logical PJ object
+
+Do not spend excessive time making it pretty.
+
+Function over detail.
+
+---
+
+# PERFORMANCE
+
+Realtime interaction is a priority.
+
+Do not create expensive geometry or perform unnecessary full-scene updates every frame.
+
+Use lightweight viewport drawing and only recalculate when projector transforms/settings change.
+
+The system should remain usable with many projectors present.
+
+---
+
+# WHAT NOT TO BUILD YET
+
+Do not build these in v0.1:
+
+- manufacturer projector database
+- manufacturer lens library
+- exact projector chassis models
+- rigging frames
+- advanced blend calculations
+- full raster raycasting
+- complex photometric simulation
+- automatic projector recommendation
+- detailed occlusion analysis
+- PDF reporting
+- document-builder integration
+- complicated configuration management
+
+Design the architecture so those can come later.
+
+---
+
+# ACCEPTANCE CRITERIA
+
+v0.1 is successful if I can:
+
+1. Install the add-on
+2. Create PJ01
+3. Create PJ02 and have naming increment automatically
+4. See a generic projector body
+5. Clearly see which way it is projecting
+6. Set resolution and throw ratio
+7. Move/rotate the projector around imported venue geometry
+8. See the frustum update in realtime
+9. Aim the projector at geometry
+10. See throw distance update live
+11. See image width/height update live
+12. Show a soft colour-coded calibration grid
+13. Show a large PJ01 identifier
+14. Give PJ02 a different soft study colour and clearly distinguish overlapping projectors
+15. Duplicate a projector cleanly
+16. Export all active projectors to a disguise-compatible .txt CSV
+17. Preserve projector UUIDs
+18. Keep technical calculations independent of visual shader implementation
+
+---
+
+# DEVELOPMENT APPROACH
+
+Build this incrementally.
+
+Do not attempt everything at once.
+
+Recommended order:
+
+Milestone 1
+
+- add-on shell
+- PJ object
+- generic body
+- naming
+- UUID
+- basic panel
+
+Milestone 2
+
+- resolution
+- throw ratio
+- correct camera/frustum maths
+- live image width/height
+
+Milestone 3
+
+- target raycast
+- live throw distance
+- aim tools
+
+Milestone 4
+
+- viewport visualisation
+- soft colour-coded projector outputs
+- calibration grid
+- identifier
+
+Milestone 5
+
+- duplicate / manipulation helpers
+
+Milestone 6
+
+- disguise exporter
+
+At the end of each milestone, test the functionality inside Blender before continuing.
+
+Do not make destructive changes to the user's current Blender scenes while developing.
+
+Build the add-on as a separate clean extension.
+
+When complete, provide:
+
+- installation instructions
+- folder/file structure
+- short explanation of architecture
+- known limitations
+- test steps
+- current disguise coordinate-conversion assumptions

@@ -1,0 +1,635 @@
+Update the existing **Beam** Blender add-on.
+
+Maintainer:
+
+**Twisted Pixel**
+
+Do not redesign the working projection engine unless required.
+
+This pass should focus on:
+
+- Blend Group membership editing
+- Blend Group duplication
+- projector manipulation behaviour
+- frustum helper termination
+- preserving native Beam creation rules
+
+Keep the pass focused and avoid unrelated new features.
+
+---
+
+# 1. FRUSTUM VISUAL TERMINATION
+
+The visible projector frustum/cone helper currently continues too far through the scene.
+
+Change the helper drawing behaviour.
+
+For each visible frustum edge / corner ray:
+
+- draw from the projector lens outward
+- terminate the helper line at the first scene-geometry intersection
+- if no geometry is hit, use a sensible fallback display distance
+
+Important:
+
+This is a **viewport helper change only**.
+
+Do not change:
+
+- actual projection behaviour
+- multi-surface projection
+- projection receivers
+- occlusion
+- centre-target logic
+- engineering calculations
+
+The real projection can still continue onto geometry where rays are unobstructed.
+
+The helper cone should simply stop visually at first-hit geometry so it does not keep extending through walls/screens.
+
+---
+
+# 2. EDIT BLEND GROUP MEMBERSHIP AFTER CREATION
+
+Blend Groups must remain editable after creation.
+
+Add clear controls to the Blend Group panel:
+
+- **Add Selected Projector**
+- **Remove Selected Projector**
+- **Add New Projector**
+
+Also show a visible list of current members.
+
+Example:
+
+BG01 Members:
+
+- PJ01
+- PJ02
+- PJ03
+- PJ04
+
+---
+
+# 3. ADD SELECTED PROJECTOR
+
+When adding an existing Beam projector to a Blend Group:
+
+- preserve its current projector settings
+- preserve its current transform
+- preserve its UUID
+- preserve its study colour
+- do not automatically move it unless explicitly requested
+
+After adding it:
+
+- register it as a group member
+- update member ordering
+- update overlap calculations
+- update group visualisation
+
+Provide an explicit action such as:
+
+**Align to Group**
+
+or:
+
+**Reflow Group**
+
+if the user wants the new member moved into the calculated layout.
+
+Do not silently reposition an existing projector.
+
+---
+
+# 4. ADD NEW PROJECTOR TO GROUP
+
+`Add New Projector` should create a proper Beam projector using the same creation rules as the normal:
+
+`+ Projector`
+
+workflow.
+
+The new projector must:
+
+- receive the next PJ number
+- receive a new UUID
+- receive the next study colour
+- inherit appropriate technical settings from the group/template projector
+- be fully independent
+- be added to the Blend Group
+- be placed according to the current group layout where practical
+
+---
+
+# 5. REMOVE PROJECTOR FROM GROUP
+
+Removing a projector from a Blend Group must:
+
+- remove only the group relationship
+- not delete the projector
+- not change its UUID
+- not reset its projector settings
+- not move it unless explicitly requested
+
+The projector should remain in the Blender scene as a valid independent Beam projector.
+
+After removal:
+
+- refresh group ordering
+- refresh overlap calculations
+- refresh spacing logic
+- refresh visualisation
+
+---
+
+# 6. ANCHOR REMOVAL
+
+If the current anchor projector is removed from a Blend Group:
+
+handle this cleanly.
+
+Preferred behaviour:
+
+- automatically promote the next valid member to anchor
+
+If this would create ambiguity, present a simple choice.
+
+Do not leave the Blend Group in a broken state.
+
+---
+
+# 7. PROJECTORS DEFAULT TO LOCAL ORIENTATION
+
+Beam projector manipulation should default to **Local orientation**.
+
+The purpose is to make move/rotate controls intuitive relative to the projector itself.
+
+Expected behaviour:
+
+- yaw/pan rotates left/right relative to the projector
+- pitch/tilt rotates up/down relative to the projector
+- roll rotates around the optical axis
+- movement along the projector axis feels natural
+- projector controls should not unexpectedly follow World axes
+
+Important:
+
+Do not permanently force Blender's global transform orientation for the entire application.
+
+Implement this in a way that makes Beam projectors intuitive while avoiding disruption to unrelated Blender objects/workflows.
+
+All projectors created by:
+
+- + Projector
+- duplication
+- copy/paste
+- Blend Group creation
+- Add New Projector
+
+should follow the same local-orientation behaviour.
+
+---
+
+# 8. BLEND GROUP DUPLICATION
+
+Copying/pasting or duplicating a Blend Group must create a fully independent Beam Blend Group.
+
+Example:
+
+Original:
+
+BG01
+
+Members:
+
+PJ01  
+PJ02  
+PJ03
+
+Duplicate BG01:
+
+BG02
+
+Members:
+
+PJ04  
+PJ05  
+PJ06
+
+---
+
+# 9. BLEND GROUP NUMBERING
+
+Blend Group names should auto-increment:
+
+BG01  
+BG02  
+BG03
+
+When duplicating an existing Blend Group:
+
+- assign the next available BG number
+- do not reuse the source name
+
+Manual rename remains allowed afterward.
+
+Persistent identity must use UUID, not name.
+
+---
+
+# 10. NEW BLEND GROUP UUID
+
+A duplicated Blend Group must receive:
+
+- a new Blend Group UUID
+
+It must not reuse the source group's UUID.
+
+---
+
+# 11. DUPLICATED PROJECTOR MEMBERS
+
+When a Blend Group is duplicated, do not reuse the original member projectors.
+
+Create new Beam projector objects.
+
+Each duplicated projector must:
+
+- receive the next available PJ number
+- receive a new projector UUID
+- receive the next study colour
+- preserve source technical settings
+- preserve resolution
+- preserve throw ratio
+- preserve lens shift
+- preserve brightness
+- preserve lumens
+- preserve stack quantity
+- preserve output mode
+- preserve notes where appropriate
+- remain fully independent
+
+Do not share mutable data in a way that causes changes to the duplicate to modify the original.
+
+---
+
+# 12. PRESERVE GROUP CONFIGURATION
+
+When duplicating a Blend Group, preserve:
+
+- layout type
+- horizontal / vertical / array mode
+- rows
+- columns
+- desired overlap
+- spacing settings
+- preview settings where appropriate
+- group-level notes
+- member local offsets where appropriate
+
+The duplicated group should visually match the source layout initially but use new objects/identities.
+
+---
+
+# 13. PRESERVE LOCAL MEMBER OFFSETS
+
+If members of the source Blend Group have individual manual offsets:
+
+preserve those offsets in the duplicated Blend Group.
+
+Example:
+
+PJ03 in BG01 has been nudged 150 mm locally.
+
+The corresponding duplicated projector in BG02 should inherit that same local offset relative to the new group layout.
+
+Do not copy absolute world positions blindly.
+
+Preserve the group/local transform relationship.
+
+---
+
+# 14. GROUP DUPLICATION POSITION
+
+After duplication, the new Blend Group should be easy to identify and move.
+
+Do not place it exactly on top of the source group if that makes it impossible to select.
+
+Prefer either:
+
+- Blender's normal duplicate offset behaviour
+
+or
+
+- a small sensible Beam-controlled offset
+
+Keep this predictable.
+
+Do not alter internal spacing.
+
+---
+
+# 15. GROUP PARENT CONTROL MUST REMAIN VALID
+
+The duplicated Blend Group must have its own group/parent controller.
+
+Moving BG02 must:
+
+- move PJ04/PJ05/PJ06
+- not move BG01
+- preserve individual member local offsets
+
+The original and duplicated group must be completely independent.
+
+---
+
+# 16. INDIVIDUAL PROJECTOR EDITING STILL WORKS
+
+Projectors inside a Blend Group must remain individually editable.
+
+Users must still be able to modify:
+
+- position
+- rotation
+- aim
+- lens shift
+- output
+- colour
+- notes
+- projector settings
+
+Group membership must not make projector objects inaccessible.
+
+---
+
+# 17. GROUP + LOCAL TRANSFORM MODEL
+
+Continue using the intended two-layer transform concept:
+
+## Group Transform
+
+Controls:
+
+- overall position
+- overall rotation
+- uniform spacing
+- overlap
+
+## Projector Local Offset
+
+Controls:
+
+- individual fine positioning
+- local corrections
+- rigging adjustments
+
+Local offsets must survive:
+
+- group movement
+- group rotation
+- overlap adjustments where appropriate
+- duplication
+
+---
+
+# 18. RESET TO GROUP POSITION
+
+Retain or add:
+
+**Reset to Group Position**
+
+for individual Blend Group members.
+
+This should:
+
+- remove manual local position offset
+- remove manual local rotation offset if appropriate
+- return the projector to its calculated group layout position
+
+Do not affect:
+
+- UUID
+- projector settings
+- colour
+- notes
+
+---
+
+# 19. GROUP MEMBERSHIP ORDERING
+
+Member ordering must remain stable and explicit.
+
+For horizontal layouts:
+
+- order left-to-right
+
+For vertical layouts:
+
+- order top-to-bottom or bottom-to-top, but document the convention
+
+For arrays:
+
+use explicit:
+
+- row
+- column
+- member index
+
+Do not rely only on projector names.
+
+Store ordering data clearly enough for future PATCH Documents import.
+
+---
+
+# 20. PATCH-FRIENDLY BLEND DATA
+
+Ensure Blend Group data remains structured for later PATCH Documents ingestion.
+
+Store at minimum:
+
+- Blend Group UUID
+- name
+- layout type
+- anchor projector UUID
+- member projector UUIDs
+- member order
+- rows
+- columns
+- desired overlap
+- actual overlap
+- group transform
+- member local offsets
+- notes
+
+Duplicated groups must export cleanly with completely new UUID references.
+
+---
+
+# 21. BLEND GROUP MEMBERSHIP ACCEPTANCE TEST
+
+Create:
+
+BG01
+
+with:
+
+PJ01  
+PJ02  
+PJ03
+
+Then:
+
+1. Create PJ04 independently.
+2. Select PJ04.
+3. Use Add Selected Projector.
+4. PJ04 becomes a BG01 member.
+5. PJ04 does not move automatically.
+6. Use Align/Reflow if desired.
+7. Remove PJ02.
+8. PJ02 remains in scene as a normal Beam projector.
+9. Group continues functioning.
+10. Remove anchor PJ01.
+11. Beam promotes a valid new anchor.
+12. No broken UUID references remain.
+
+---
+
+# 22. BLEND GROUP DUPLICATION ACCEPTANCE TEST
+
+Start with:
+
+BG01
+
+PJ01  
+PJ02  
+PJ03
+
+with:
+
+- horizontal layout
+- custom overlap
+- one member manually offset
+
+Duplicate BG01.
+
+Expected:
+
+BG02
+
+PJ04  
+PJ05  
+PJ06
+
+Check:
+
+1. BG02 has a new UUID.
+2. PJ04–PJ06 all have new UUIDs.
+3. PJ04–PJ06 receive new study colours.
+4. Technical settings match source members.
+5. Blend overlap matches BG01.
+6. Layout matches BG01.
+7. Local manual offset is preserved on the equivalent member.
+8. BG02 can be moved independently.
+9. Editing PJ05 does not affect PJ02.
+10. Editing BG02 does not affect BG01.
+11. Ungrouping BG02 leaves PJ04–PJ06 intact.
+
+---
+
+# 23. LOCAL ORIENTATION ACCEPTANCE TEST
+
+Create PJ01.
+
+Rotate it so it no longer aligns with World axes.
+
+Verify:
+
+- projector rotation controls make sense relative to its own orientation
+- movement along projector-local axes is intuitive
+- yaw/pitch/roll behave correctly
+- Beam manipulation does not unexpectedly revert to World-axis behaviour
+
+Repeat for a projector inside a Blend Group.
+
+---
+
+# 24. FRUSTUM TERMINATION ACCEPTANCE TEST
+
+Aim PJ01 at a wall.
+
+Expected:
+
+- visible frustum corner/helper lines terminate at the wall intersection
+
+Move the projector so one edge misses the wall.
+
+Expected:
+
+- rays that hit geometry stop there
+- rays with no hit use fallback helper distance
+
+Confirm actual projected content behaviour is unchanged.
+
+---
+
+# 25. DO NOT OVERBUILD THIS PASS
+
+Do not add:
+
+- new projection maths
+- projector manufacturer library
+- lens database
+- LED tools
+- advanced edge-blend curves
+- black level compensation
+- colour matching
+- automatic calibration
+- PDF reporting
+- major PATCH integration
+
+Keep this pass focused on:
+
+- Blend Group lifecycle
+- duplication
+- membership editing
+- local projector manipulation
+- cleaner frustum helper behaviour
+
+---
+
+# SUCCESS CRITERIA
+
+This pass is complete when:
+
+1. Frustum helpers stop visually at first-hit geometry.
+2. Existing projection behaviour remains unchanged.
+3. Projectors default to intuitive local orientation.
+4. Existing projector can be added to a Blend Group.
+5. New projector can be created directly into a Blend Group.
+6. Projector can be removed without deletion.
+7. Anchor removal is handled safely.
+8. Blend Group can be duplicated.
+9. Duplicate gets next BG number.
+10. Duplicate gets new group UUID.
+11. Duplicate creates entirely new projector members.
+12. New members receive new PJ numbers.
+13. New members receive new UUIDs.
+14. New members receive new study colours.
+15. Group layout and overlap settings are preserved.
+16. Member local offsets are preserved.
+17. Original and copied group are independent.
+18. Projectors remain individually editable.
+19. Reset to Group Position still works.
+20. PATCH-ready Blend Group relationships remain UUID-based and valid.
+
+When complete provide:
+
+- concise summary
+- files changed
+- test procedure
+- Blend Group duplication implementation notes
+- local-orientation implementation notes
+- any migration considerations
+- known limitations

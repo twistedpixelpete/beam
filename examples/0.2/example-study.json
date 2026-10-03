@@ -1,0 +1,293 @@
+{
+  "schema": "projection-study",
+  "schema_version": "1.0",
+  "exported_at": "2026-10-03T07:17:16+00:00",
+  "scene_name": "Projection Study 0.2 QA",
+  "units": {
+    "internal_length": "m",
+    "display_length": "mm",
+    "disguise_length": "mm",
+    "pixel_density": "px/m",
+    "pixel_size": "m/px",
+    "illuminance": "lux",
+    "coordinate_space": "blender_world"
+  },
+  "projectors": [
+    {
+      "uuid": "6dcd16d7-a139-42e4-8e51-6649b9312c4c",
+      "name": "PJ01",
+      "object_name": "PJ01",
+      "include_in_disguise_export": true,
+      "notes": "",
+      "resolution": {
+        "x": 1920,
+        "y": 1080
+      },
+      "throw_ratio": 1.0,
+      "lens_shift_percent": {
+        "horizontal": 0.0,
+        "vertical": 0.0,
+        "basis": "full_image_dimensions"
+      },
+      "stack_quantity": 1,
+      "brightness_percent": 100.0,
+      "nominal_lumens": 20000.0,
+      "total_lumens": 20000.0,
+      "position_m": [
+        -3.0,
+        0.0,
+        1.0
+      ],
+      "rotation": {
+        "space": "blender_world",
+        "order": "XYZ",
+        "unit": "degrees",
+        "euler": [
+          89.999995674289,
+          -0.0,
+          0.0
+        ]
+      },
+      "transform_valid": true,
+      "target": {
+        "status": "hit",
+        "point_m": [
+          -3.0,
+          10.0,
+          0.9999996423721313
+        ],
+        "object_name": "Screen",
+        "filter_object_name": null
+      },
+      "calculated": {
+        "throw_distance_m": 9.999999046325684,
+        "centre_ray_distance_m": 10.000000000000007,
+        "image_width_m": 9.999999046325684,
+        "image_height_m": 5.624999463558197,
+        "pixel_density_px_per_m": 192.00001831054863,
+        "pixel_size_m_per_px": 0.00520833283662796,
+        "pixel_size_mm_per_px": 5.20833283662796,
+        "dpi": 4.876800465087935,
+        "estimated_illuminance_lux": 355.55562337240553
+      },
+      "display_units": "mm",
+      "study_colour_linear_rgb": [
+        0.7699999809265137,
+        0.38999998569488525,
+        0.36000001430511475
+      ],
+      "output_mode": "GRID",
+      "visibility": {
+        "identifier": true,
+        "frustum": true,
+        "grid": true,
+        "output": true
+      }
+    },
+    {
+      "uuid": "bac02e01-dea5-4975-aa24-7f1d499d1318",
+      "name": "PJ02",
+      "object_name": "PJ02",
+      "include_in_disguise_export": true,
+      "notes": "",
+      "resolution": {
+        "x": 1920,
+        "y": 1080
+      },
+      "throw_ratio": 1.2000000476837158,
+      "lens_shift_percent": {
+        "horizontal": 0.0,
+        "vertical": 0.0,
+        "basis": "full_image_dimensions"
+      },
+      "stack_quantity": 1,
+      "brightness_percent": 100.0,
+      "nominal_lumens": 20000.0,
+      "total_lumens": 20000.0,
+      "position_m": [
+        3.0,
+        0.0,
+        1.0
+      ],
+      "rotation": {
+        "space": "blender_world",
+        "order": "XYZ",
+        "unit": "degrees",
+        "euler": [
+          89.999995674289,
+          -0.0,
+          0.0
+        ]
+      },
+      "transform_valid": true,
+      "target": {
+        "status": "hit",
+        "point_m": [
+          3.0,
+          10.0,
+          0.9999996423721313
+        ],
+        "object_name": "Screen",
+        "filter_object_name": null
+      },
+      "calculated": {
+        "throw_distance_m": 9.999999046325684,
+        "centre_ray_distance_m": 10.000000000000007,
+        "image_width_m": 8.333332207467866,
+        "image_height_m": 4.687499366700674,
+        "pixel_density_px_per_m": 230.40003112793266,
+        "pixel_size_m_per_px": 0.004340277191389514,
+        "pixel_size_mm_per_px": 4.3402771913895135,
+        "dpi": 5.8521607906494895,
+        "estimated_illuminance_lux": 512.0001383463767
+      },
+      "display_units": "mm",
+      "study_colour_linear_rgb": [
+        0.4399999976158142,
+        0.6499999761581421,
+        0.49000000953674316
+      ],
+      "output_mode": "GRID",
+      "visibility": {
+        "identifier": true,
+        "frustum": true,
+        "grid": true,
+        "output": true
+      }
+    }
+  ],
+  "study_views": [
+    {
+      "uuid": "d808ed60-5640-49f7-ab8f-8e89e74c69fd",
+      "name": "Overview",
+      "camera_name": "Study \u00b7 Overview",
+      "camera": {
+        "position_m": [
+          11.356420516967773,
+          -15.092126846313477,
+          10.609274864196777
+        ],
+        "rotation_quaternion_wxyz": [
+          0.8046044111251831,
+          0.5365567207336426,
+          0.14114290475845337,
+          0.21165363490581512
+        ],
+        "type": "PERSP",
+        "lens_mm": 25.0,
+        "ortho_scale_m": 6.0
+      },
+      "resolution": {
+        "x": 1200,
+        "y": 800
+      },
+      "overlays": {
+        "enabled": true,
+        "labels": true,
+        "frustums": true,
+        "grids": true
+      },
+      "expected_image_filename": "overview--d808ed60.png",
+      "exported_image_filename": "saved-view-clean.png",
+      "exported_at": "2026-10-03T07:17:14+00:00"
+    }
+  ],
+  "current_view_image": {
+    "filename": "current-view.png",
+    "exported_at": "2026-10-03T07:17:14+00:00"
+  },
+  "disguise": {
+    "transform_convention": "UNVALIDATED: raw Blender XYZ / XYZ Euler baseline",
+    "validated": false,
+    "columns": [
+      "Projector_Name",
+      "Projector_Qte(Stack)",
+      "Projector_Native-Rez-X",
+      "Projector_Native-Rez-Y",
+      "Projector_Lumens(lux)",
+      "Projector_Brightness(%)",
+      "Projector_Total_Lumens(lux)",
+      "Projector_Trow-Ratio",
+      "Lens_Shift-H(%)",
+      "Lens_Shift-V(%)",
+      "Lens_X",
+      "Lens_Y",
+      "Lens_Z",
+      "Pitch(deg)",
+      "Yaw(deg)",
+      "Roll(deg)",
+      "Target_X",
+      "Target_Y",
+      "Target_Z",
+      "Target_Distance",
+      "Target_Width",
+      "Target_Height",
+      "Target_Illuminance",
+      "Target_DPI",
+      "Unit_Dim",
+      "Unit_Illuminance",
+      "Projector_UUID"
+    ],
+    "rows": [
+      [
+        "PJ01",
+        1,
+        1920,
+        1080,
+        20000.0,
+        100.0,
+        20000.0,
+        1.0,
+        0.0,
+        0.0,
+        -3000.0,
+        0.0,
+        1000.0,
+        89.999995674289,
+        -0.0,
+        0.0,
+        -3000.0,
+        10000.0,
+        999.9996423721313,
+        9999.999046325684,
+        9999.999046325684,
+        5624.999463558197,
+        355.55562337240553,
+        4.876800465087935,
+        "mm",
+        "lux",
+        "6dcd16d7-a139-42e4-8e51-6649b9312c4c"
+      ],
+      [
+        "PJ02",
+        1,
+        1920,
+        1080,
+        20000.0,
+        100.0,
+        20000.0,
+        1.2000000476837158,
+        0.0,
+        0.0,
+        3000.0,
+        0.0,
+        1000.0,
+        89.999995674289,
+        -0.0,
+        0.0,
+        3000.0,
+        10000.0,
+        999.9996423721313,
+        9999.999046325684,
+        8333.332207467865,
+        4687.499366700674,
+        512.0001383463767,
+        5.8521607906494895,
+        "mm",
+        "lux",
+        "bac02e01-dea5-4975-aa24-7f1d499d1318"
+      ]
+    ],
+    "error": null
+  }
+}

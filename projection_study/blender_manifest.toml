@@ -1,0 +1,11 @@
+schema_version = "1.0.0"
+id = "projection_study"
+version = "0.7.0"
+name = "Beam"
+tagline = "Realtime projector geometry and projection planning"
+maintainer = "Twisted Pixel"
+type = "add-on"
+blender_version_min = "4.5.0"
+license = ["SPDX:GPL-3.0-or-later"]
+[permissions]
+files = "Export study tables, PNG and JSON; load custom images"

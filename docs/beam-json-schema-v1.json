@@ -1,0 +1,1534 @@
+{
+  "type": "object",
+  "properties": {
+    "product": {
+      "const": "Beam"
+    },
+    "maintainer": {
+      "type": "string"
+    },
+    "schema": {
+      "const": "projection-study"
+    },
+    "schema_version": {
+      "const": "1.0"
+    },
+    "exported_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "producer": {
+      "type": "object",
+      "properties": {
+        "beam_version": {
+          "type": "string"
+        },
+        "exporter_version": {
+          "type": "string"
+        },
+        "blender_version": {
+          "type": "string"
+        },
+        "blender_build_hash": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "beam_version",
+        "exporter_version",
+        "blender_version",
+        "blender_build_hash"
+      ],
+      "additionalProperties": true
+    },
+    "conventions": {
+      "type": "object",
+      "properties": {
+        "world": {
+          "const": {
+            "space": "blender_world",
+            "handedness": "right",
+            "up_axis": "+Z",
+            "position_unit": "m"
+          }
+        },
+        "projector_local": {
+          "const": {
+            "origin": "optical_origin",
+            "forward_axis": "-Z",
+            "up_axis": "+Y"
+          }
+        },
+        "euler": {
+          "const": {
+            "order": "XYZ",
+            "unit": "degrees",
+            "matrix_composition": "Rz @ Ry @ Rx",
+            "vectors": "column"
+          }
+        },
+        "quaternion_order": {
+          "const": "wxyz"
+        },
+        "matrix": {
+          "const": {
+            "storage": "row_major",
+            "vectors": "column",
+            "translation_unit": "m",
+            "scale": "dimensionless"
+          }
+        },
+        "reconstruction_authority": {
+          "const": "projector_world_pose"
+        },
+        "group_composition": {
+          "const": "projector_world_matrix = group.transform.matrix @ member.transform_in_group"
+        },
+        "member_order": {
+          "const": {
+            "basis": "stored_members_array",
+            "index_base": 0,
+            "layout": "row_major",
+            "column_axis": "+X",
+            "row_axis": "-Y",
+            "space": "group_local"
+          }
+        },
+        "throw_distance": {
+          "const": "axial_depth_of_current_centre_hit_along_projector_local_minus_Z"
+        },
+        "image_dimensions": {
+          "const": "nominal_rectangle_perpendicular_to_optical_axis_at_throw_distance"
+        },
+        "pixel_density": {
+          "const": "horizontal_resolution_divided_by_nominal_image_width"
+        },
+        "illuminance": {
+          "const": "total_lumens_divided_by_nominal_image_area_no_surface_angle_or_loss_correction"
+        },
+        "colour": {
+          "const": "linear_RGB_sRGB_primaries_to_standard_sRGB_no_view_transform"
+        },
+        "ui_state": {
+          "const": "visibility_and_preview_fields_are_presentation_hints_not_technical_filters"
+        },
+        "output_modes": {
+          "const": [
+            "SOLID",
+            "GRID",
+            "ID",
+            "CHECKER",
+            "UV_GRID",
+            "COLOR_GRID",
+            "IMAGE"
+          ]
+        }
+      },
+      "required": [
+        "world",
+        "projector_local",
+        "euler",
+        "quaternion_order",
+        "matrix",
+        "reconstruction_authority",
+        "group_composition",
+        "member_order",
+        "throw_distance",
+        "image_dimensions",
+        "pixel_density",
+        "illuminance",
+        "colour",
+        "ui_state",
+        "output_modes"
+      ],
+      "additionalProperties": true
+    },
+    "project_metadata": {
+      "type": "object",
+      "properties": {
+        "project_name": {
+          "type": "string"
+        },
+        "venue": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        },
+        "client": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        }
+      },
+      "required": [],
+      "additionalProperties": true
+    },
+    "scene_name": {
+      "type": "string"
+    },
+    "helper_visibility": {
+      "type": "object",
+      "properties": {
+        "show_frustums": {
+          "type": "boolean"
+        },
+        "show_centre_rays": {
+          "type": "boolean"
+        },
+        "show_projected_identifiers": {
+          "type": "boolean"
+        },
+        "show_labels": {
+          "type": "boolean"
+        },
+        "show_outputs": {
+          "type": "boolean"
+        },
+        "show_study_cameras": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "show_frustums",
+        "show_centre_rays",
+        "show_projected_identifiers",
+        "show_labels",
+        "show_outputs",
+        "show_study_cameras"
+      ],
+      "additionalProperties": true
+    },
+    "projection_model": {
+      "type": "object",
+      "properties": {
+        "receivers": {
+          "type": "string"
+        },
+        "coordinates": {
+          "type": "string"
+        },
+        "occlusion": {
+          "type": "string"
+        },
+        "target_role": {
+          "type": "string"
+        },
+        "shadow_max_dimension": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "receivers",
+        "coordinates",
+        "occlusion",
+        "target_role",
+        "shadow_max_dimension"
+      ],
+      "additionalProperties": true
+    },
+    "units": {
+      "type": "object",
+      "properties": {
+        "internal_length": {
+          "const": "m"
+        },
+        "display_length": {
+          "enum": [
+            "m",
+            "mm"
+          ]
+        },
+        "disguise_length": {
+          "const": "mm"
+        },
+        "pixel_density": {
+          "const": "px/m"
+        },
+        "pixel_size": {
+          "const": "m/px"
+        },
+        "illuminance": {
+          "const": "lux"
+        },
+        "coordinate_space": {
+          "const": "blender_world"
+        },
+        "rotation": {
+          "const": "degrees"
+        },
+        "quaternion": {
+          "const": "unitless_wxyz"
+        },
+        "resolution": {
+          "const": "px"
+        },
+        "luminous_flux": {
+          "const": "lm"
+        },
+        "brightness": {
+          "const": "percent"
+        },
+        "lens_shift": {
+          "const": "percent_of_full_image"
+        },
+        "dpi": {
+          "const": "px/in"
+        },
+        "overlap_by_input_mode": {
+          "const": {
+            "PIXELS": "px",
+            "PERCENT": "percent",
+            "METRES": "m"
+          }
+        }
+      },
+      "required": [
+        "internal_length",
+        "display_length",
+        "disguise_length",
+        "pixel_density",
+        "pixel_size",
+        "illuminance",
+        "coordinate_space"
+      ],
+      "additionalProperties": true
+    },
+    "projectors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/projector"
+      }
+    },
+    "blend_groups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/group"
+      }
+    },
+    "study_views": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/view"
+      }
+    },
+    "current_view_image": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exported_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "filename",
+        "exported_at"
+      ],
+      "additionalProperties": true
+    },
+    "disguise": {
+      "type": "object",
+      "properties": {
+        "transform_convention": {
+          "type": "string"
+        },
+        "validated": {
+          "const": false
+        },
+        "convention_id": {
+          "const": "blender_xyz_euler_xyz_unvalidated_v1"
+        },
+        "columns": {
+          "const": [
+            "Projector_Name",
+            "Projector_Qte(Stack)",
+            "Projector_Native-Rez-X",
+            "Projector_Native-Rez-Y",
+            "Projector_Lumens(lux)",
+            "Projector_Brightness(%)",
+            "Projector_Total_Lumens(lux)",
+            "Projector_Trow-Ratio",
+            "Lens_Shift-H(%)",
+            "Lens_Shift-V(%)",
+            "Lens_X",
+            "Lens_Y",
+            "Lens_Z",
+            "Pitch(deg)",
+            "Yaw(deg)",
+            "Roll(deg)",
+            "Target_X",
+            "Target_Y",
+            "Target_Z",
+            "Target_Distance",
+            "Target_Width",
+            "Target_Height",
+            "Target_Illuminance",
+            "Target_DPI",
+            "Unit_Dim",
+            "Unit_Illuminance",
+            "Projector_UUID"
+          ]
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "const": "mm"
+              },
+              {
+                "const": "lux"
+              },
+              {
+                "type": "string",
+                "format": "uuid"
+              }
+            ],
+            "minItems": 27,
+            "maxItems": 27
+          }
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "validation": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "const": "disguise_rows"
+            },
+            "errors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "projector_uuid": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "projector_name": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "code": {
+                    "enum": [
+                      "NO_TARGET",
+                      "INVALID_TRANSFORM",
+                      "NO_ACTIVE_PROJECTORS"
+                    ]
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "projector_uuid",
+                  "projector_name",
+                  "code",
+                  "message"
+                ],
+                "additionalProperties": true
+              }
+            }
+          },
+          "required": [
+            "scope",
+            "errors"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "transform_convention",
+        "validated",
+        "columns",
+        "rows",
+        "error"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "product",
+    "maintainer",
+    "schema",
+    "schema_version",
+    "exported_at",
+    "project_metadata",
+    "scene_name",
+    "helper_visibility",
+    "projection_model",
+    "units",
+    "projectors",
+    "blend_groups",
+    "study_views",
+    "current_view_image",
+    "disguise"
+  ],
+  "additionalProperties": true,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Beam JSON Schema v1",
+  "description": "Beam 0.5.1 frozen interchange contract. New audit fields are optional for 0.5.0 compatibility; exporters >= 1.0.0 emit all of them. See BEAM-JSON-V1.md for semantics and UUID cross-reference validation. Unknown properties are permitted for additive evolution.",
+  "$defs": {
+    "matrix": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        },
+        "minItems": 4,
+        "maxItems": 4
+      },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "resolution": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "additionalProperties": true
+    },
+    "projector": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "object_name": {
+          "type": "string"
+        },
+        "include_in_disguise_export": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "resolution": {
+          "$ref": "#/$defs/resolution"
+        },
+        "throw_ratio": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "lens_shift_percent": {
+          "type": "object",
+          "properties": {
+            "horizontal": {
+              "type": "number"
+            },
+            "vertical": {
+              "type": "number"
+            },
+            "basis": {
+              "const": "full_image_dimensions"
+            }
+          },
+          "required": [
+            "horizontal",
+            "vertical",
+            "basis"
+          ],
+          "additionalProperties": true
+        },
+        "stack_quantity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "brightness_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "nominal_lumens": {
+          "type": "number",
+          "minimum": 0
+        },
+        "total_lumens": {
+          "type": "number",
+          "minimum": 0
+        },
+        "position_m": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "rotation": {
+          "type": "object",
+          "properties": {
+            "space": {
+              "const": "blender_world"
+            },
+            "order": {
+              "const": "XYZ"
+            },
+            "unit": {
+              "const": "degrees"
+            },
+            "euler": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            }
+          },
+          "required": [
+            "space",
+            "order",
+            "unit",
+            "euler"
+          ],
+          "additionalProperties": true
+        },
+        "transform_valid": {
+          "type": "boolean"
+        },
+        "target": {
+          "type": "object",
+          "properties": {
+            "space": {
+              "const": "blender_world"
+            },
+            "status": {
+              "enum": [
+                "hit",
+                "no_hit"
+              ]
+            },
+            "point_m": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "object_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "filter_object_name": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "automatic": {
+              "const": true
+            }
+          },
+          "required": [
+            "status",
+            "point_m",
+            "object_name",
+            "filter_object_name",
+            "automatic"
+          ],
+          "additionalProperties": true
+        },
+        "calculated": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "throw_distance_m": {
+                  "type": "number"
+                },
+                "centre_ray_distance_m": {
+                  "type": "number"
+                },
+                "image_width_m": {
+                  "type": "number"
+                },
+                "image_height_m": {
+                  "type": "number"
+                },
+                "pixel_density_px_per_m": {
+                  "type": "number"
+                },
+                "pixel_size_m_per_px": {
+                  "type": "number"
+                },
+                "pixel_size_mm_per_px": {
+                  "type": "number"
+                },
+                "dpi": {
+                  "type": "number"
+                },
+                "estimated_illuminance_lux": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "throw_distance_m",
+                "centre_ray_distance_m",
+                "image_width_m",
+                "image_height_m",
+                "pixel_density_px_per_m",
+                "pixel_size_m_per_px",
+                "pixel_size_mm_per_px",
+                "dpi",
+                "estimated_illuminance_lux"
+              ],
+              "additionalProperties": true
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "display_units": {
+          "enum": [
+            "m",
+            "mm"
+          ]
+        },
+        "study_colour_linear_rgb": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "study_colour_srgb": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "study_colour_hex": {
+          "type": "string",
+          "pattern": "^#[0-9A-F]{6}$"
+        },
+        "output_mode": {
+          "enum": [
+            "SOLID",
+            "GRID",
+            "ID",
+            "CHECKER",
+            "UV_GRID",
+            "COLOR_GRID",
+            "IMAGE"
+          ]
+        },
+        "visibility": {
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "type": "boolean"
+            },
+            "projected_identifier": {
+              "type": "boolean"
+            },
+            "frustum": {
+              "type": "boolean"
+            },
+            "centre_ray": {
+              "type": "boolean"
+            },
+            "target_marker": {
+              "type": "boolean"
+            },
+            "grid": {
+              "type": "boolean"
+            },
+            "output": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "identifier",
+            "projected_identifier",
+            "frustum",
+            "centre_ray",
+            "target_marker",
+            "grid",
+            "output"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "required": [
+        "uuid",
+        "name",
+        "object_name",
+        "include_in_disguise_export",
+        "notes",
+        "resolution",
+        "throw_ratio",
+        "lens_shift_percent",
+        "stack_quantity",
+        "brightness_percent",
+        "nominal_lumens",
+        "total_lumens",
+        "position_m",
+        "rotation",
+        "transform_valid",
+        "target",
+        "calculated",
+        "display_units",
+        "study_colour_linear_rgb",
+        "output_mode",
+        "visibility"
+      ],
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "target": {
+                "properties": {
+                  "status": {
+                    "const": "no_hit"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "calculated": {
+                "type": "null"
+              },
+              "target": {
+                "properties": {
+                  "point_m": {
+                    "type": "null"
+                  },
+                  "object_name": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "calculated": {
+                "type": "object",
+                "properties": {
+                  "throw_distance_m": {
+                    "type": "number"
+                  },
+                  "centre_ray_distance_m": {
+                    "type": "number"
+                  },
+                  "image_width_m": {
+                    "type": "number"
+                  },
+                  "image_height_m": {
+                    "type": "number"
+                  },
+                  "pixel_density_px_per_m": {
+                    "type": "number"
+                  },
+                  "pixel_size_m_per_px": {
+                    "type": "number"
+                  },
+                  "pixel_size_mm_per_px": {
+                    "type": "number"
+                  },
+                  "dpi": {
+                    "type": "number"
+                  },
+                  "estimated_illuminance_lux": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "throw_distance_m",
+                  "centre_ray_distance_m",
+                  "image_width_m",
+                  "image_height_m",
+                  "pixel_density_px_per_m",
+                  "pixel_size_m_per_px",
+                  "pixel_size_mm_per_px",
+                  "dpi",
+                  "estimated_illuminance_lux"
+                ],
+                "additionalProperties": true
+              },
+              "target": {
+                "properties": {
+                  "point_m": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "object_name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "group": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "layout": {
+          "enum": [
+            "HORIZONTAL",
+            "VERTICAL",
+            "ARRAY"
+          ]
+        },
+        "anchor_projector_uuid": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "rows": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "columns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "input_mode": {
+          "enum": [
+            "PIXELS",
+            "PERCENT",
+            "METRES"
+          ]
+        },
+        "desired_horizontal_overlap": {
+          "type": "number"
+        },
+        "desired_vertical_overlap": {
+          "type": "number"
+        },
+        "reference_plane": {
+          "type": "object",
+          "properties": {
+            "role": {
+              "const": "last_layout_reference_dimensions"
+            },
+            "distance_m": {
+              "type": "number"
+            },
+            "width_m": {
+              "type": "number"
+            },
+            "height_m": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "distance_m",
+            "width_m",
+            "height_m"
+          ],
+          "additionalProperties": true
+        },
+        "measurement_plane": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "space": {
+                  "const": "blender_world"
+                },
+                "origin_m": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "rotation_quaternion_wxyz": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "status": {
+                  "enum": [
+                    "target",
+                    "preview"
+                  ]
+                },
+                "distance_m": {
+                  "type": "number"
+                },
+                "width_m": {
+                  "type": "number"
+                },
+                "height_m": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "space",
+                "origin_m",
+                "rotation_quaternion_wxyz",
+                "status",
+                "distance_m",
+                "width_m",
+                "height_m"
+              ],
+              "additionalProperties": true
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "transform": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "space": {
+                  "const": "blender_world"
+                },
+                "matrix": {
+                  "$ref": "#/$defs/matrix"
+                },
+                "position_m": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "rotation_quaternion_wxyz": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                }
+              },
+              "required": [
+                "position_m",
+                "rotation_quaternion_wxyz"
+              ],
+              "additionalProperties": true
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "projector_uuid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "member_index": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "row": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "column": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "local_offset_space": {
+                "const": "projector_basis_relative_to_layout_slot"
+              },
+              "transform_in_group": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/matrix"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "layout_slot_transform": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/matrix"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "local_offset_m": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "local_rotation_quaternion_wxyz": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 4,
+                    "maxItems": 4
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "projector_uuid",
+              "local_offset_m",
+              "local_rotation_quaternion_wxyz"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "adjacent_pairs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "a": {
+                "type": "string"
+              },
+              "b": {
+                "type": "string"
+              },
+              "a_uuid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "b_uuid": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "axis": {
+                "enum": [
+                  "H",
+                  "V"
+                ]
+              },
+              "reference_status": {
+                "enum": [
+                  "target",
+                  "preview"
+                ]
+              },
+              "actual_plane_distance_m": {
+                "type": "number"
+              },
+              "desired": {
+                "type": "object",
+                "properties": {
+                  "pixels": {
+                    "type": "number"
+                  },
+                  "percent": {
+                    "type": "number"
+                  },
+                  "metres": {
+                    "type": "number"
+                  },
+                  "fraction": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "pixels",
+                  "percent",
+                  "metres",
+                  "fraction"
+                ],
+                "additionalProperties": true
+              },
+              "actual": {
+                "type": "object",
+                "properties": {
+                  "metres": {
+                    "type": "number"
+                  },
+                  "pixels": {
+                    "type": "number"
+                  },
+                  "percent": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "metres",
+                  "pixels",
+                  "percent"
+                ],
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "a",
+              "b",
+              "a_uuid",
+              "b_uuid",
+              "axis",
+              "reference_status",
+              "actual_plane_distance_m",
+              "desired",
+              "actual"
+            ],
+            "additionalProperties": true
+          }
+        },
+        "notes": {
+          "type": "string"
+        },
+        "preview_edge_blend": {
+          "type": "boolean"
+        },
+        "combined_preview": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "uuid",
+        "name",
+        "layout",
+        "anchor_projector_uuid",
+        "rows",
+        "columns",
+        "input_mode",
+        "desired_horizontal_overlap",
+        "desired_vertical_overlap",
+        "reference_plane",
+        "transform",
+        "members",
+        "adjacent_pairs",
+        "notes",
+        "preview_edge_blend",
+        "combined_preview"
+      ],
+      "additionalProperties": true
+    },
+    "view": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "camera_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "camera": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "space": {
+                  "const": "blender_world"
+                },
+                "position_m": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "rotation_quaternion_wxyz": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                "type": {
+                  "enum": [
+                    "PERSP",
+                    "ORTHO",
+                    "PANO"
+                  ]
+                },
+                "lens_mm": {
+                  "type": "number"
+                },
+                "ortho_scale_m": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "position_m",
+                "rotation_quaternion_wxyz",
+                "type",
+                "lens_mm",
+                "ortho_scale_m"
+              ],
+              "additionalProperties": true
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resolution": {
+          "$ref": "#/$defs/resolution"
+        },
+        "overlays": {
+          "type": "object",
+          "properties": {
+            "projected_identifiers": {
+              "type": "boolean"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "labels": {
+              "type": "boolean"
+            },
+            "frustums": {
+              "type": "boolean"
+            },
+            "grids": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "projected_identifiers",
+            "enabled",
+            "labels",
+            "frustums",
+            "grids"
+          ],
+          "additionalProperties": true
+        },
+        "expected_image_filename": {
+          "type": "string"
+        },
+        "exported_image_filename": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exported_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "uuid",
+        "name",
+        "camera_name",
+        "camera",
+        "resolution",
+        "overlays",
+        "expected_image_filename",
+        "exported_image_filename",
+        "exported_at"
+      ],
+      "additionalProperties": true
+    }
+  }
+}

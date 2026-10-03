@@ -1,0 +1,209 @@
+{
+  "schema": "projection-study",
+  "schema_version": "1.0",
+  "exported_at": "2026-10-03T08:52:11+00:00",
+  "scene_name": "Multi-surface Projection Acceptance",
+  "helper_visibility": {
+    "show_frustums": true,
+    "show_centre_rays": true,
+    "show_labels": true,
+    "show_outputs": true,
+    "show_study_cameras": true
+  },
+  "projection_model": {
+    "receivers": "visible_evaluated_surfaces",
+    "coordinates": "perspective_raster",
+    "occlusion": "gpu_first_depth",
+    "target_role": "automatic_centre_reference_only",
+    "shadow_max_dimension": 1024
+  },
+  "units": {
+    "internal_length": "m",
+    "display_length": "mm",
+    "disguise_length": "mm",
+    "pixel_density": "px/m",
+    "pixel_size": "m/px",
+    "illuminance": "lux",
+    "coordinate_space": "blender_world"
+  },
+  "projectors": [
+    {
+      "uuid": "afc3786e-f01b-46ee-9a64-df650a8d092f",
+      "name": "PJ01",
+      "object_name": "PJ01",
+      "include_in_disguise_export": true,
+      "notes": "",
+      "resolution": {
+        "x": 1920,
+        "y": 1080
+      },
+      "throw_ratio": 1.0,
+      "lens_shift_percent": {
+        "horizontal": 0.0,
+        "vertical": 0.0,
+        "basis": "full_image_dimensions"
+      },
+      "stack_quantity": 1,
+      "brightness_percent": 100.0,
+      "nominal_lumens": 20000.0,
+      "total_lumens": 20000.0,
+      "position_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": {
+        "space": "blender_world",
+        "order": "XYZ",
+        "unit": "degrees",
+        "euler": [
+          89.999995674289,
+          -0.0,
+          0.0
+        ]
+      },
+      "transform_valid": true,
+      "target": {
+        "status": "hit",
+        "point_m": [
+          0.0,
+          10.0,
+          -3.4228546041958907e-07
+        ],
+        "object_name": "Foreground",
+        "filter_object_name": null,
+        "automatic": true
+      },
+      "calculated": {
+        "throw_distance_m": 9.999999046325684,
+        "centre_ray_distance_m": 10.000000000000005,
+        "image_width_m": 9.999999046325684,
+        "image_height_m": 5.624999463558197,
+        "pixel_density_px_per_m": 192.00001831054863,
+        "pixel_size_m_per_px": 0.00520833283662796,
+        "pixel_size_mm_per_px": 5.20833283662796,
+        "dpi": 4.876800465087935,
+        "estimated_illuminance_lux": 355.55562337240553
+      },
+      "display_units": "mm",
+      "study_colour_linear_rgb": [
+        0.7699999809265137,
+        0.38999998569488525,
+        0.36000001430511475
+      ],
+      "output_mode": "GRID",
+      "visibility": {
+        "identifier": true,
+        "frustum": true,
+        "centre_ray": true,
+        "grid": true,
+        "output": true
+      }
+    }
+  ],
+  "study_views": [
+    {
+      "uuid": "4801dd7d-1aa2-4a31-b390-8c63ab4773aa",
+      "name": "Multi-surface overview",
+      "camera_name": "Study \u00b7 Multi-surface overview",
+      "camera": {
+        "position_m": [
+          17.502973556518555,
+          -5.558197021484375,
+          8.751485824584961
+        ],
+        "rotation_quaternion_wxyz": [
+          0.749498188495636,
+          0.520033061504364,
+          0.2335292249917984,
+          0.3365741968154907
+        ],
+        "type": "PERSP",
+        "lens_mm": 25.0,
+        "ortho_scale_m": 6.0
+      },
+      "resolution": {
+        "x": 1600,
+        "y": 1000
+      },
+      "overlays": {
+        "enabled": true,
+        "labels": true,
+        "frustums": false,
+        "grids": true
+      },
+      "expected_image_filename": "multi-surface-overview--4801dd7d.png",
+      "exported_image_filename": "acceptance-moved.png",
+      "exported_at": "2026-10-03T08:52:11+00:00"
+    }
+  ],
+  "current_view_image": {
+    "filename": null,
+    "exported_at": null
+  },
+  "disguise": {
+    "transform_convention": "UNVALIDATED: raw Blender XYZ / XYZ Euler baseline",
+    "validated": false,
+    "columns": [
+      "Projector_Name",
+      "Projector_Qte(Stack)",
+      "Projector_Native-Rez-X",
+      "Projector_Native-Rez-Y",
+      "Projector_Lumens(lux)",
+      "Projector_Brightness(%)",
+      "Projector_Total_Lumens(lux)",
+      "Projector_Trow-Ratio",
+      "Lens_Shift-H(%)",
+      "Lens_Shift-V(%)",
+      "Lens_X",
+      "Lens_Y",
+      "Lens_Z",
+      "Pitch(deg)",
+      "Yaw(deg)",
+      "Roll(deg)",
+      "Target_X",
+      "Target_Y",
+      "Target_Z",
+      "Target_Distance",
+      "Target_Width",
+      "Target_Height",
+      "Target_Illuminance",
+      "Target_DPI",
+      "Unit_Dim",
+      "Unit_Illuminance",
+      "Projector_UUID"
+    ],
+    "rows": [
+      [
+        "PJ01",
+        1,
+        1920,
+        1080,
+        20000.0,
+        100.0,
+        20000.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        89.999995674289,
+        -0.0,
+        0.0,
+        0.0,
+        10000.0,
+        -0.00034228546041958907,
+        9999.999046325684,
+        9999.999046325684,
+        5624.999463558197,
+        355.55562337240553,
+        4.876800465087935,
+        "mm",
+        "lux",
+        "afc3786e-f01b-46ee-9a64-df650a8d092f"
+      ]
+    ],
+    "error": null
+  }
+}

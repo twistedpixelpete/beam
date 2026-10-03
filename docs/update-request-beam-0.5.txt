@@ -1,0 +1,880 @@
+Update the existing Blender add-on now called **Beam**.
+
+Maintainer:
+
+**Twisted Pixel**
+
+Do not rebuild working core functionality unless necessary.
+
+This pass should focus on:
+
+- Beam branding/polish
+- Presentation View
+- projector management improvements
+- export usability
+- PATCH-friendly structure
+- a practical multi-projector / blend-group system
+
+The tool should continue to feel fast and lightweight.
+
+---
+
+# 1. PRODUCT IDENTITY
+
+Rename the add-on consistently to:
+
+**Beam**
+
+Use this in:
+
+- extension manifest
+- sidebar/panel naming
+- About information
+- package metadata
+- user-facing labels
+
+Maintainer must be:
+
+**Twisted Pixel**
+
+Keep the product name broad enough to support future LED-screen functionality.
+
+---
+
+# 2. PRESENTATION VIEW
+
+Add a lightweight **Presentation View**.
+
+This is not a new render engine.
+
+It should be a non-destructive viewport preset suitable for:
+
+- client screenshots
+- exported study images
+- PATCH Documents
+- internal presentation
+
+Suggested behaviour:
+
+- neutral clean background
+- simple neutral appearance for venue geometry
+- softer lighting
+- hide distracting Blender floor grid/guides
+- hide unnecessary native overlays
+- preserve projection content
+- preserve projector colours
+- preserve selected labels/frustums if enabled
+
+Provide a one-click toggle between:
+
+**Technical View**
+
+and
+
+**Presentation View**
+
+Do not permanently overwrite original materials.
+
+---
+
+# 3. PROJECT METADATA
+
+Add project-level metadata:
+
+- Project Name
+- Venue
+- Revision
+
+Optional if straightforward:
+
+- Client
+- Author
+
+These should remain optional.
+
+They should be available for:
+
+- Study View filenames
+- future PATCH Documents
+- structured export
+
+---
+
+# 4. PROJECTOR NOTES
+
+Add a simple Notes field per projector.
+
+Use cases:
+
+- rigging notes
+- mounting notes
+- obstructions
+- lens comments
+- access notes
+
+Keep it plain text.
+
+Notes must persist through save/reload and renaming.
+
+---
+
+# 5. QUICK PROJECTOR MANAGEMENT
+
+Add:
+
+- Solo Active Projector
+- Frame Active Projector
+- Show/Hide Target Marker
+- Lock Projector Transform
+- Unlock Projector Transform
+
+Solo should temporarily suppress other projector projections/frustums/labels without deleting data.
+
+Target marker should show the current centre-ray hit point.
+
+---
+
+# 6. DUPLICATION CONSISTENCY
+
+Native Blender duplication should create a valid independent Beam projector.
+
+Support:
+
+- copy/paste
+- Shift-D
+- duplicate command
+- Beam duplicate workflow
+
+A duplicated projector must:
+
+- receive the next PJ number
+- receive a new UUID
+- preserve technical settings
+- preserve output mode
+- preserve resolution
+- preserve throw ratio
+- preserve lens shift
+- preserve brightness/lumens/stack
+- remain independent
+- not share mutable state in a way that causes cross-editing
+
+It must also receive the **next study colour**, not copy the source colour.
+
+---
+
+# 7. STUDY COLOURS
+
+Retain the soft muted palette:
+
+- Dusty Coral
+- Sage Green
+- Slate Blue
+- Pale Aqua
+- Mauve
+- Warm Ochre
+- Terracotta
+- Lavender
+
+Use similar perceived brightness where possible.
+
+Manual override must remain available.
+
+---
+
+# 8. LABEL READABILITY
+
+Improve viewport text.
+
+Includes:
+
+- PJ identifiers
+- target labels
+- throw distance
+- calculation labels
+- group/blend labels
+
+Style:
+
+- clean sans-serif
+- medium/semibold visual weight
+- slightly larger default size
+- strong contrast
+- subtle dark translucent backing or shadow
+- study colour used as accent, not sole text colour
+
+The result should look like a polished planning tool.
+
+---
+
+# 9. STUDY VIEW NAVIGATION
+
+Each saved Study View must have a one-click:
+
+**View**
+
+button.
+
+It should:
+
+- activate the corresponding camera
+- switch the viewport to that camera
+- work without numpad shortcuts
+- work well on macOS
+
+Optional:
+
+- Previous
+- Next
+- Exit Camera View
+
+---
+
+# 10. STUDY VIEW EXPORT NAMING
+
+When exporting:
+
+- Current View
+- Selected Study View
+- All Study Views
+
+generate sensible default filenames.
+
+Example:
+
+Project Name:
+`Melbourne Town Hall`
+
+Revision:
+`R02`
+
+Study View:
+`PJ01 Coverage`
+
+Default filename:
+
+`Melbourne_Town_Hall_R02_PJ01_Coverage.png`
+
+Requirements:
+
+- replace spaces with underscores
+- strip invalid characters
+- avoid ugly duplicate separators
+- fall back cleanly if metadata is missing
+
+Example fallback:
+
+`Beam_PJ01_Coverage.png`
+
+---
+
+# 11. EXPORT DIALOG
+
+The export dialog must show the proposed filename before saving.
+
+User must be able to:
+
+- see it
+- edit it
+- change destination
+- cancel normally
+
+Do not silently rename afterward.
+
+---
+
+# 12. EXPORT ALL STUDY VIEWS
+
+Export all Study Views to one chosen folder.
+
+Use predictable filenames automatically.
+
+Show completion feedback including:
+
+- export folder
+- number of views exported
+
+---
+
+# 13. EXPORT CSV
+
+Rename the current exporter to:
+
+**Export CSV**
+
+It must create a real:
+
+`.csv`
+
+file.
+
+Do not create `.txt`.
+
+Keep the disguise-compatible Mapping Matter schema.
+
+Use this exact header:
+
+Projector_Name,Projector_Qte(Stack),Projector_Native-Rez-X,Projector_Native-Rez-Y,Projector_Lumens(lux),Projector_Brightness(%),Projector_Total_Lumens(lux),Projector_Trow-Ratio,Lens_Shift-H(%),Lens_Shift-V(%),Lens_X,Lens_Y,Lens_Z,Pitch(deg),Yaw(deg),Roll(deg),Target_X,Target_Y,Target_Z,Target_Distance,Target_Width,Target_Height,Target_Illuminance,Target_DPI,Unit_Dim,Unit_Illuminance,Projector_UUID
+
+Preserve:
+
+`Projector_Trow-Ratio`
+
+exactly.
+
+Export dimensions in mm.
+
+Use:
+
+`Unit_Dim = mm`
+
+`Unit_Illuminance = lux`
+
+Show export feedback:
+
+- filename/path
+- number of projectors exported
+
+---
+
+# 14. PATCH DOCUMENTS COMPATIBILITY
+
+Do not build deep PATCH integration yet.
+
+However, keep all data structured so PATCH Documents can later consume:
+
+- project metadata
+- projector UUIDs
+- projector notes
+- projector calculations
+- Study View names
+- image filenames
+- blend-group information
+- export data
+
+Prefer stable field names and JSON-friendly data structures.
+
+---
+
+# 15. BLEND GROUPS
+
+Add a new Beam concept:
+
+**Blend Group**
+
+A Blend Group references multiple independent Beam projectors and provides group-level layout and overlap control.
+
+Projectors must remain fully functional as individual Beam projectors.
+
+Do not merge them into one object.
+
+---
+
+# 16. CREATE BLEND GROUP FROM ONE PROJECTOR
+
+A user should not need to manually create all projectors first.
+
+Workflow:
+
+1. Select an existing projector, e.g. PJ01
+2. Click `Create Blend Group`
+3. Configure:
+   - Layout
+   - Projector count
+   - Overlap
+4. Beam creates the remaining projectors automatically
+
+PJ01 becomes the first member / default anchor.
+
+New projectors should inherit PJ01's technical settings:
+
+- resolution
+- throw ratio
+- lens shift
+- stack
+- lumens
+- brightness
+- output mode
+
+But each new projector must receive:
+
+- new PJ number
+- new UUID
+- next study colour
+
+---
+
+# 17. BLEND GROUP LAYOUT MODES
+
+Support:
+
+## Horizontal
+
+Example:
+
+PJ01 PJ02 PJ03 PJ04
+
+## Vertical
+
+Example:
+
+PJ01  
+PJ02  
+PJ03
+
+## Array
+
+Support basic:
+
+Columns × Rows
+
+Example:
+
+3 columns × 2 rows
+
+PJ01 PJ02 PJ03  
+PJ04 PJ05 PJ06
+
+Do not build a complicated matrix editor.
+
+Simple rows/columns are sufficient.
+
+---
+
+# 18. CREATE BLEND GROUP FROM EXISTING PROJECTORS
+
+Also support:
+
+**Create Blend Group From Selection**
+
+If users have already positioned projectors manually, they should be able to select them and group them.
+
+Do not alter their transforms unless explicitly requested.
+
+---
+
+# 19. GROUP ANCHOR
+
+The first projector should act as the default anchor.
+
+For example:
+
+PJ01 remains fixed while group spacing/overlap is adjusted.
+
+For a horizontal group:
+
+PJ02 offset = 1 × spacing  
+PJ03 offset = 2 × spacing  
+PJ04 offset = 3 × spacing
+
+Always calculate each member from the anchor and group spacing.
+
+Do not chain-transform PJ03 from PJ02 etc.
+
+This avoids accumulated errors.
+
+---
+
+# 20. UNIFORM BLEND SPACING
+
+Add a group-level control for:
+
+**Blend Overlap / Spacing**
+
+Changing this value should move all projectors except the anchor uniformly.
+
+For horizontal groups:
+
+- adjust horizontal spacing
+
+For vertical groups:
+
+- adjust vertical spacing
+
+For arrays:
+
+- separate horizontal spacing
+- separate vertical spacing
+
+As the user changes overlap, projector positions should update live.
+
+---
+
+# 21. OVERLAP INPUTS
+
+Allow overlap to be represented in:
+
+- pixels
+- percentage
+- physical distance
+
+Show all three calculated values together.
+
+Example:
+
+Overlap:
+
+`400 px`
+
+`10.4%`
+
+`1.84 m`
+
+If practical, allow any one of these to be the editable input while the others update automatically.
+
+---
+
+# 22. ACTUAL VS DESIRED OVERLAP
+
+Show:
+
+- Desired Overlap
+- Actual Overlap
+
+Per adjacent projector pair.
+
+Example:
+
+PJ01 ↔ PJ02  
+Desired: 400 px  
+Actual: 397 px
+
+PJ02 ↔ PJ03  
+Desired: 400 px  
+Actual: 405 px
+
+This is especially useful after manual fine adjustments.
+
+---
+
+# 23. GROUP-LEVEL TRANSFORM
+
+A Blend Group should have a parent/group controller.
+
+Moving or rotating the group controller should move all member projectors together.
+
+This should preserve:
+
+- relative arrangement
+- individual projector offsets
+- group spacing logic
+
+The Blend Group should behave like a parent transform layer.
+
+---
+
+# 24. INDIVIDUAL PROJECTOR CONTROL INSIDE A GROUP
+
+Every member projector must still be directly editable.
+
+The user must be able to adjust:
+
+- position
+- aim
+- lens shift
+- colour
+- notes
+- other projector settings
+
+while it remains part of the Blend Group.
+
+Use two transform layers conceptually:
+
+## Group transform
+Controls:
+
+- overall position
+- overall rotation
+- uniform spacing
+- overlap
+
+## Projector local offset
+Allows manual per-projector fine tuning.
+
+The local offset should survive group movement.
+
+---
+
+# 25. RESET MEMBER TO GROUP POSITION
+
+Add a per-projector action:
+
+**Reset to Group Position**
+
+This should remove the member's manual local positional adjustment and return it to the group's calculated ideal position.
+
+Optional:
+
+**Lock to Group Layout**
+
+to prevent accidental local movement.
+
+---
+
+# 26. ALIGN / ASSIST BLEND
+
+Provide:
+
+**Align Blend**
+
+or:
+
+**Apply Desired Overlap**
+
+For the initial version, Beam may reposition group members to approximately achieve the requested overlap on the nominal target.
+
+Do not build a complex optimiser.
+
+Use a clear deterministic layout based on projector raster geometry.
+
+---
+
+# 27. BLEND OVERLAP VISUALISATION
+
+Add a viewport display for overlap regions.
+
+Requirements:
+
+- show where adjacent projector rasters overlap
+- use a subtle visual treatment
+- make it easy to identify which projectors contribute
+- display overlap labels where useful
+
+Avoid harsh debug colours.
+
+---
+
+# 28. BASIC EDGE BLEND PREVIEW
+
+Add an optional:
+
+**Preview Edge Blend**
+
+This is only a visual planning preview.
+
+It does not need to replicate disguise edge blending precisely.
+
+A simple feathered brightness ramp across overlap is sufficient.
+
+Purpose:
+
+- show roughly how the combined image might appear
+- help identify whether overlap placement is sensible
+
+Do not implement:
+
+- gamma tuning
+- black level compensation
+- colour matching
+- advanced blend curves
+
+---
+
+# 29. INDIVIDUAL VS COMBINED VIEW
+
+Provide a simple toggle:
+
+**Show Individual Projectors**
+
+vs
+
+**Show Combined Blend Preview**
+
+Individual view should retain study colours.
+
+Combined preview should favour a visually continuous image.
+
+---
+
+# 30. SOLO BLEND GROUP
+
+Provide:
+
+**Solo Blend Group**
+
+This should temporarily suppress other projectors/groups while retaining:
+
+- all member projectors
+- projections
+- overlap visualisation
+- relevant labels
+
+---
+
+# 31. BLEND GROUP DATA
+
+Store at minimum:
+
+- Group UUID
+- Group Name
+- Layout Type
+- Member Projector UUIDs
+- Anchor Projector UUID
+- Rows
+- Columns
+- Desired Horizontal Overlap
+- Desired Vertical Overlap
+- Actual overlap values
+- Group transform
+- Member local offsets
+- Notes if practical
+
+Use stable data structures suitable for future PATCH Documents export.
+
+---
+
+# 32. BLEND GROUP NAMING
+
+Use simple automatic names:
+
+BG01  
+BG02  
+BG03
+
+Allow manual rename.
+
+Persistent identity should use UUID, not display name.
+
+---
+
+# 33. DO NOT BREAK INDIVIDUAL PROJECTORS
+
+A projector inside a Blend Group must remain:
+
+- selectable
+- editable
+- exportable
+- visible independently
+- valid if removed from the group
+
+Removing a projector from the group must not destroy it.
+
+Ungrouping must leave all projectors in place.
+
+---
+
+# 34. BLEND GROUP ACCEPTANCE TEST
+
+Test:
+
+1. Create PJ01.
+2. Configure PJ01.
+3. Select PJ01.
+4. Create Horizontal Blend Group with 4 projectors.
+5. Beam creates PJ02–PJ04.
+6. Each new PJ receives:
+   - new PJ name
+   - new UUID
+   - next study colour
+   - copied technical settings.
+7. PJ01 remains anchor.
+8. Changing overlap moves PJ02–PJ04 uniformly.
+9. Adjacent spacing remains equal.
+10. Actual overlap is shown per pair.
+11. Move the Blend Group parent.
+12. All projectors move together.
+13. Manually nudge PJ03.
+14. Move the parent again.
+15. PJ03's local tweak remains.
+16. Use Reset to Group Position on PJ03.
+17. PJ03 returns to calculated layout.
+18. Ungroup.
+19. PJ01–PJ04 remain valid individual Beam projectors.
+
+---
+
+# 35. ARRAY ACCEPTANCE TEST
+
+Create:
+
+3 columns × 2 rows
+
+Expected:
+
+PJ01 PJ02 PJ03  
+PJ04 PJ05 PJ06
+
+Test:
+
+- horizontal overlap control
+- vertical overlap control
+- PJ01 remains anchor
+- columns spread uniformly
+- rows spread uniformly
+- individual projectors remain editable
+
+---
+
+# 36. PERFORMANCE
+
+Keep the blend system responsive.
+
+Avoid recalculating unrelated projectors.
+
+Do not rebuild projection shaders unnecessarily.
+
+Group spacing updates should feel interactive.
+
+---
+
+# 37. DO NOT OVERBUILD THIS PASS
+
+Do not add:
+
+- automatic camera calibration
+- structured-light calibration
+- advanced warping
+- advanced blend curves
+- gamma tuning
+- black-level compensation
+- colour matching
+- arbitrary freeform projector matrix solving
+- disguise blend export
+- projector manufacturer database
+- LED screen tools yet
+- PDF report generation
+
+This pass should establish the core Beam Blend Group workflow cleanly.
+
+---
+
+# ACCEPTANCE CRITERIA
+
+This milestone is successful if:
+
+1. Add-on is named Beam.
+2. Maintainer is Twisted Pixel.
+3. Presentation View works non-destructively.
+4. Project metadata exists.
+5. Projector notes exist.
+6. Study View export naming is sensible.
+7. Export dialog shows/editable filename.
+8. Export CSV produces real `.csv`.
+9. Duplicate projector behaviour is correct.
+10. Blend Group can be created from one projector.
+11. Beam can automatically create additional projectors.
+12. Horizontal blend works.
+13. Vertical blend works.
+14. Basic array layout works.
+15. PJ01 acts as fixed anchor.
+16. Group overlap moves subsequent projectors uniformly.
+17. Horizontal/vertical array spacing is uniform.
+18. Overlap is displayed in px, %, and physical units.
+19. Individual projectors remain editable.
+20. Group parent can move all projectors.
+21. Individual local offsets survive group movement.
+22. Reset to Group Position works.
+23. Blend overlap visualisation works.
+24. Basic edge blend preview works.
+25. Ungrouping preserves all projectors.
+26. Existing Beam projection functionality remains intact.
+
+When complete, provide:
+
+- concise summary of changes
+- files modified
+- migration notes
+- Beam/Twisted Pixel metadata confirmation
+- Blend Group architecture summary
+- test procedure
+- known limitations
+- any follow-up recommendations

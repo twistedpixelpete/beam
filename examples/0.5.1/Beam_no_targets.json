@@ -1,0 +1,585 @@
+{
+  "producer": {
+    "beam_version": "0.5.1",
+    "exporter_version": "1.0.0",
+    "blender_version": "5.2.2 LTS",
+    "blender_build_hash": "d13f752e3b9c"
+  },
+  "conventions": {
+    "world": {
+      "space": "blender_world",
+      "handedness": "right",
+      "up_axis": "+Z",
+      "position_unit": "m"
+    },
+    "projector_local": {
+      "origin": "optical_origin",
+      "forward_axis": "-Z",
+      "up_axis": "+Y"
+    },
+    "euler": {
+      "order": "XYZ",
+      "unit": "degrees",
+      "matrix_composition": "Rz @ Ry @ Rx",
+      "vectors": "column"
+    },
+    "quaternion_order": "wxyz",
+    "matrix": {
+      "storage": "row_major",
+      "vectors": "column",
+      "translation_unit": "m",
+      "scale": "dimensionless"
+    },
+    "reconstruction_authority": "projector_world_pose",
+    "group_composition": "projector_world_matrix = group.transform.matrix @ member.transform_in_group",
+    "member_order": {
+      "basis": "stored_members_array",
+      "index_base": 0,
+      "layout": "row_major",
+      "column_axis": "+X",
+      "row_axis": "-Y",
+      "space": "group_local"
+    },
+    "throw_distance": "axial_depth_of_current_centre_hit_along_projector_local_minus_Z",
+    "image_dimensions": "nominal_rectangle_perpendicular_to_optical_axis_at_throw_distance",
+    "pixel_density": "horizontal_resolution_divided_by_nominal_image_width",
+    "illuminance": "total_lumens_divided_by_nominal_image_area_no_surface_angle_or_loss_correction",
+    "colour": "linear_RGB_sRGB_primaries_to_standard_sRGB_no_view_transform",
+    "ui_state": "visibility_and_preview_fields_are_presentation_hints_not_technical_filters",
+    "output_modes": [
+      "SOLID",
+      "GRID",
+      "ID",
+      "CHECKER",
+      "UV_GRID",
+      "COLOR_GRID",
+      "IMAGE"
+    ]
+  },
+  "product": "Beam",
+  "maintainer": "Twisted Pixel",
+  "project_metadata": {
+    "project_name": "",
+    "venue": "",
+    "revision": "",
+    "client": "",
+    "author": ""
+  },
+  "blend_groups": [
+    {
+      "uuid": "946f2f62-7f40-41f7-9606-9db6cfe7a92e",
+      "name": "BG01",
+      "layout": "HORIZONTAL",
+      "anchor_projector_uuid": "46ea7095-2726-4888-bfc3-59e0647246b9",
+      "rows": 1,
+      "columns": 2,
+      "input_mode": "PERCENT",
+      "desired_horizontal_overlap": 20.0,
+      "desired_vertical_overlap": 20.0,
+      "measurement_plane": {
+        "space": "blender_world",
+        "origin_m": [
+          0.0016658782260492444,
+          9.950040817260742,
+          -2.003908321057679e-06
+        ],
+        "rotation_quaternion_wxyz": [
+          0.70622318983078,
+          0.7062229514122009,
+          0.03534060716629028,
+          0.03534060716629028
+        ],
+        "status": "preview",
+        "distance_m": 10.0,
+        "width_m": 10.0,
+        "height_m": 5.625
+      },
+      "reference_plane": {
+        "role": "last_layout_reference_dimensions",
+        "distance_m": 9.999999046325684,
+        "width_m": 9.999999046325684,
+        "height_m": 5.624999523162842
+      },
+      "transform": {
+        "space": "blender_world",
+        "matrix": [
+          [
+            0.9950041770935059,
+            -7.537213519981378e-09,
+            0.0998334214091301,
+            0.9999999776482582
+          ],
+          [
+            0.0998334214091301,
+            7.512072386361979e-08,
+            -0.9950041770935059,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            7.549790126404332e-08,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "position_m": [
+          0.9999999776482582,
+          0.0,
+          0.0
+        ],
+        "rotation_quaternion_wxyz": [
+          0.7062231302261353,
+          0.7062230110168457,
+          0.03534060716629028,
+          0.03534061089158058
+        ]
+      },
+      "members": [
+        {
+          "member_index": 0,
+          "column": 0,
+          "row": 0,
+          "local_offset_space": "projector_basis_relative_to_layout_slot",
+          "transform_in_group": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              -1.0547118733938987e-15,
+              5.684341759025859e-16
+            ],
+            [
+              0.0,
+              -1.0547118733938987e-15,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "layout_slot_transform": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              -1.0547118733938987e-15,
+              5.684341759025859e-16
+            ],
+            [
+              0.0,
+              -1.0547118733938987e-15,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "projector_uuid": "46ea7095-2726-4888-bfc3-59e0647246b9",
+          "local_offset_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "local_rotation_quaternion_wxyz": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "member_index": 1,
+          "column": 1,
+          "row": 0,
+          "local_offset_space": "projector_basis_relative_to_layout_slot",
+          "transform_in_group": [
+            [
+              0.9998000264167786,
+              -0.019998665899038315,
+              0.0,
+              7.620000440031276
+            ],
+            [
+              0.019998665899038315,
+              0.9998000264167786,
+              -1.0547118733938987e-15,
+              -5.684341759025859e-16
+            ],
+            [
+              8.960437725136217e-09,
+              4.567368705465924e-11,
+              1.0,
+              2.8610228852699038e-08
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "layout_slot_transform": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              7.499999832361937
+            ],
+            [
+              0.0,
+              1.0,
+              -1.0547118733938987e-15,
+              3.9790392313181016e-15
+            ],
+            [
+              0.0,
+              -1.0547118733938987e-15,
+              1.0,
+              -4.7683714754498396e-08
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "projector_uuid": "2be62365-4556-4ce9-b982-f45cadf0b802",
+          "local_offset_m": [
+            0.11999999731779099,
+            0.0,
+            0.0
+          ],
+          "local_rotation_quaternion_wxyz": [
+            0.9999499917030334,
+            0.0,
+            0.0,
+            0.0099998340010643
+          ]
+        }
+      ],
+      "adjacent_pairs": [
+        {
+          "a": "PJ01",
+          "b": "PJ02",
+          "a_uuid": "46ea7095-2726-4888-bfc3-59e0647246b9",
+          "b_uuid": "2be62365-4556-4ce9-b982-f45cadf0b802",
+          "axis": "H",
+          "reference_status": "preview",
+          "actual_plane_distance_m": 10.0,
+          "desired": {
+            "pixels": 384.0,
+            "percent": 20.0,
+            "metres": 2.0,
+            "fraction": 0.2
+          },
+          "actual": {
+            "metres": 2.4352456120719235,
+            "pixels": 467.5671575178093,
+            "percent": 24.352456120719236
+          }
+        }
+      ],
+      "notes": "",
+      "preview_edge_blend": false,
+      "combined_preview": false
+    }
+  ],
+  "schema": "projection-study",
+  "schema_version": "1.0",
+  "exported_at": "2026-10-03T10:45:24+00:00",
+  "scene_name": "Scene",
+  "helper_visibility": {
+    "show_frustums": true,
+    "show_centre_rays": true,
+    "show_projected_identifiers": true,
+    "show_labels": true,
+    "show_outputs": true,
+    "show_study_cameras": true
+  },
+  "projection_model": {
+    "receivers": "visible_evaluated_surfaces",
+    "coordinates": "perspective_raster",
+    "occlusion": "gpu_first_depth",
+    "target_role": "automatic_centre_reference_only",
+    "shadow_max_dimension": 1024
+  },
+  "units": {
+    "internal_length": "m",
+    "display_length": "mm",
+    "disguise_length": "mm",
+    "pixel_density": "px/m",
+    "pixel_size": "m/px",
+    "illuminance": "lux",
+    "coordinate_space": "blender_world",
+    "rotation": "degrees",
+    "quaternion": "unitless_wxyz",
+    "resolution": "px",
+    "luminous_flux": "lm",
+    "brightness": "percent",
+    "lens_shift": "percent_of_full_image",
+    "dpi": "px/in",
+    "overlap_by_input_mode": {
+      "PIXELS": "px",
+      "PERCENT": "percent",
+      "METRES": "m"
+    }
+  },
+  "projectors": [
+    {
+      "uuid": "46ea7095-2726-4888-bfc3-59e0647246b9",
+      "name": "PJ01",
+      "object_name": "PJ01",
+      "include_in_disguise_export": true,
+      "notes": "",
+      "resolution": {
+        "x": 1920,
+        "y": 1080
+      },
+      "throw_ratio": 1.0,
+      "lens_shift_percent": {
+        "horizontal": 0.0,
+        "vertical": 0.0,
+        "basis": "full_image_dimensions"
+      },
+      "stack_quantity": 1,
+      "brightness_percent": 100.0,
+      "nominal_lumens": 20000.0,
+      "total_lumens": 20000.0,
+      "position_m": [
+        0.9999999776482582,
+        0.0,
+        0.0
+      ],
+      "rotation": {
+        "space": "blender_world",
+        "order": "XYZ",
+        "unit": "degrees",
+        "euler": [
+          89.99998884409983,
+          1.8128876706642586e-07,
+          5.729577609798774
+        ]
+      },
+      "transform_valid": true,
+      "target": {
+        "space": "blender_world",
+        "status": "no_hit",
+        "point_m": null,
+        "object_name": null,
+        "filter_object_name": null,
+        "automatic": true
+      },
+      "calculated": null,
+      "display_units": "mm",
+      "study_colour_linear_rgb": [
+        0.7699999809265137,
+        0.38999998569488525,
+        0.36000001430511475
+      ],
+      "study_colour_srgb": [
+        0.8911433123354617,
+        0.6576277105937022,
+        0.634252752014024
+      ],
+      "study_colour_hex": "#E3A8A2",
+      "output_mode": "GRID",
+      "visibility": {
+        "identifier": true,
+        "projected_identifier": true,
+        "frustum": true,
+        "centre_ray": true,
+        "target_marker": true,
+        "grid": true,
+        "output": true
+      }
+    },
+    {
+      "uuid": "2be62365-4556-4ce9-b982-f45cadf0b802",
+      "name": "PJ02",
+      "object_name": "PJ02",
+      "include_in_disguise_export": true,
+      "notes": "",
+      "resolution": {
+        "x": 1920,
+        "y": 1080
+      },
+      "throw_ratio": 1.0,
+      "lens_shift_percent": {
+        "horizontal": 0.0,
+        "vertical": 0.0,
+        "basis": "full_image_dimensions"
+      },
+      "stack_quantity": 1,
+      "brightness_percent": 100.0,
+      "nominal_lumens": 20000.0,
+      "total_lumens": 20000.0,
+      "position_m": [
+        8.58193157087419,
+        0.7607306501106024,
+        0.0
+      ],
+      "rotation": {
+        "space": "blender_world",
+        "order": "XYZ",
+        "unit": "degrees",
+        "euler": [
+          89.99998884409983,
+          -1.1459154579267312,
+          5.729578890459243
+        ]
+      },
+      "transform_valid": true,
+      "target": {
+        "space": "blender_world",
+        "status": "no_hit",
+        "point_m": null,
+        "object_name": null,
+        "filter_object_name": null,
+        "automatic": true
+      },
+      "calculated": null,
+      "display_units": "mm",
+      "study_colour_linear_rgb": [
+        0.4399999976158142,
+        0.6499999761581421,
+        0.49000000953674316
+      ],
+      "study_colour_srgb": [
+        0.6943609777074484,
+        0.8266570506430202,
+        0.7287318502245024
+      ],
+      "study_colour_hex": "#B1D3BA",
+      "output_mode": "GRID",
+      "visibility": {
+        "identifier": true,
+        "projected_identifier": true,
+        "frustum": true,
+        "centre_ray": true,
+        "target_marker": true,
+        "grid": true,
+        "output": true
+      }
+    }
+  ],
+  "study_views": [
+    {
+      "uuid": "3ae949d9-4c40-43f7-ba36-470f44f65e02",
+      "name": "Audit view",
+      "camera_name": "Audit camera",
+      "camera": {
+        "space": "blender_world",
+        "position_m": [
+          0.9999999776482582,
+          1.9999999552965164,
+          2.9999999329447746
+        ],
+        "rotation_quaternion_wxyz": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "type": "PERSP",
+        "lens_mm": 50.0,
+        "ortho_scale_m": 0.05999999865889549
+      },
+      "resolution": {
+        "x": 1920,
+        "y": 1080
+      },
+      "overlays": {
+        "projected_identifiers": true,
+        "enabled": true,
+        "labels": true,
+        "frustums": true,
+        "grids": true
+      },
+      "expected_image_filename": "Beam_Audit_view.png",
+      "exported_image_filename": "Audit_view.png",
+      "exported_at": "2026-10-03T12:00:00+00:00"
+    }
+  ],
+  "current_view_image": {
+    "filename": null,
+    "exported_at": null
+  },
+  "disguise": {
+    "transform_convention": "UNVALIDATED: raw Blender XYZ / XYZ Euler baseline",
+    "validated": false,
+    "convention_id": "blender_xyz_euler_xyz_unvalidated_v1",
+    "columns": [
+      "Projector_Name",
+      "Projector_Qte(Stack)",
+      "Projector_Native-Rez-X",
+      "Projector_Native-Rez-Y",
+      "Projector_Lumens(lux)",
+      "Projector_Brightness(%)",
+      "Projector_Total_Lumens(lux)",
+      "Projector_Trow-Ratio",
+      "Lens_Shift-H(%)",
+      "Lens_Shift-V(%)",
+      "Lens_X",
+      "Lens_Y",
+      "Lens_Z",
+      "Pitch(deg)",
+      "Yaw(deg)",
+      "Roll(deg)",
+      "Target_X",
+      "Target_Y",
+      "Target_Z",
+      "Target_Distance",
+      "Target_Width",
+      "Target_Height",
+      "Target_Illuminance",
+      "Target_DPI",
+      "Unit_Dim",
+      "Unit_Illuminance",
+      "Projector_UUID"
+    ],
+    "rows": [],
+    "error": "PJ01: No centre target hit; aim at venue geometry or exclude from disguise export.; PJ02: No centre target hit; aim at venue geometry or exclude from disguise export.",
+    "validation": {
+      "scope": "disguise_rows",
+      "errors": [
+        {
+          "projector_uuid": "46ea7095-2726-4888-bfc3-59e0647246b9",
+          "projector_name": "PJ01",
+          "code": "NO_TARGET",
+          "message": "No centre target hit; aim at venue geometry or exclude from disguise export."
+        },
+        {
+          "projector_uuid": "2be62365-4556-4ce9-b982-f45cadf0b802",
+          "projector_name": "PJ02",
+          "code": "NO_TARGET",
+          "message": "No centre target hit; aim at venue geometry or exclude from disguise export."
+        }
+      ]
+    }
+  }
+}
