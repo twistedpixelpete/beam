@@ -6,7 +6,9 @@
 
 Use Beam to place projectors in a venue model, preview coverage and obstructions, plan overlapping projector groups, build projection screens or LED walls, and export study images and geometry.
 
-![A Beam screen with its Clean pattern and dimension labels](examples/0.8.1/presentation.png)
+![Three Beam projectors casting overlapping calibration grids onto a wide screen](examples/0.8.1/projector-showcase.png)
+
+*Actual Beam viewport capture: three projectors, visible throw frustums, projected IDs and overlapping coverage on a 16 m screen.*
 
 ## Install the beta
 
@@ -167,6 +169,8 @@ OBJ/FBX uses metres with Blender +Z up / +Y forward. Check the receiving applica
 Beam is a planning tool, not a calibrated photometric or edge-blending system. Projection treats geometry as opaque; group previews do not implement calibrated gamma, black-level correction or warped-surface optimisation. Large scenes and many projectors need project-specific performance checks.
 
 ## Examples and further reading
+
+- [Three-projector showcase](examples/0.8.1/Beam-Projector-Showcase.blend) — the scene pictured above, with an editable saved study view.
 
 - [Screen Builder demonstration](examples/0.8/Beam-Screen-Builder.blend) — screen types, LED examples and a projector group. Download the file, then open it with Beam enabled.
 - [Clean screen demonstration](examples/0.8.1/Beam-Screen-Beauty.blend) and [sidebar screenshot](examples/0.8.1/sidebar.png).
