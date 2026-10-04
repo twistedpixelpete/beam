@@ -12,25 +12,15 @@ Use Beam to place projectors in a venue model, preview coverage and obstructions
 
 ## Install the beta
 
+**[Download Beam 0.8.1 Beta](https://github.com/twistedpixelpete/beam/releases/download/v0.8.1-beta/beam-0.8.1.zip)** · [Release notes](https://github.com/twistedpixelpete/beam/releases/tag/v0.8.1-beta)
+
+Download the ZIP above and install it directly in Blender. No Python installation or build step is needed. Do not extract the ZIP.
+
 Beam requires **Blender 4.5 or newer**. It has been tested on **Blender 5.2.2 LTS on macOS/Metal**; other versions and platforms have not yet been verified.
-
-### Create the installable ZIP
-
-The repository contains the source. To build the extension ZIP, use **Python 3.11 or newer**:
-
-```sh
-git clone https://github.com/twistedpixelpete/beam.git
-cd beam
-python3 tools/build_release.py
-```
-
-Alternatively, choose **Code → Download ZIP** on GitHub, extract it, and run `python3 tools/build_release.py` from the extracted folder. Python is needed only for this packaging step, not to run the installed add-on.
-
-The script creates `dist/beam-0.8.1.zip`. **Install this file, not GitHub’s source ZIP or `beam-source-0.8.1.zip`.**
 
 ### Install in Blender
 
-1. Open **Edit → Preferences → Get Extensions**.
+1. Download `beam-0.8.1.zip` using the link above, then open **Edit → Preferences → Get Extensions**.
 2. Open the menu at the top right and choose **Install from Disk**.
 3. Select `beam-0.8.1.zip` and enable Beam if prompted.
 4. In the 3D View, press **N** to open the sidebar, then select **Beam**.
@@ -167,6 +157,20 @@ OBJ/FBX uses metres with Blender +Z up / +Y forward. Check the receiving applica
 | Thin occlusion edges look jagged | Increase **Display → Preview Quality**; higher settings cost GPU performance. |
 
 Beam is a planning tool, not a calibrated photometric or edge-blending system. Projection treats geometry as opaque; group previews do not implement calibrated gamma, black-level correction or warped-surface optimisation. Large scenes and many projectors need project-specific performance checks.
+
+## Build from source (optional)
+
+If you prefer to build the extension yourself, the repository contains the source. To build the extension ZIP, use **Python 3.11 or newer**:
+
+```sh
+git clone https://github.com/twistedpixelpete/beam.git
+cd beam
+python3 tools/build_release.py
+```
+
+Alternatively, choose **Code → Download ZIP** on GitHub, extract it, and run `python3 tools/build_release.py` from the extracted folder. Python is needed only for this packaging step, not to run the installed add-on.
+
+The script creates `dist/beam-0.8.1.zip`. **Install this file, not GitHub’s source ZIP or `beam-source-0.8.1.zip`.**
 
 ## Examples and further reading
 
