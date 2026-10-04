@@ -1,97 +1,179 @@
 # Beam
 
-**Beam 0.8.1 — maintained by Twisted Pixel.** A lightweight Blender tool for projection studies, projector management and nominal blend-group planning.
+**Projection planning and screen building in Blender.** Maintained by **Twisted Pixel** · **0.8.1 — pre-release beta**
 
-Beam retains the tested Projection Study engineering and GPU projection core. It adds a reversible Presentation View, project metadata, practical blend groups, clearer image-export naming and management shortcuts. See [the 0.5 guide](docs/UPDATE-BEAM-0.5.md) for architecture, changed files, migration and acceptance tests.
+> **Still in testing.** Beam is a pre-release beta, not a stable production release. Expect bugs, incomplete workflows and changes between versions. Keep backups of your Blender files and independently verify geometry, measurements and exported data before production use.
 
-## Install / upgrade
+Use Beam to place projectors in a venue model, preview coverage and obstructions, plan overlapping projector groups, build projection screens or LED walls, and export study images and geometry.
 
-Install `dist/beam-0.8.1.zip` through Blender **Preferences → Get Extensions → Install from Disk**, then restart Blender. Open the **Beam** tab in the 3D View sidebar. Maintainer metadata is **Twisted Pixel**.
+![A Beam screen with its Clean pattern and dimension labels](examples/0.8.1/presentation.png)
 
-This is an in-place upgrade: the technical extension ID remains `projection_study` so existing stored `Object.ps`, `Scene.ps_study`, operator identifiers and files continue to work. Do not install an additional copy beside an enabled older version. The source directory retains its existing `projection_study/` name for compatibility; the product, sidebar, About label and release archives are Beam.
+## Install the beta
 
-Tested on Blender 5.2.2 LTS/macOS Metal. The manifest targets 4.5+, but other Blender versions and platforms remain unverified.
+Beam requires **Blender 4.5 or newer**. It has been tested on **Blender 5.2.2 LTS on macOS/Metal**; other versions and platforms have not yet been verified.
 
-## Individual projectors
+### Create the installable ZIP
 
-Add a projector at the 3D cursor; PJ01 starts facing world +Y with +Z up. Its origin is the lens centre, local −Z is forward and local +Y is up. Use ordinary Blender transforms. Native duplicate, linked duplicate and copy/paste receive fresh PJ identifiers, UUIDs and muted palette colours while preserving technical settings. Body meshes, materials and optical camera data are independent. Notes and identity survive renaming and file saves.
+The repository contains the source. To build the extension ZIP, use **Python 3.11 or newer**:
 
-The active study projector stays in the panel when venue geometry is selected. Controls include Solo Active Projector, Frame Active Projector, explicit Lock/Unlock, target-marker visibility, centre rays, frustums, labels and output visibility. Projected Name is independent from Body / Measurement Labels. Projected text uses unboxed study-colour text; viewport annotations use readable white text with dark backing and coloured accents.
+```sh
+git clone https://github.com/twistedpixelpete/beam.git
+cd beam
+python3 tools/build_release.py
+```
 
-Output modes: Solid Colour, Calibration Grid, Identifier, Checkerboard, Blender UV Grid, Blender Color Grid and Custom Image. UV/Color Grid use Blender-generated images. Generated preview images cap their longest side at 4096 to bound memory while preserving aspect; engineering resolution remains native.
+Alternatively, choose **Code → Download ZIP** on GitHub, extract it, and run `python3 tools/build_release.py` from the extracted folder. Python is needed only for this packaging step, not to run the installed add-on.
 
-## Projection and engineering
+The script creates `dist/beam-0.8.1.zip`. **Install this file, not GitHub’s source ZIP or `beam-source-0.8.1.zip`.**
 
-One ray through the exact shifted raster centre finds the first evaluated geometry hit for nominal calculations. Any visible mesh-convertible geometry in the frustum receives its corresponding part of one continuous raster. Independent GPU depth maps provide per-ray occlusion: a foreground object blocks only its covered rays, and rays beside it continue farther. The target never clips the whole projection.
+### Install in Blender
 
-Engineering uses metres internally and respects scene unit scale. Width = axial target distance / throw ratio; height = width × resolution Y / resolution X. Pixel density = resolution X / width; pixel size = width / resolution X; DPI = density × 0.0254. Estimated lux = nominal lumens × brightness/100 × stack / nominal area. Lens shift uses percent of full image dimensions. Axial depth and centre-ray slant distance are shown separately.
+1. Open **Edit → Preferences → Get Extensions**.
+2. Open the menu at the top right and choose **Install from Disk**.
+3. Select `beam-0.8.1.zip` and enable Beam if prompted.
+4. In the 3D View, press **N** to open the sidebar, then select **Beam**.
 
-Metres/millimetres is a display preference. Nominal width/height annotations follow it. A centre miss shows No Target and hides nominal values while off-centre projection remains active. These are nominal measurements, not surface-distortion or advanced photometric analysis.
+When upgrading, replace the existing extension rather than enabling a second copy. Restart Blender after upgrading. Older files remain compatible; the internal extension name is still `projection_study`.
 
-## Presentation View
+## Make your first projection study
 
-The one-click Presentation View preset uses neutral viewport shading and background, studio lighting and fewer native guides/gizmos. Beam projections and enabled study overlays remain. Technical View restores the previous settings, including the original lighting choice. Venue materials are never edited. Save handlers serialize the original technical viewport and then restore the live presentation preset; file load or extension disable clears the temporary preset.
+This example produces a **6 × 3.375 m** image on a flat screen.
 
-## Blend groups
+1. Start a new scene and remove the default cube so it will not block the projection. In **Scene Properties → Units**, choose Metric and leave Unit Scale at **1.0**. Leave the 3D cursor at the world origin.
+2. Open **Beam → Screen Builder → Create Screen**. Choose **Flat**, category **Projection**, Width **6**, Height **3.375**, and Aspect **Free**. Click **Create Screen**.
+3. With the screen selected, set its Location to **X 0, Y 6, Z 0** in Blender’s Item panel. Leave rotation at zero and scale at one. Its default origin is Bottom Centre.
+4. Under **Beam → Projector**, click **Add Projector**. Set its Location to **X 0, Y 0, Z 1.6875**. A new projector already faces the screen along world +Y.
+5. Under **Projection**, set Throw Ratio to **1.0**, resolution to **1920 × 1080**, and both lens shifts to **0**. Choose **Calibration Grid** for Output.
+6. Check **Calculated**. With an unobstructed centre ray, Throw should be **6 m** and Image should be **6 × 3.375 m**.
+7. Under **Display**, choose **Presentation View** for a cleaner view. Choose **Technical View** to restore your previous viewport settings.
+8. Save your `.blend` file. It stores the projectors, screens, groups and saved views.
 
-Select a projector and choose **Create Blend Group**. Configure Horizontal, Vertical or Array, count (or columns × rows), overlap and its input units. Beam duplicates the remaining members; the first projector is the anchor. Use **Create From Selected Projectors** to group existing projectors without moving them.
+A Beam screen is optional: ordinary visible venue geometry can receive the projection too. Keep projectors and their parents at scale **1**; position and rotate them with Blender’s normal tools.
 
-Overlap can be entered in pixels, percent or metres; switching representation preserves the desired value. Desired and actual nominal overlap are shown for adjacent pairs in pixels, percent and the selected physical display units. Input overlap is bounded to 0–95% for layout calculations.
+## Position and aim projectors
 
-Changing overlap moves layout slots from the anchor using uniform spacing. Individual projector local adjustments survive those changes and controller movement. **Apply Desired Overlap** recalculates spacing from current anchor optics/target depth and clears positional tweaks; individual aiming and lens shifts remain. **Reset Active Member to Group Position** clears only that member's positional tweak. The anchor is fixed by layout operations.
+Use **Projector → Add Projector** or **Duplicate**. Blender’s normal duplicate and copy/paste workflows also create independent Beam projector identities.
 
-**Select Group Controller** exposes the parent for moving/rotating the entire arrangement. Keep controller/projector scale at 1. **Remove Active Member** and **Ungroup** leave projector world transforms and data intact. Native duplicates of grouped members become independent projectors rather than sharing the source layout slot.
+Under **Aim / Position**:
 
-Show Nominal Overlap draws subtle intersection regions and pair labels on the anchor's nominal plane. Preview Edge Blend adds simple linear feather ramps. Combined Blend Preview maps the anchor's output across the ideal combined canvas and uses an additive planning preview; Individual mode retains each member's own output/colour. Solo Blend Group suppresses unrelated study outputs without deleting data.
+- **Click Surface:** click a visible surface to aim at it; press Esc to cancel.
+- **Object Centre:** select the receiving object, then aim the retained active projector at that object’s origin.
+- **3D Cursor:** aim at the cursor’s position.
+- **Look Through:** inspect the projector’s view; press Esc to return.
+- **Further / Closer:** move along the aim direction while retaining the aim point.
 
-## Metadata, views and exports
+The **Active** field identifies the projector being edited, even when you select venue geometry. Use **Frame** to find it, **Solo** to isolate its study output, and **Lock / Unlock** to protect or adjust its position.
 
-Optional Project Name, Venue, Revision, Client and Author fields are stored per scene. Projector and group notes are plain text. JSON contains metadata, projector/group UUIDs, calculations, transforms, offsets, actual/desired overlap, views, filenames and CSV data. It adds fields to the existing schema 1.0 contract; the legacy schema key remains `projection-study` for compatibility. There is no live PATCH dependency.
+Under **Projection**, set throw ratio, resolution, lens shift, lumens, brightness and stack count. Choose a solid colour, calibration grid, identifier, checkerboard, Blender grid, or custom image. Custom Image reveals an image selector.
 
-Saved Study Views have View, Previous, Next and Exit controls; no numpad is needed. Export Current View captures the composited editor. Saved camera-view exports provide clean study images with configurable Beam overlays. Presentation styling is taken from the exporting viewport.
+**Calculated** reports nominal image size, density, pixel size, DPI and estimated illuminance. These describe the reference image at the centre target, not a full analysis of distortion or brightness across a curved surface. Metres/Millimetres changes display formatting, not scene scale.
 
-Default image names use `Project_Revision_View.png`, for example `Melbourne_Town_Hall_R02_PJ01_Coverage.png`; without project metadata, `Beam_PJ01_Coverage.png`. Spaces/invalid characters become clean underscores. Sanitized collisions get deterministic numeric suffixes.
+## Build and edit screens
 
-Current/selected export dialogs show editable filenames and destination. Batch export selects one folder and shows editable proposed filenames in its options. The chosen PNG names are used exactly; invalid suffixes/duplicate batch names are rejected rather than silently changed after saving. Existing files require overwrite opt-in. Completion reports the destination and image count.
+Open **Screen Builder → Create Screen**, choose a type, enter its parameters, then click **Create Screen**.
 
-**Export CSV** writes a real `.csv`, with the unchanged 27-column Mapping Matter/disguise header, including `Projector_Trow-Ratio`, UUIDs, `Unit_Dim=mm` and `Unit_Illuminance=lux`. No-hit or non-rigid included projectors block CSV export. Designer position/rotation/lens-shift conventions remain unvalidated end to end; the isolated transform boundary still emits the documented raw Blender-axis baseline. No blend curves are exported to disguise.
+| Type | Use it for |
+| --- | --- |
+| Flat | A rectangular screen with width, height and optional fixed aspect ratio. |
+| Arc | A circular screen defined by combinations of radius, angle, arc length or chord. |
+| Curve | A screen extruded from one selected Bezier, Poly or NURBS spline. Set the source and height. |
+| Closed | A cylindrical screen, including a full 360° surface with a UV seam. |
+| Surface | A copy of an existing mesh or selected faces, with existing or generated UVs. |
 
-## Validation and limits
+Fields marked **(m)** always take physical metres: enter **0.5** for 500 mm. Ordinary generated screens face local −Y, toward a new Beam projector facing +Y.
 
-Run `python3 -m unittest discover -s tests -p 'test_*.py' -v` for pure tests. Run `tests/run_blender_tests.py` in a disposable Blender UI session with a 3D View for all integration milestones. Standalone UI verification scripts create their own scenes and quit their own process; use separate Blender processes for them.
+To edit a screen:
 
-The 0.5 release includes a four-projector blend fixture, JSON/CSV examples and individual/combined/feathered screenshots under `examples/0.5/`. The guide describes the horizontal, vertical and 3×2 array acceptance procedure.
+1. Select it in the viewport or Outliner.
+2. Change its name or parameters under **Screen**. Width comes before Height for flat screens.
+3. Click **Update Screen** to rebuild it. Parameter and source-curve edits do not rebuild automatically.
+4. Use **Actions → Duplicate** for another screen, or **Flip Front** to reverse its facing direction.
 
-This is nominal layout and viewport planning, not calibration. Actual overlap is convex raster intersection on one anchor plane, expressed using anchor pixel scale. It does not measure dense warped coverage on curved/occluded surfaces. Desired placement assumes compatible parallel optics at similar depth; manually varied aim, throw ratio, resolution or lens shift can differ from the ideal. Apply again after anchor optics/distance changes when you want to recompute spacing.
+For Curve or Surface, select the source and use **Use Selected Source** before creating the screen. The source remains intact. For an existing mesh with authored mapping, choose **Existing UV**. Surface Distance mapping supports rectangular quad grids; use authored UVs for more complex shapes.
 
-Combined canvas mapping and feather widths follow the ideal layout, not an optimiser; manual deviations can produce seams. A source image fills the combined canvas, so choose a source aspect appropriate to it. The additive preview is not calibrated photometry, gamma/black-level correction or a disguise blend simulation. Changing group topology requires regrouping. Controller scaling, arbitrary transform constraints and simultaneous multiwindow/multiscene editing are unsupported.
+### Appearance and labels
 
-Finite 512/1024/2048 shadow maps can alias thin edges; geometry is treated as opaque/double-sided. Projector bodies/helpers do not act as receivers. There is no material projection or F12-render output, volumetric transmission, manufacturer database, LED system or PDF reporting. Very dense scenes and high GPU projector counts need further profiling.
+- **Appearance → Clean Pattern** applies the modern calibration chart. Use this to refresh charts saved by an older Beam version.
+- **Neutral Surface** returns to the plain screen material, useful when inspecting projector output.
+- **Border** toggles the screen outline.
+- **Labels** controls Screen ID and Dimensions independently. Width sits below the screen and height beside it.
+- **Detail → Off** hides measurement and technical overlays; the enabled screen ID can remain. **Minimal** shows the ID and dimensions. **Full** adds name, resolution and enabled technical information.
 
-License: GPL-3.0-or-later.
+Detail and m/mm settings are shared with projector annotations. They do not remove text printed inside the Clean pattern, whose physical size is shown in metres. Presentation View temporarily uses Minimal detail.
 
-When the anchor has no centre hit, group layout/overlap uses its no-hit preview plane. The group UI marks this explicitly, and JSON pairs report `reference_status` and `actual_plane_distance_m`. These are planned nominal overlaps, not measured receiver coverage.
+### LED walls
 
-## JSON Schema v1 freeze (0.5.1)
+Choose category **LED** with Flat, Arc or Closed. Enter cabinet width/height/depth, pixels per cabinet, columns and rows. For example, **0.5 × 0.5 m**, **192 × 192 px**, **20 columns × 8 rows** gives a **10 × 4 m**, **3840 × 1536 px** wall.
 
-The PATCH handoff contract is in `docs/BEAM-JSON-V1.md`, audit findings in `docs/JSON-AUDIT-0.5.1.md`, and portable schema in `docs/beam-json-schema-v1.json`. Valid disguise rows now survive other projector errors. Producer versions, display colours, exact group transforms and explicit conventions are added without renaming schema 1.0 fields. Fresh examples and tests cover null targets, references and reconstruction. The separate CSV export remains atomic and its Designer transform convention remains unvalidated.
+For an arc, choose **Smooth** for a continuous curve or **Faceted Cabinets** for flat cabinet faces joined at an angle. The included cabinet presets are generic examples, not manufacturer specifications.
 
-## Frustum helper termination (0.5.2)
+For conforming, baking, UV diagnostics and detailed cabinet geometry, see the [Screen Builder guide](docs/SCREEN-BUILDER.md).
 
-Each displayed corner ray stops at its first visible evaluated scene-surface hit. Rays that miss end at the nominal centre-target depth, or the configured preview distance if the centre also misses. Helper endpoints are cached independently from the projection extent. Projection coverage, multi-surface occlusion, centre targets, engineering calculations and JSON schema are unchanged.
+## Make a multi-projector blend
 
-## Editable Blend Groups (0.6.0)
+1. Position and configure the first projector. It becomes the group’s anchor.
+2. Choose **Projector → Create Blend**. Select Horizontal, Vertical or Array, the count, and desired overlap.
+3. Open **Blend Group** to adjust overlap in pixels, percent or metres. Compare **Desired** with **Actual** for each adjacent pair.
+4. Enable **Overlap** to inspect the nominal overlap regions. Use **Feather** for a simple edge-blend preview and **Combined Preview** to spread the anchor’s output across the group canvas.
+5. Use **Select Controller** to move or rotate the whole group. Keep its scale at one.
 
-The group panel now lists members and supports Add Selected, Add New, Remove Selected, Reflow and Duplicate Blend Group. Existing-member add/remove preserves world poses. Copies have new controllers, UUIDs, PJ numbers and colours, with independent data and preserved local offsets. Native controller/hierarchy duplicate and paste are supported. Beam selections default to Local orientation and restore the previous orientation for unrelated objects. See `docs/UPDATE-BEAM-0.6.md` for implementation details, acceptance tests, migration and limitations.
+To group projectors you already positioned, select them and use **From Selected**. This preserves their positions. The member list provides selection, Add Member, New Projector, Remove and Duplicate controls.
 
-## Beauty and usability (0.7.0)
+After changing anchor optics or distance, use **Reflow** to recalculate spacing. **Reflow clears member position tweaks**; aiming and lens shifts remain. **Reset Member** clears only the active member’s positional tweak. **Ungroup** preserves the projectors and their world positions.
 
-Collapsible sidebar sections, compact calculated readouts, restrained PJ accents and discreet outside-edge dimensions. Display offers Off / Minimal / Full; Presentation temporarily selects Minimal. Group overlap controls are easier to scan. Engineering and export contracts are unchanged. See UPDATE-BEAM-0.7.md (under docs in the source archive) for modified files, test instructions and limitations.
+Overlap is measured on a nominal reference plane, not across every point on curved or obstructed receivers. When the anchor misses geometry, Beam explicitly labels the reference as a preview plane.
 
-## Screen Builder (0.8.0)
+## Save views and export images
 
-Create and edit Flat, Arc, Curve, Closed and Surface screens, plus cabinet-based flat/smooth/faceted LED walls. Includes distance-based UVs, source extraction/conforming, packed test charts, diagnostics, independent screen IDs, separate cabinet detail and isolated OBJ/FBX export. Open Screen Builder in the Beam sidebar. See `SCREEN-BUILDER.md` (under `docs/` in the source repository) for units, arc/joint conventions, export axes, practical limitations and acceptance tests. The demonstration file and screenshots are under `examples/0.8/`.
+1. Optionally fill in **Project Details**: project name, venue, revision, client and author.
+2. Navigate to the view you want to keep.
+3. Open **Study Views → Add View** and give it a useful name.
+4. Use **View**, **Previous**, **Next** and **Exit** to navigate saved views.
+5. Under **View Options**, choose output dimensions and which Beam overlays to include.
+6. Choose **Export View** or **Export All**, then select the destination and filenames. Use **Capture** to save the current composited editor view instead.
 
-### Screen visual refresh (0.8.1)
+Presentation View supplies a neutral, uncluttered style for study images. Default filenames use project, revision and view names, such as `Town_Hall_R02_Front_Coverage.png`. Filenames are editable; replacing existing files requires the overwrite option.
 
-Screen Builder now uses the Beam Clean pattern with bundled Inter typography, a restrained calibration grid, and separate edge measurements. Width comes before Height. Appearance and Labels have dedicated sections, sharing Beam’s existing Off / Minimal / Full detail and m / mm controls. Select an existing screen and click **Clean Pattern** to replace its previously packed chart. See `docs/SCREEN-BEAUTY.md` (or packaged `SCREEN-BEAUTY.md`) for screenshots and checks.
+**Projector projection is a viewport effect. Use Beam’s image export for coverage studies; it is not included in a normal F12 render.**
+
+## Export data or screen geometry
+
+| What you need | Where to find it | What it produces |
+| --- | --- | --- |
+| Projector table | **Beam → Export → Export CSV** | Mapping Matter/disguise-style projector rows. Included projectors need valid targets and unit scale. |
+| Structured study data | **Beam → Export → Export JSON** | Projector/group metadata, calculations, transforms and view information. See the [JSON contract](docs/BEAM-JSON-V1.md). |
+| Screen mesh | Select a screen → **Screen Builder → Export Geometry** | OBJ or FBX with the evaluated display surface and UVs. |
+
+For screen geometry, choose **Production Surface** for the display only, or **Detailed / Previs** to include available LED backing. Choose **World Metres** to bake its scene placement or **Screen Local Metres** for geometry at its own origin. Exports omit preview materials, annotations and unrelated scene objects.
+
+Click **Update Screen** before exporting pending parameter changes. Use **Diagnostics → Validate Geometry / UV** to investigate invalid mapping or geometry. Screen metadata stays in the `.blend` file; it is not added to the projector JSON contract.
+
+OBJ/FBX uses metres with Blender +Z up / +Y forward. Check the receiving application’s units and axes. The CSV Designer transform convention has not been validated end to end; test the handoff before relying on it for production.
+
+## Troubleshooting
+
+| Symptom | Check |
+| --- | --- |
+| Beam is missing from the sidebar | Enable the extension, place the pointer over the 3D View, press N, and choose the Beam tab. Restart after upgrading. |
+| “No centre hit” | Aim the centre ray at visible geometry and check for intervening objects. Off-centre parts of the image can still project when its centre misses. |
+| Projection is missing | Check **Display → Projected Output**, the active projector’s **Projection Output**, and any Solo setting. Use a neutral screen surface to distinguish projection from its own test chart. |
+| Projector cannot move or aim | Unlock it under Projector. Check Blender transform locks and parent scale. |
+| Screen edits have not appeared | Select the screen and click Update Screen. |
+| Screen technical markers are missing | Choose Full detail and enable the relevant Technical Overlays. |
+| Screen export is refused | Apply pending updates, check scene units, run UV diagnostics, and choose a new filename or enable overwrite. |
+| Labels overlap or leave the view | Use Minimal detail, disable unneeded labels, or frame the scene more widely. |
+| Thin occlusion edges look jagged | Increase **Display → Preview Quality**; higher settings cost GPU performance. |
+
+Beam is a planning tool, not a calibrated photometric or edge-blending system. Projection treats geometry as opaque; group previews do not implement calibrated gamma, black-level correction or warped-surface optimisation. Large scenes and many projectors need project-specific performance checks.
+
+## Examples and further reading
+
+- [Screen Builder demonstration](examples/0.8/Beam-Screen-Builder.blend) — screen types, LED examples and a projector group. Download the file, then open it with Beam enabled.
+- [Clean screen demonstration](examples/0.8.1/Beam-Screen-Beauty.blend) and [sidebar screenshot](examples/0.8.1/sidebar.png).
+- [Screen Builder reference](docs/SCREEN-BUILDER.md) — geometry, UVs, conforming and export conventions.
+- [Screen appearance guide](docs/SCREEN-BEAUTY.md) — labels, chart styling and visual limitations.
+- [JSON schema reference](docs/BEAM-JSON-V1.md) and [test results](TEST_RESULTS.txt).
+
+For development, run `python3 -m unittest discover -s tests -p 'test_*.py'`. Blender integration scripts belong in disposable Blender sessions; some create scenes and quit the process. See the reference guides before running them against your own files.
+
+Licensed under **GPL-3.0-or-later**.
