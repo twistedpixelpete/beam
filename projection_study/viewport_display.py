@@ -57,6 +57,8 @@ def draw_3d(options=None,projection=None):
     options=options or dict(labels=True,frustums=True,grids=True,overlays=True)
     if not options['overlays']: return
     projection=projection if projection is not None else bpy.context.region_data.perspective_matrix
+    from . import screen_display
+    screen_display.draw_3d(options)
     destination=gpu.state.active_framebuffer_get()
     viewport=gpu.state.viewport_get()
     shaders()
@@ -101,6 +103,8 @@ def draw_labels(projection,width,height,options=None):
     from . import typography
     from .display_units import dimension
     options=options or dict(labels=True,frustums=True,grids=True,overlays=True)
+    from . import screen_display
+    screen_display.labels(projection,width,height,options)
     if not options['overlays'] or not options['labels'] or not bpy.context.scene.ps_study.show_labels: return
     from . import blend_display
     detail=bpy.context.scene.ps_study.label_detail

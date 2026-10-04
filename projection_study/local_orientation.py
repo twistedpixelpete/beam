@@ -19,7 +19,7 @@ def sync(context):
     for other in bpy.data.scenes:
         if other!=scene and other.as_pointer() in _saved: restore(other)
     obj=context.view_layer.objects.active
-    beam=obj and obj.select_get() and (obj.ps.is_projector or obj.get('beam_group_uuid'))
+    beam=obj and obj.select_get() and (obj.ps.is_projector or obj.get('beam_group_uuid') or (hasattr(obj,'beam_screen') and obj.beam_screen.is_screen))
     key=scene.as_pointer()
     if not beam:
         restore(scene);return
