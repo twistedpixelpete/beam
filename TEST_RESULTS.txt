@@ -138,3 +138,29 @@ Native dialogs/live preview/Cancel PASS, disposable captures only.
 Auto Blend SI export + frozen JSON schema/relations + 3 negative checks PASS.
 Compilation, diff whitespace checks and Blender extension archive validation PASS.
 See docs/PR2-ENGINEERING-REVIEW.md for findings, architecture and limitations.
+
+
+Beam UI / workspace pass — 2026-10-15
+Branch: feature/beam-ui-workspace, based on reviewed PR #2 merge.
+Blender 5.2.2 LTS d13f752e3b9c, macOS / Metal; disposable factory scenes.
+49/49 standalone tests; 7/7 new Blender UI-context tests PASS.
+All 15 original Blender milestones and all 8 background acceptance scripts PASS,
+including 10/10 engineering review regressions.
+Native GUI workspace acceptance PASS: original layouts retained; actual Outliner
+selection follows PJ/screen/group/view without switching Properties away from Beam;
+venue selection, pinning, separate receiver, all five module draws, inline target
+Apply/Cancel + Undo/Redo, visible restrictions, screen update, Auto Blend Undo/Redo,
+member selection/add/remove/Reflow, Frame/Lock/Presentation, PNG export, workspace
+switching, save/reopen and unregister cleanup.
+Panel drawing tested with runtime refresh, coverage and pair computation forbidden.
+Planning GPU pixel checks and engineering GPU/lifecycle review PASS.
+New UI timer: approximately 0.04 ms median per idle update (100 calls).
+Eight-PJ engineering fixture: idle refresh median 1.897 ms, movement 4.990 ms,
+overlap 0.442 ms, lens solve 1.841 ms, viewport export 160.6 ms; zero extra idle
+depth uploads. Timings measure synchronous work, not total viewport FPS.
+Frozen JSON contract/relations and 3 negative schema checks PASS.
+No projection, solver, coverage, Reverse Mapping or export-schema engine changes.
+Screenshots and architecture/usage: docs/UI-WORKSPACE.md.
+Limitations: native theme/editor chrome remains; exact custom mock is not reproduced.
+Blender 4.5 and Windows/Linux are unverified. Still a development beta.
+Compilation, diff whitespace checks and Blender extension ZIP validation PASS.

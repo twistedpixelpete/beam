@@ -8,6 +8,8 @@ Use Beam to place projectors in a venue model, preview coverage and obstructions
 
 The 0.9 development version adds inverse target solving, flat-screen Auto Blend, UV Reverse Mapping and contextual inspectors. **[Read the 0.9 how-to and limitations](docs/PLANNING-MILESTONE.md)**. The published download below remains the earlier 0.8.1 beta until a separate 0.9 release is published.
 
+The development UI now includes an optional native **Beam workspace**, contextual navigation and inline projection targets. **[Workspace guide and screenshots](docs/UI-WORKSPACE.md)**. The instructions below describe the development UI; the published 0.8.1 beta retains its earlier panel layout.
+
 ![Three Beam projectors casting overlapping calibration grids onto a wide screen](examples/0.8.1/projector-showcase.png)
 
 *Actual Beam viewport capture: three projectors, visible throw frustums, projected IDs and overlapping coverage on a 16 m screen.*
@@ -34,12 +36,12 @@ When upgrading, replace the existing extension rather than enabling a second cop
 This example produces a **6 × 3.375 m** image on a flat screen.
 
 1. Start a new scene and remove the default cube so it will not block the projection. In **Scene Properties → Units**, choose Metric and leave Unit Scale at **1.0**. Leave the 3D cursor at the world origin.
-2. Open **Beam → Screen Builder → Create Screen**. Choose **Flat**, category **Projection**, Width **6**, Height **3.375**, and Aspect **Free**. Click **Create Screen**.
+2. Open **Beam → Screen → New Screen**. Choose **Flat**, category **Projection**, Width **6**, Height **3.375**, and Aspect **Free**. Click **Create Screen**.
 3. With the screen selected, set its Location to **X 0, Y 6, Z 0** in Blender’s Item panel. Leave rotation at zero and scale at one. Its default origin is Bottom Centre.
 4. Under **Beam → Projector**, click **Add Projector**. Set its Location to **X 0, Y 0, Z 1.6875**. A new projector already faces the screen along world +Y.
 5. Under **Projection**, set Throw Ratio to **1.0**, resolution to **1920 × 1080**, and both lens shifts to **0**. Choose **Calibration Grid** for Output.
 6. Check **Calculated**. With an unobstructed centre ray, Throw should be **6 m** and Image should be **6 × 3.375 m**.
-7. Under **Display**, choose **Presentation View** for a cleaner view. Choose **Technical View** to restore your previous viewport settings.
+7. Use the **Technical / Presentation** switch in the Beam header for a cleaner view or to restore your previous viewport settings.
 8. Save your `.blend` file. It stores the projectors, screens, groups and saved views.
 
 A Beam screen is optional: ordinary visible venue geometry can receive the projection too. Keep projectors and their parents at scale **1**; position and rotate them with Blender’s normal tools.
@@ -64,7 +66,7 @@ Under **Projection**, set throw ratio, resolution, lens shift, lumens, brightnes
 
 ## Build and edit screens
 
-Open **Screen Builder → Create Screen**, choose a type, enter its parameters, then click **Create Screen**.
+Open **Screen → New Screen**, choose a type, enter its parameters, then click **Create Screen**.
 
 | Type | Use it for |
 | --- | --- |
@@ -121,10 +123,10 @@ Overlap is measured on a nominal reference plane, not across every point on curv
 
 1. Optionally fill in **Project Details**: project name, venue, revision, client and author.
 2. Navigate to the view you want to keep.
-3. Open **Study Views → Add View** and give it a useful name.
+3. Open **Views → New Study View** and give it a useful name.
 4. Use **View**, **Previous**, **Next** and **Exit** to navigate saved views.
 5. Under **View Options**, choose output dimensions and which Beam overlays to include.
-6. Choose **Export View** or **Export All**, then select the destination and filenames. Use **Capture** to save the current composited editor view instead.
+6. Choose **Export This View**, or **Export → Export All Study Views**, then select the destination and filenames. Use **Export → Export Current View** for the composited viewport.
 
 Presentation View supplies a neutral, uncluttered style for study images. Default filenames use project, revision and view names, such as `Town_Hall_R02_Front_Coverage.png`. Filenames are editable; replacing existing files requires the overwrite option.
 
@@ -134,9 +136,9 @@ Presentation View supplies a neutral, uncluttered style for study images. Defaul
 
 | What you need | Where to find it | What it produces |
 | --- | --- | --- |
-| Projector table | **Beam → Export → Export CSV** | Mapping Matter/disguise-style projector rows. Included projectors need valid targets and unit scale. |
-| Structured study data | **Beam → Export → Export JSON** | Projector/group metadata, calculations, transforms and view information. See the [JSON contract](docs/BEAM-JSON-V1.md). |
-| Screen mesh | Select a screen → **Screen Builder → Export Geometry** | OBJ or FBX with the evaluated display surface and UVs. |
+| Projector table | **Beam → Export → disguise CSV** | Mapping Matter/disguise-style projector rows. Included projectors need valid targets and unit scale. |
+| Structured study data | **Beam → Export → PATCH JSON** | Projector/group metadata, calculations, transforms and view information. See the [JSON contract](docs/BEAM-JSON-V1.md). |
+| Screen mesh | Select a screen → **Beam → Export → Screen Geometry** | OBJ or FBX with the evaluated display surface and UVs. |
 
 For screen geometry, choose **Production Surface** for the display only, or **Detailed / Previs** to include available LED backing. Choose **World Metres** to bake its scene placement or **Screen Local Metres** for geometry at its own origin. Exports omit preview materials, annotations and unrelated scene objects.
 
@@ -150,13 +152,13 @@ OBJ/FBX uses metres with Blender +Z up / +Y forward. Check the receiving applica
 | --- | --- |
 | Beam is missing from the sidebar | Enable the extension, place the pointer over the 3D View, press N, and choose the Beam tab. Restart after upgrading. |
 | “No centre hit” | Aim the centre ray at visible geometry and check for intervening objects. Off-centre parts of the image can still project when its centre misses. |
-| Projection is missing | Check **Display → Projected Output**, the active projector’s **Projection Output**, and any Solo setting. Use a neutral screen surface to distinguish projection from its own test chart. |
+| Projection is missing | Check **Global · Viewport Display → Projected Output**, the active projector’s **Projection Output**, and any Solo setting. Use a neutral screen surface to distinguish projection from its own test chart. |
 | Projector cannot move or aim | Unlock it under Projector. Check Blender transform locks and parent scale. |
 | Screen edits have not appeared | Select the screen and click Update Screen. |
 | Screen technical markers are missing | Choose Full detail and enable the relevant Technical Overlays. |
 | Screen export is refused | Apply pending updates, check scene units, run UV diagnostics, and choose a new filename or enable overwrite. |
 | Labels overlap or leave the view | Use Minimal detail, disable unneeded labels, or frame the scene more widely. |
-| Thin occlusion edges look jagged | Increase **Display → Preview Quality**; higher settings cost GPU performance. |
+| Thin occlusion edges look jagged | Increase **Global · Viewport Display → Projection Detail**; higher settings cost GPU performance. |
 
 Beam is a planning tool, not a calibrated photometric or edge-blending system. Projection treats geometry as opaque; group previews do not implement calibrated gamma, black-level correction or warped-surface optimisation. Large scenes and many projectors need project-specific performance checks.
 
