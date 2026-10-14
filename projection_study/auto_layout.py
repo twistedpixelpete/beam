@@ -4,35 +4,20 @@ import bpy
 from mathutils import Vector,Matrix
 from . import planning_math,screen_objects,projector_object,runtime,blend_groups
 from .projection_math import image_point
+from .layout_geometry import screen_frame
 from .display_units import dimension
 
 
 def screen(context):
-    obj=context.view_layer.objects.active
-    if obj and obj.beam_screen.is_screen:return obj
-    obj=context.scene.ps_study.active_screen
-    return obj if obj and obj.name in context.scene.objects and obj.beam_screen.is_screen else None
-
-
-def screen_frame(context,obj):
-    if not obj or obj.beam_screen.screen_type!='FLAT':raise ValueError('Select a flat rectangular Beam Screen')
-    if obj.modifiers:raise ValueError('Auto Blend needs a flat screen without modifiers')
-    if not runtime.rigid(obj):raise ValueError('Auto Blend needs screen scale 1 and no shear')
-    if obj.beam_screen.built_signature!=screen_objects.signature(obj.beam_screen):raise ValueError('Update Screen before Auto Blend')
-    unit=context.scene.unit_settings.scale_length
-    if abs(unit-obj.beam_screen.unit_scale)>1e-8:raise ValueError('Scene units changed: Update Screen first')
-    points=[v.co for v in obj.data.vertices]
-    if not points:raise ValueError('Screen has no geometry; Update Screen first')
-    low=Vector(tuple(min(p[i] for p in points) for i in range(3)));high=Vector(tuple(max(p[i] for p in points) for i in range(3)))
-    if min(high.x-low.x,high.z-low.z)<=1e-6:raise ValueError('Screen needs positive width and height')
-    if high.y-low.y>1e-5:raise ValueError('Screen is no longer planar')
-    return (high.x-low.x)*unit,(high.z-low.z)*unit,obj.matrix_world@((low+high)/2),obj.matrix_world.to_quaternion().to_matrix()
+    from .screen_data import active
+    return active(context,persistent=True)
 
 
 def calculate(context,op):
     target=screen(context);width,height,centre,rotation=screen_frame(context,target)
     template=context.scene.ps_study.active_projector if op.use_template else None
-    if template and template.name not in context.scene.objects:template=None
+    if op.use_template and (not template or template.name not in context.scene.objects or not template.ps.is_projector):
+        raise ValueError('Choose an active Beam projector, or turn off Use Active Projector Template')
     p=template.ps if template else None
     result=planning_math.plan(width,height,p.resolution_x if p else 1920,p.resolution_y if p else 1080,
         p.throw_ratio if p else 1,op.layout_type,op.count,op.columns,op.rows,op.auto_count,
@@ -107,6 +92,7 @@ class BEAM_OT_auto_blend(bpy.types.Operator):
     min_throw:bpy.props.FloatProperty(name='Minimum Throw (m)',default=.1,min=.01)
     max_throw:bpy.props.FloatProperty(name='Maximum Throw (m)',default=100,min=.01)
     def invoke(self,context,event):
+        self.use_template=bool(context.scene.ps_study.active_projector)
         try:screen_frame(context,screen(context))
         except ValueError as exc:self.report({'WARNING'},str(exc));return {'CANCELLED'}
         return context.window_manager.invoke_props_dialog(self,width=440,confirm_text='Create Layout')

@@ -24,9 +24,15 @@ def units_changed(self,context):
     members=member_objects(self)
     if not members: self.previous_mode=self.input_mode; return
     anchor=next((o for o in members if o.ps.uuid==self.anchor_uuid),members[0])
+    width,height=self.reference_width,self.reference_height
+    if self.layout_screen and context:
+        from .layout_coverage import report
+        current=report(self,context)
+        if current and current.get('anchor_width',0)>0 and current.get('anchor_height',0)>0:
+            width,height=current['anchor_width'],current['anchor_height']
     old=self.previous_mode; _updating=True
     try:
-        for key,pixels,length in [('overlap_h',anchor.ps.resolution_x,self.reference_width),('overlap_v',anchor.ps.resolution_y,self.reference_height)]:
+        for key,pixels,length in [('overlap_h',anchor.ps.resolution_x,width),('overlap_v',anchor.ps.resolution_y,height)]:
             values=overlap_values(getattr(self,key),old,pixels,length)
             field={'PIXELS':'pixels','PERCENT':'percent','METRES':'metres'}[self.input_mode]
             setattr(self,key,values[field])
@@ -346,7 +352,7 @@ def serialize(context):
         if group.layout_screen:
             from .layout_coverage import report
             coverage=report(group,context)
-            if coverage and 'centre' in coverage:
+            if coverage and coverage.get('anchor_width',0)>0 and coverage.get('anchor_height',0)>0:
                 measurement_plane=dict(space='blender_world',origin_m=list(coverage['centre']*unit),rotation_quaternion_wxyz=list(coverage['rotation'].to_quaternion()),status='target',distance_m=coverage['distance'],width_m=coverage['anchor_width'],height_m=coverage['anchor_height'])
             else:measurement_plane=None
         result.append(dict(uuid=group.uuid,name=group.name,layout=group.layout,anchor_projector_uuid=group.anchor_uuid,

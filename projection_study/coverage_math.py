@@ -1,4 +1,4 @@
-"""Exact polygon-union area by a vertical sweep over linear edge events."""
+"""Exact convex-polygon union area by a vertical sweep over linear edge events."""
 def union_area(polygons):
     polygons=[p for p in polygons if len(p)>=3]
     edges=[(a,b) for p in polygons for a,b in zip(p,p[1:]+p[:1])]

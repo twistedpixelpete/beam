@@ -16,7 +16,8 @@ def measurement(record,field,p):
 def solve(context,obj,field,value):
     if not obj or not obj.ps.is_projector:raise ValueError('Choose a Beam projector')
     context.view_layer.update();runtime.refresh()
-    record=runtime.CACHE[obj.as_pointer()];p=obj.ps
+    record=runtime.CACHE.get(obj.as_pointer());p=obj.ps
+    if not record:raise ValueError('Projector is unavailable in the active scene')
     if not record['hit']:raise ValueError('No Target: aim at a visible surface before solving')
     if not runtime.rigid(obj):raise ValueError('Restore projector and parent scale to 1 before solving')
     if obj.constraints:raise ValueError('Disable projector constraints before solving')
@@ -59,17 +60,19 @@ class BEAM_OT_solve(bpy.types.Operator):
     field:bpy.props.EnumProperty(items=FIELDS,default='WIDTH')
     value:bpy.props.FloatProperty(name='Desired Value',default=6,min=.000001,precision=4)
     def invoke(self,context,event):
-        obj=selected(context);runtime.refresh()
+        runtime.refresh();obj=selected(context)
         r=runtime.CACHE.get(obj.as_pointer()) if obj else None
         if not r or not r['hit']:self.report({'WARNING'},'No Target: aim at a surface first');return {'CANCELLED'}
-        self._projector=obj;self._world=obj.matrix_world.copy();self._ratio=obj.ps.throw_ratio;self._last=None;self._feedback=''
+        self._projector=obj;self._world=obj.matrix_world.copy();self._ratio=obj.ps.throw_ratio;self._mode=obj.ps.solve_by;self._factor=self.factor(context);self._last=None;self._feedback=''
         self.value=measurement(r,self.field,obj.ps)*self.factor(context)
         self._previewing=True
         return context.window_manager.invoke_props_dialog(self,width=360,confirm_text='Apply Target')
     def factor(self,context):
+        if getattr(self,'_previewing',False):return self._factor
         return 1000 if self.field in {'DISTANCE','WIDTH','HEIGHT','PIXEL_SIZE'} and context.scene.ps_study.display_units=='mm' else 1
     def draw(self,context):
-        obj=selected(context);layout=self.layout
+        obj=getattr(self,'_projector',None) or selected(context);layout=self.layout
+        if not obj:layout.label(text='Projector unavailable');return
         layout.prop(obj.ps,'solve_by',text='Solve By')
         units=context.scene.ps_study.display_units if self.field in {'DISTANCE','WIDTH','HEIGHT','PIXEL_SIZE'} else 'px/m' if self.field=='DENSITY' else 'ratio'
         layout.prop(self,'value',text=dict((a,b) for a,b,c in FIELDS)[self.field]+' ('+units+')')
@@ -87,10 +90,13 @@ class BEAM_OT_solve(bpy.types.Operator):
         try:self._feedback=solve(context,self._projector,self.field,self.value/self.factor(context))
         except (ValueError,RuntimeError) as exc:self._feedback=str(exc)
         return True
-    def cancel(self,context):self.restore_preview(context)
+    def cancel(self,context):
+        self.restore_preview(context)
+        obj=getattr(self,'_projector',None)
+        if obj and obj.name in context.scene.objects:obj.ps.solve_by=self._mode
     def execute(self,context):
         if getattr(self,'_previewing',False):self.restore_preview(context)
-        try:message=solve(context,selected(context),self.field,self.value/self.factor(context))
+        try:message=solve(context,getattr(self,'_projector',None) or selected(context),self.field,self.value/self.factor(context))
         except (ValueError,RuntimeError) as exc:self.report({'WARNING'},str(exc));return {'CANCELLED'}
         self.report({'INFO'},message);return {'FINISHED'}
 

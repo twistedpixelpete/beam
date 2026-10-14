@@ -233,3 +233,7 @@ def select(context,obj):
     if context.mode!='OBJECT':bpy.ops.object.mode_set(mode='OBJECT')
     for other in context.selected_objects:other.select_set(False)
     obj.select_set(True);context.view_layer.objects.active=obj
+    if obj.beam_screen.is_screen:
+        context.scene.ps_study.active_screen=obj
+        from .study_data import sync_selection
+        sync_selection(context)

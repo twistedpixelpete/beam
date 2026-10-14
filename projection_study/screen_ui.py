@@ -78,7 +78,7 @@ class BEAM_PT_screens(bpy.types.Panel):
     @classmethod
     def poll(cls,context):return context.scene.ps_study.inspector=='SCREEN'
     def draw(self,context):
-        layout=self.layout;obj=screen_data.active(context) or context.scene.ps_study.active_screen
+        layout=self.layout;obj=screen_data.active(context,persistent=True)
         layout.prop(context.scene.ps_study,'active_screen',text='Screen')
         if obj and obj.beam_screen.screen_type=='FLAT':layout.operator('beam.auto_blend',text='Auto Blend',icon='GROUP')
         create=section(layout,'screen_create','Create Screen',True)

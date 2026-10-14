@@ -216,6 +216,11 @@ def draw(obj,record,view_projection,projected_identifiers=True,receiver_exclusio
             if key not in reverse_keys:_batches[key][1].draw(shader)
 
 
+def prune_maps(live_keys):
+    """Release removed projectors even when viewport overlays are switched off."""
+    for key in set(_maps)-set(live_keys):_maps.pop(key)['offscreen'].free()
+
+
 def clear():
     _batches.clear()
     for entry in _maps.values(): entry['offscreen'].free()

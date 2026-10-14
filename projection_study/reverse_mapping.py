@@ -4,6 +4,8 @@ Source shader graphs and UVs are untouched. Coverage is evaluated in projector
 space, while the source material continues to evaluate in its own UV space.
 """
 import bpy
+import gpu
+import logging
 import numpy as np
 from . import runtime,projection_renderer
 
@@ -11,6 +13,7 @@ _images={}
 _signatures={}
 _busy=False
 _error=''
+_object_errors={}
 
 class BeamReverseSlot(bpy.types.PropertyGroup):
     index:bpy.props.IntProperty()
@@ -82,33 +85,62 @@ def build_group(projectors,mode,dim):
     return group
 
 
+def surface_outputs(material):
+    if not material or not material.use_nodes:raise ValueError('Assign node-based source materials first')
+    # Blender may resolve an engine-specific output whose active flag is false.
+    outputs=list(dict.fromkeys(n for engine in ('ALL','EEVEE','CYCLES')
+                              if (n:=material.node_tree.get_output_node(engine)) is not None))
+    if not outputs or any(not n.inputs['Surface'].is_linked for n in outputs):
+        raise ValueError('Each active material output needs a connected Surface shader')
+    return outputs
+
+
 def wrap(source,coverage,p):
-    output=next((n for n in source.node_tree.nodes if n.type=='OUTPUT_MATERIAL' and n.is_active_output),None)
-    if not output or not output.inputs['Surface'].is_linked:raise ValueError('Material needs a connected Surface output')
+    surface_outputs(source)
     material=source.copy();material.name='Beam Reverse · '+source.name;material['beam_reverse']=True
+    material.use_fake_user=False
     nodes=material.node_tree.nodes;links=material.node_tree.links
-    output=next((n for n in nodes if n.type=='OUTPUT_MATERIAL' and n.is_active_output),None)
-    if not output or not output.inputs['Surface'].is_linked:raise ValueError('Material needs a connected Surface output')
-    original=output.inputs['Surface'].links[0].from_socket
-    mask=nodes.new('ShaderNodeGroup');mask.node_tree=coverage;mask.name='Beam Coverage';mask['beam_reverse_mask']=True
-    outside=nodes.new('ShaderNodeBsdfTransparent' if p.mode=='HIDDEN' else 'ShaderNodeBsdfDiffuse')
-    outside.inputs[0].default_value=(.055,.065,.08,1)
-    if p.mode=='HIDDEN':outside.inputs[0].default_value=(1,1,1,1)
-    outside_shader=outside.outputs[0]
-    if p.mode=='DIM':
-        outside.inputs[0].default_value=(0,0,0,1)
-        dim=nodes.new('ShaderNodeMixShader');dim.inputs[0].default_value=p.dim;links.new(outside_shader,dim.inputs[1]);links.new(original,dim.inputs[2]);outside_shader=dim.outputs[0]
-    mix=nodes.new('ShaderNodeMixShader');links.new(mask.outputs['Covered'],mix.inputs[0]);links.new(outside_shader,mix.inputs[1]);links.new(original,mix.inputs[2]);final=mix.outputs[0]
-    if p.mode=='OVERLAP':
-        highlight=nodes.new('ShaderNodeEmission');highlight.inputs[0].default_value=(1,.42,.08,1)
-        diagnosis=nodes.new('ShaderNodeMixShader');links.new(mask.outputs['Overlap'],diagnosis.inputs[0]);links.new(final,diagnosis.inputs[1]);links.new(highlight.outputs[0],diagnosis.inputs[2]);final=diagnosis.outputs[0]
-    links.new(final,output.inputs['Surface'])
+    # Materials can have separate active EEVEE/Cycles outputs. Wrap every one.
+    for output in surface_outputs(material):
+        original=output.inputs['Surface'].links[0].from_socket
+        mask=nodes.new('ShaderNodeGroup');mask.node_tree=coverage;mask.name='Beam Coverage';mask['beam_reverse_mask']=True
+        outside=nodes.new('ShaderNodeBsdfTransparent' if p.mode=='HIDDEN' else 'ShaderNodeBsdfDiffuse')
+        outside.inputs[0].default_value=(1,1,1,1) if p.mode=='HIDDEN' else (.055,.065,.08,1)
+        outside_shader=outside.outputs[0]
+        if p.mode=='DIM':
+            outside.inputs[0].default_value=(0,0,0,1)
+            dim=nodes.new('ShaderNodeMixShader');dim.inputs[0].default_value=p.dim;links.new(outside_shader,dim.inputs[1]);links.new(original,dim.inputs[2]);outside_shader=dim.outputs[0]
+        mix=nodes.new('ShaderNodeMixShader');links.new(mask.outputs['Covered'],mix.inputs[0]);links.new(outside_shader,mix.inputs[1]);links.new(original,mix.inputs[2]);final=mix.outputs[0]
+        if p.mode=='OVERLAP':
+            highlight=nodes.new('ShaderNodeEmission');highlight.inputs[0].default_value=(1,.42,.08,1)
+            diagnosis=nodes.new('ShaderNodeMixShader');links.new(mask.outputs['Overlap'],diagnosis.inputs[0]);links.new(final,diagnosis.inputs[1]);links.new(highlight.outputs[0],diagnosis.inputs[2]);final=diagnosis.outputs[0]
+        links.new(final,output.inputs['Surface'])
     if hasattr(material,'surface_render_method'):material.surface_render_method='DITHERED'
     return material
 
 
+def bindings(obj):
+    """Match by wrapper identity: Blender material slots can move or disappear."""
+    saved={entry.wrapper.as_pointer():entry for entry in obj.beam_reverse.slots if entry.wrapper}
+    return [(slot,saved[slot.material.as_pointer()]) for slot in obj.material_slots
+            if slot.material and slot.material.as_pointer() in saved]
+
+
+def coverage_groups(p):
+    return {n.node_tree for saved in p.slots if saved.wrapper and saved.wrapper.use_nodes
+            for n in saved.wrapper.node_tree.nodes if n.type=='GROUP' and n.get('beam_reverse_mask') and n.node_tree}
+
+
+def invalidate_masks(p):
+    for group in coverage_groups(p):
+        for node in group.nodes:
+            if node.type=='MATH' and node.name.endswith(' valid') and node.inputs[1].default_value:
+                node.inputs[1].default_value=0
+
+
 def enable(context,obj):
     if not obj or obj.type!='MESH' or obj.ps.is_projector:raise ValueError('Select a UV-mapped receiving mesh')
+    if obj.library and not obj.override_library:raise ValueError('Make the receiving object local before enabling Reverse Mapping')
     if not obj.data.uv_layers.active:raise ValueError('The selected mesh needs an active UV map')
     if not obj.material_slots or any(not s.material or not s.material.use_nodes for s in obj.material_slots):raise ValueError('Assign node-based source materials first')
     p=obj.beam_reverse
@@ -121,6 +153,7 @@ def enable(context,obj):
     selected=sources(context,p)
     if not selected:raise ValueError('Choose a visible coverage projector or blend group')
     if len(selected)>32:raise ValueError('Reverse Mapping supports up to 32 coverage projectors per object')
+    for slot in obj.material_slots:surface_outputs(slot.material)
     coverage=build_group(selected,p.mode,p.dim)
     wrappers=[]
     try:
@@ -145,11 +178,8 @@ def enable(context,obj):
 
 def disable(obj):
     p=obj.beam_reverse
-    for saved in p.slots:
-        if saved.index<len(obj.material_slots):
-            slot=obj.material_slots[saved.index]
-            if slot.material==saved.wrapper:
-                slot.material=saved.material;slot.link=saved.link
+    for slot,saved in bindings(obj):
+        slot.material=saved.material;slot.link=saved.link
     p.enabled=False;p.slots.clear();p.status='Original materials restored';_signatures.pop(obj.as_pointer(),None)
     cleanup_orphans()
 
@@ -159,13 +189,22 @@ def cleanup_orphans():
         if material.get('beam_reverse') and material.users==0:bpy.data.materials.remove(material)
     for group in list(bpy.data.node_groups):
         if group.get('beam_reverse') and group.users==0:bpy.data.node_groups.remove(group)
+    for key,cached in list(_images.items()):
+        try:
+            if cached[1].users==0:_images.pop(key,None)
+        except ReferenceError:_images.pop(key,None)
+    for image in list(bpy.data.images):
+        if image.get('beam_coverage') and image.users==0:bpy.data.images.remove(image)
 
 
 def image_for(obj,record):
     shadow=projection_renderer.shadow_map(obj,record);key=obj.as_pointer();cached=_images.get(key)
+    if cached:
+        try:cached[1].name
+        except ReferenceError:_images.pop(key,None);cached=None
     # Images are refreshed only when optics, transforms, receivers or quality change.
     if cached and cached[0]==shadow['signature'] and cached[1].name in bpy.data.images:return cached[1]
-    width,height=shadow['size'];image=cached[1] if cached and cached[1].name in bpy.data.images else next((i for i in bpy.data.images if i.get('beam_coverage_uuid')==obj.ps.uuid),None)
+    width,height=shadow['size'];image=cached[1] if cached else next((i for i in bpy.data.images if i.get('beam_coverage_uuid')==obj.ps.uuid),None)
     if image is None:image=bpy.data.images.new('.Beam Coverage '+obj.ps.uuid,width,height,float_buffer=True)
     image['beam_coverage_uuid']=obj.ps.uuid
     image.colorspace_settings.name='Non-Color';image['beam_coverage']=True
@@ -177,59 +216,85 @@ def image_for(obj,record):
     return image
 
 
+def refresh_object(obj):
+    p=obj.beam_reverse
+    attached=bindings(obj)
+    if not attached:
+        p.status='No managed material slots; restore materials before enabling again'
+        return
+    projectors=sources(bpy.context,p)
+    too_many=len(projectors)>32
+    if too_many:projectors=[]
+    key=(tuple(o.ps.uuid for o in projectors),p.mode,p.dim)
+    groups=coverage_groups(p)
+    if _signatures.get(obj.as_pointer())!=key:
+        records={saved.as_pointer():saved for slot,saved in attached}
+        for saved in records.values():surface_outputs(saved.material)
+        coverage=build_group(projectors,p.mode,p.dim);replacements={}
+        try:
+            for identity,saved in records.items():replacements[identity]=wrap(saved.material,coverage,p)
+        except Exception:
+            cleanup_orphans();raise
+        for slot,saved in attached:slot.material=replacements[saved.as_pointer()]
+        for identity,saved in records.items():saved.wrapper=replacements[identity]
+        groups={coverage};_signatures[obj.as_pointer()]=key;cleanup_orphans()
+    for projector in projectors:
+        record=runtime.CACHE.get(projector.as_pointer());uuid=projector.ps.uuid
+        if not record or not runtime.rigid(projector):
+            for group in groups:
+                node=group.nodes.get(uuid+' valid')
+                if node and node.inputs[1].default_value!=0:node.inputs[1].default_value=0
+            continue
+        image=image_for(projector,record);shadow=projection_renderer._maps[projector.as_pointer()]
+        for group in groups:
+            node=group.nodes.get(uuid+' depth')
+            if not node:continue
+            if node.image!=image:node.image=image
+            vals={'ratio_x':projector.ps.throw_ratio,'ratio_y':projector.ps.throw_ratio*projector.ps.resolution_x/projector.ps.resolution_y,
+                  'shift_x':.5-projector.ps.shift_h/100,'shift_y':.5-projector.ps.shift_v/100,
+                  'near':shadow['near'],'bias':max(.003/bpy.context.scene.unit_settings.scale_length,record['metrics'].distance/bpy.context.scene.unit_settings.scale_length/min(shadow['size'])*.5),'valid':1}
+            for suffix,value in vals.items():
+                n=group.nodes.get(uuid+' '+suffix)
+                if n and abs(n.inputs[1].default_value-value)>1e-8:n.inputs[1].default_value=value
+    status='Too many coverage projectors (maximum 32)' if too_many else f'{len(projectors)} coverage projectors · {p.mode.title()}' if projectors else 'No visible coverage source'
+    if p.status!=status:p.status=status
+
+
 def refresh_gpu():
-    """Called in a valid GPU context before viewport projection/export draws."""
+    """Refresh in a GPU context; isolate receiver failures and restore draw state."""
     global _busy,_error
     if _busy or not hasattr(bpy.types.Object,'beam_reverse'):return
+    live={o.as_pointer() for o in bpy.data.objects if managed(o)}
+    removed=set(_signatures)-live
+    if removed:
+        for key in removed:_signatures.pop(key,None);_object_errors.pop(key,None)
+        cleanup_orphans()
     objects=[o for o in bpy.context.scene.objects if managed(o)]
-    if not objects:return
-    _busy=True
+    if not objects:_error='';return
+    state=(gpu.state.blend_get(),gpu.state.depth_test_get(),gpu.state.depth_mask_get(),gpu.state.viewport_get())
+    _busy=True;errors=[]
     try:
         for obj in objects:
-            p=obj.beam_reverse;projectors=sources(bpy.context,p)
-            if len(projectors)>32:projectors=[];p.status='Too many coverage projectors (maximum 32)'
-            key=(tuple(o.ps.uuid for o in projectors),p.mode,p.dim)
-            groups={n.node_tree for saved in p.slots if saved.wrapper and saved.wrapper.use_nodes for n in saved.wrapper.node_tree.nodes if n.type=='GROUP' and n.get('beam_reverse_mask')}
-            if _signatures.get(obj.as_pointer())!=key:
-                # Source membership/mode changes rebuild wrappers; movement does not.
-                coverage=build_group(projectors,p.mode,p.dim)
-                for saved in p.slots:
-                    if saved.index>=len(obj.material_slots) or not saved.material:continue
-                    slot=obj.material_slots[saved.index]
-                    if slot.material==saved.wrapper:
-                        saved.wrapper=wrap(saved.material,coverage,p);slot.material=saved.wrapper
-                groups={coverage};_signatures[obj.as_pointer()]=key;cleanup_orphans()
-            for projector in projectors:
-                record=runtime.CACHE.get(projector.as_pointer());uuid=projector.ps.uuid
-                if not record or not runtime.rigid(projector):
-                    for group in groups:
-                        node=group.nodes.get(uuid+' valid')
-                        if node and node.inputs[1].default_value!=0:node.inputs[1].default_value=0
-                    continue
-                image=image_for(projector,record);shadow=projection_renderer._maps[projector.as_pointer()]
-                for group in groups:
-                    node=group.nodes.get(uuid+' depth')
-                    if not node:continue
-                    if node.image!=image:node.image=image
-                    vals={'ratio_x':projector.ps.throw_ratio,'ratio_y':projector.ps.throw_ratio*projector.ps.resolution_x/projector.ps.resolution_y,
-                          'shift_x':.5-projector.ps.shift_h/100,'shift_y':.5-projector.ps.shift_v/100,
-                          'near':shadow['near'],'bias':max(.003/bpy.context.scene.unit_settings.scale_length,record['metrics'].distance/bpy.context.scene.unit_settings.scale_length/min(shadow['size'])*.5),'valid':1}
-                    for suffix,value in vals.items():
-                        n=group.nodes.get(uuid+' '+suffix)
-                        if n and abs(n.inputs[1].default_value-value)>1e-8:n.inputs[1].default_value=value
-            status=f'{len(projectors)} coverage projectors · {p.mode.title()}' if projectors else 'No visible coverage source'
-            if p.status!=status:p.status=status
-        _error=''
-    except Exception as exc:
-        _error=str(exc)
-        for obj in objects:
-            if obj.beam_reverse.status!=_error:obj.beam_reverse.status='Coverage unavailable: '+_error
-    finally:_busy=False
+            try:
+                refresh_object(obj);_object_errors.pop(obj.as_pointer(),None)
+            except Exception as exc:
+                message=str(exc);errors.append(message)
+                if _object_errors.get(obj.as_pointer())!=message:
+                    logging.getLogger(__name__).exception('Beam coverage refresh failed for %s',obj.name)
+                _object_errors[obj.as_pointer()]=message
+                invalidate_masks(obj.beam_reverse)
+                status='Coverage unavailable: check GPU/material setup, or restore materials'
+                if obj.beam_reverse.status!=status:obj.beam_reverse.status=status
+        _error='; '.join(errors)
+    finally:
+        gpu.state.blend_set(state[0]);gpu.state.depth_test_set(state[1]);gpu.state.depth_mask_set(state[2]);gpu.state.viewport_set(*state[3])
+        _busy=False
 
 
 @bpy.app.handlers.persistent
 def reset(*args):
-    _images.clear();_signatures.clear()
+    global _error
+    _images.clear();_signatures.clear();_object_errors.clear();_error=''
 
 @bpy.app.handlers.persistent
 def pack(*args):
@@ -245,7 +310,9 @@ class BEAM_OT_reverse(bpy.types.Operator):
             if self.action=='DISABLE':
                 if not obj or not managed(obj):raise ValueError('Select a Reverse Mapping object')
                 disable(obj)
-            else:enable(context,obj)
+            else:
+                if bpy.app.background:raise ValueError('Reverse Mapping needs an interactive GPU viewport')
+                enable(context,obj)
         except (ValueError,RuntimeError) as exc:self.report({'WARNING'},str(exc));return {'CANCELLED'}
         return {'FINISHED'}
 
@@ -253,7 +320,6 @@ class BEAM_OT_reverse_group(bpy.types.Operator):
     bl_idname='beam.reverse_group';bl_label='Use Active Blend Group';bl_options={'UNDO'}
     group_uuid:bpy.props.StringProperty()
     def execute(self,context):
-        from .blend_groups import active_group
         obj=context.view_layer.objects.active;group=next((g for g in context.scene.ps_study.blend_groups if g.uuid==self.group_uuid),None)
         if not obj or obj.type!='MESH' or not group:
             self.report({'WARNING'},'Choose a receiving mesh and an active Blend Group');return {'CANCELLED'}
@@ -273,7 +339,7 @@ def register():
     bpy.types.Object.beam_reverse=bpy.props.PointerProperty(type=BeamReverseSettings)
     for handlers in (bpy.app.handlers.load_post,bpy.app.handlers.undo_post,bpy.app.handlers.redo_post):
         if reset not in handlers:handlers.append(reset)
-    bpy.app.handlers.save_pre.append(pack)
+    if pack not in bpy.app.handlers.save_pre:bpy.app.handlers.save_pre.append(pack)
 
 def unregister():
     for obj in bpy.data.objects:

@@ -7,10 +7,15 @@ CLASSES=(*screen_data.CLASSES,*screen_operators.CLASSES,*screen_ui.CLASSES)
 @persistent
 def changed(scene=None,graph=None):
     if graph and any(u.is_updated_geometry or u.is_updated_transform for u in graph.updates):screen_display.clear()
+    if graph and any(u.is_updated_geometry for u in graph.updates):
+        from . import layout_coverage
+        layout_coverage._cache.clear()
 
 @persistent
 def reset(*args):
     screen_objects._owners.clear();screen_display.clear()
+    from . import layout_coverage
+    layout_coverage._cache.clear()
 
 def tick():
     from .group_lifecycle import defer_native_copy

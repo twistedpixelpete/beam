@@ -78,10 +78,17 @@ def copy_settings(source,dest):
 
 
 def active(context,persistent=False):
+    if persistent:
+        # As with projectors, expose a newly selected screen before the timer runs.
+        # An unchanged selection must not override an explicit inspector choice.
+        from .study_data import _seen_selection
+        current=context.view_layer.objects.active
+        key=context.scene.as_pointer()
+        if current and current.select_get() and current.beam_screen.is_screen and key in _seen_selection and _seen_selection[key]!=current.as_pointer():return current
+        obj=context.scene.ps_study.active_screen
+        if obj and obj.name in context.scene.objects and obj.beam_screen.is_screen:return obj
     obj=context.view_layer.objects.active
     if obj and obj.get('beam_screen_detail'):obj=obj.parent
-    if obj and obj.type=='MESH' and obj.beam_screen.is_screen:return obj
-    obj=context.scene.ps_study.active_screen if persistent else None
-    return obj if obj and obj.name in context.scene.objects and obj.beam_screen.is_screen else None
+    return obj if obj and obj.type=='MESH' and obj.beam_screen.is_screen else None
 
 CLASSES=(BeamScreen,)
