@@ -111,7 +111,7 @@ def prune(context):
 def snapshot_if_needed(group,context,force=False):
     if not group.controller:return
     key=group.controller.as_pointer()
-    state=(group.uuid,group.anchor_uuid,tuple(getattr(group,k) for k in _FIELDS),tuple(m.projector_uuid for m in group.members))
+    state=(group.uuid,group.anchor_uuid,group.layout_screen.beam_screen.uuid if group.layout_screen else '',tuple(getattr(group,k) for k in _FIELDS),tuple(m.projector_uuid for m in group.members))
     if force or _snapshot_state.get(key)!=state or not group.controller.get('beam_group_recipe'):
         snapshot(group,context)
         _snapshot_state[key]=state
@@ -137,7 +137,7 @@ def snapshot(group,context):
         if group.controller.get(image_key)!=obj.ps.image:
             if obj.ps.image:group.controller[image_key]=obj.ps.image
             elif image_key in group.controller:del group.controller[image_key]
-    data=dict(version=1,settings={k:getattr(group,k) for k in _FIELDS},world=groups.matrix_metres(group.controller.matrix_world,unit),members=members)
+    data=dict(version=1,layout_screen_uuid=group.layout_screen.beam_screen.uuid if group.layout_screen else '',settings={k:getattr(group,k) for k in _FIELDS},world=groups.matrix_metres(group.controller.matrix_world,unit),members=members)
     for key in list(group.controller.keys()):
         if key.startswith('beam_member_image_') and key.rsplit('_',1)[-1].isdigit() and int(key.rsplit('_',1)[-1])>=len(members):del group.controller[key]
     encoded=json.dumps(data,sort_keys=True)
@@ -165,6 +165,8 @@ def instantiate(recipe,context,source_controller,controller=None,offset=True):
     old=groups._updating;groups._updating=True
     try:
         for key,value in recipe['settings'].items():setattr(group,key,value)
+        screen_uuid=recipe.get('layout_screen_uuid','')
+        if screen_uuid:group.layout_screen=next((o for o in context.scene.objects if o.beam_screen.is_screen and o.beam_screen.uuid==screen_uuid),None)
         for i,item in enumerate(recipe['members']):
             obj=create_projector(context)
             for key,value in item['settings'].items():setattr(obj.ps,key,value)

@@ -66,6 +66,8 @@ def export_view(context,view,path,area=None):
     options=dict(projected_identifiers=view.include_projected_identifiers,labels=view.include_labels,frustums=view.include_frustums,grids=view.include_grids,overlays=view.include_overlays)
     with context.temp_override(area=area,region=region):
         context.view_layer.update(); runtime.refresh(True)
+        from . import reverse_mapping
+        reverse_mapping.refresh_gpu()
         graph=context.evaluated_depsgraph_get(); cam=view.camera.evaluated_get(graph)
         view_matrix=cam.matrix_world.inverted()
         projection=cam.calc_matrix_camera(graph,x=width,y=height,scale_x=1,scale_y=1)

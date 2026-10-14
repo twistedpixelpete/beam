@@ -85,3 +85,35 @@ PASS: Off/Minimal/Full, independent ID/dimension controls and live m/mm labels.
 PASS: native sidebar, expanded sections, Presentation enter/restore, screenshots inspected.
 Screen-only implementation changes; no projector or engineering implementation changed.
 Full Blender 4.5 runtime and non-macOS validation remain untested.
+
+Beam 0.9.0 feature beta — verified 2026-10-14
+Branch: feature/beam-auto-blend-reverse-mapping-ui
+Base: fee1b37 (released 0.8.1 beta); main left unchanged.
+Environment: Blender 5.2.2 LTS, macOS / Metal; disposable factory-startup processes.
+
+44 standalone Python tests PASS (11 new inverse/layout/union checks).
+Existing Blender milestones 1–15 PASS.
+Existing group lifecycle, frustum helpers, JSON contract, screen builder,
+screen edges and screen beauty regression scripts PASS.
+Auto Blend centimetre-scene JSON export: frozen schema and relationships PASS.
+New planning acceptance PASS:
+  six inverse values, locks, parent transform, angled lens solve, shifted-axis refusal;
+  exact count / Auto Count, horizontal / vertical / array, rotated screens;
+  identity / Study Colour independence, template optics/shift/lumens/stack;
+  equal spacing, px/m/percent, gaps, moving screens, anchor resolution;
+  copied group screen reference, persistent screen actions, obstruction rollback;
+  original shader/UV preservation and shared-mesh material isolation.
+Native Blender Undo/Redo PASS: inverse solve, Auto Blend, reverse enable/disable.
+GPU images + sampled pixels PASS: continuous UV content, dim/covered/hidden,
+union, overlap diagnostic, projector movement, occluder shadow and restoration.
+Save/load PASS: reverse settings and original material references restore.
+Cache PASS: ten forced idle redraws without depth uploads or material rebuilds.
+Live inverse target callback and Cancel rollback PASS.
+Reverse masks update with native overlays disabled PASS.
+Real sidebar, inverse dialog and Auto Blend dialog screenshots captured.
+
+Limitations: 0.9 remains an unreleased feature beta. Position solves reject lens
+shift; Auto Blend coverage is nominal planar coverage with centre-hit validation;
+Reverse Mapping requires a GPU viewport, max 32 sources, finite shadow resolution.
+No final-render animation/headless live masking or cross-platform performance claim.
+No external PATCH importer/disguise Designer validation. See docs/PLANNING-MILESTONE.md.

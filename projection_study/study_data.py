@@ -52,6 +52,8 @@ def camera_visibility(self,context):
 
 
 class PS_SceneSettings(bpy.types.PropertyGroup):
+    inspector: EnumProperty(name='Inspector',items=[('PROJECTOR','Projector',''),('SCREEN','Screen',''),('GROUP','Blend',''),('VIEW','Views','')],default='PROJECTOR',update=redraw)
+    active_screen: PointerProperty(name='Active Screen',type=bpy.types.Object,poll=lambda self,obj:obj.type=='MESH' and hasattr(obj,'beam_screen') and obj.beam_screen.is_screen,update=redraw)
     project_name: StringProperty(name='Project Name')
     venue: StringProperty(name='Venue')
     revision: StringProperty(name='Revision')
@@ -87,11 +89,18 @@ def sync_selection(context):
     if settings.active_projector and settings.active_projector.name not in scene.objects:
         settings.active_projector=None
     if changed and obj and obj.select_get() and obj.ps.is_projector:
-        settings.active_projector=obj
+        settings.active_projector=obj;settings.inspector='PROJECTOR'
+    if changed and obj and obj.select_get() and obj.beam_screen.is_screen:
+        settings.active_screen=obj;settings.inspector='SCREEN'
+    if settings.active_screen and settings.active_screen.name not in scene.objects:settings.active_screen=None
     if changed and obj and obj.select_get():
         for i,group in enumerate(settings.blend_groups):
             if group.controller==obj or any(m.projector==obj for m in group.members):
-                settings.blend_group_index=i;break
+                settings.blend_group_index=i
+                if group.controller==obj:settings.inspector='GROUP'
+                break
+        for i,view in enumerate(settings.views):
+            if view.camera==obj:settings.view_index=i;settings.inspector='VIEW';break
     return changed
 
 

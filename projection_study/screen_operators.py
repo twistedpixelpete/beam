@@ -41,7 +41,7 @@ class BEAM_OT_screen_action(bpy.types.Operator):
         self.layout.label(text='Keep geometry; disconnect parametric editing.' if self.action=='SURFACE' else 'Bake modifiers and remove Screen Builder metadata.')
         self.layout.label(text='Undo restores the previous screen.')
     def execute(self,context):
-        obj=screen_data.active(context)
+        obj=screen_data.active(context,persistent=True)
         try:
             if self.action=='SOURCE':
                 source=context.view_layer.objects.active
@@ -107,14 +107,14 @@ class BEAM_OT_screen_export(bpy.types.Operator):
     filter_glob: StringProperty(default='*.obj;*.fbx',options={'HIDDEN'})
     overwrite: BoolProperty(name='Overwrite',default=False)
     def invoke(self,context,event):
-        obj=screen_data.active(context)
+        obj=screen_data.active(context,persistent=True)
         if not obj:self.report({'ERROR'},'Select a screen');return {'CANCELLED'}
         self.filepath=obj.beam_screen.identifier+('.obj' if self.format=='OBJ' else '.fbx');context.window_manager.fileselect_add(self);return {'RUNNING_MODAL'}
     def draw(self,context):
-        self.layout.prop(self,'format');self.layout.prop(self,'overwrite');obj=screen_data.active(context)
+        self.layout.prop(self,'format');self.layout.prop(self,'overwrite');obj=screen_data.active(context,persistent=True)
         if obj:self.layout.label(text=obj.beam_screen.export_mode.title()+' · metres · Z up')
     def execute(self,context):
-        obj=screen_data.active(context)
+        obj=screen_data.active(context,persistent=True)
         if not obj:self.report({'ERROR'},'Select a screen');return {'CANCELLED'}
         try:path=screen_export.export(context,obj,self.filepath,self.format,obj.beam_screen.export_mode,obj.beam_screen.export_space,self.overwrite)
         except (ValueError,RuntimeError,OSError,TypeError) as exc:self.report({'ERROR'},str(exc));return {'CANCELLED'}

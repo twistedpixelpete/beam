@@ -77,9 +77,11 @@ def copy_settings(source,dest):
             setattr(dest,prop.identifier,getattr(source,prop.identifier))
 
 
-def active(context):
+def active(context,persistent=False):
     obj=context.view_layer.objects.active
     if obj and obj.get('beam_screen_detail'):obj=obj.parent
-    return obj if obj and obj.type=='MESH' and obj.beam_screen.is_screen else None
+    if obj and obj.type=='MESH' and obj.beam_screen.is_screen:return obj
+    obj=context.scene.ps_study.active_screen if persistent else None
+    return obj if obj and obj.name in context.scene.objects and obj.beam_screen.is_screen else None
 
 CLASSES=(BeamScreen,)

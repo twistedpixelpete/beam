@@ -175,7 +175,7 @@ def shadow_map(obj,record):
     return result
 
 
-def draw(obj,record,view_projection,projected_identifiers=True):
+def draw(obj,record,view_projection,projected_identifiers=True,receiver_exclusions=None):
     if not _batches and not scene_geometry.SURFACES: scene_geometry.prepare()
     destination=gpu.state.active_framebuffer_get()
     viewport=gpu.state.viewport_get()
@@ -210,7 +210,10 @@ def draw(obj,record,view_projection,projected_identifiers=True):
         shader.uniform_block('params',uniforms)
         shader.uniform_sampler('depthImage',shadow['texture'])
         shader.uniform_sampler('outputImage',texture); shader.uniform_sampler('identifierImage',text)
-        for key in shadow['receivers']: _batches[key][1].draw(shader)
+        from .reverse_mapping import managed
+        reverse_keys=receiver_exclusions if receiver_exclusions is not None else {o.as_pointer() for o in bpy.context.scene.objects if managed(o)}
+        for key in shadow['receivers']:
+            if key not in reverse_keys:_batches[key][1].draw(shader)
 
 
 def clear():
