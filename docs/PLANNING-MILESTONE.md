@@ -1,6 +1,6 @@
 # Beam 0.9 planning milestone — feature beta
 
-Maintainer: **Twisted Pixel**. This branch is an unreleased, experimental beta and remains in testing. The published 0.8.1 beta is unchanged. Use copies of studies while evaluating 0.9.
+Maintainer: **Twisted Pixel**. This milestone is an unreleased, experimental beta and remains in testing. The published 0.8.1 beta is unchanged. Use copies of studies while evaluating 0.9.
 
 ![Beam contextual inspector with three projectors and measured overlap](../examples/0.9/blend-inspector.png)
 
@@ -8,14 +8,14 @@ Maintainer: **Twisted Pixel**. This branch is an unreleased, experimental beta a
 
 1. Select a projector aimed at receiving geometry.
 2. In **Beam → Projector → Calculated → Set Projection Target**, choose **Set Image Height**, Width, Throw Distance, Throw Ratio, Pixel Density or Pixel Size.
-3. Choose **Solve By** and type the desired value. The viewport previews the result when the field changes. Confirm to keep it, or Cancel to restore the starting transform and throw ratio.
+3. Choose **Solve By** and type the desired value. The viewport previews the result when the field changes. Confirm to keep it, or Cancel to restore the starting transform, throw ratio and solve mode.
 4. Check the calculated readouts and target. An invalid request reports a warning and restores the original state.
 
 **Lens** keeps position fixed and adjusts throw ratio. **Position** holds throw ratio and orientation, moving along the optical axis. **Auto** chooses Position for distance or when the lens is locked; otherwise it chooses Lens. It is a deterministic choice, not a rigging optimiser. Position, lens and target locks are available. Resolution is always preserved. Native location locks are respected too.
 
 Distance is Beam's existing axial centre-target depth, not slant distance. Position solving currently requires zero horizontal and vertical lens shift: with a shifted lens, keeping orientation, target position and optical-axis-only movement is generally incompatible. Beam reports this instead of moving sideways or silently changing aim. Lens solving with shift can change the centre target; leave Target locked to reject that change, or unlock it deliberately. Constrained projectors and non-unit/sheared transforms are rejected.
 
-Widths, heights, distances and pixel sizes in the target dialog use the current m/mm display setting. Density is px/m; ratio is dimensionless. The normal throw ratio control remains editable as before.
+Widths, heights, distances and pixel sizes in the target dialog use the m/mm display setting captured when the dialog opens. Density is px/m; ratio is dimensionless. The normal throw ratio control remains editable as before.
 
 ### Equations and architecture
 
@@ -57,7 +57,9 @@ For physical overlap `oh/ov`, the required image width is:
 
 Without a fixed distance, throw is `W × TR`. At fixed throw, image size follows the forward solver. The grid is centred on the screen with equal spacing `W−oh` and `H−ov`. Auto Count searches increasing counts (up to 32), chooses the least overscan at the first valid count, then the smaller column count as a tie-break. It honours minimum/maximum throw, full nominal coverage and centre points remaining on the screen. It does not optimise manufacturer lenses, rigging or curved surfaces.
 
-`auto_layout` converts the scalar solution to screen-space transforms, validates first-hit centres, and creates the ordinary projector/group objects. Failed creation removes its objects and restores selection. `layout_coverage` projects current corner rays onto the attached screen plane, uses convex intersections for pairs and a polygon union for coverage. Results are cached by geometry, transforms and optics. Pixel/percentage readouts use the group's anchor projector scale; they are a nominal common-plane measure when members have different resolutions, rotations or optics.
+`layout_geometry` owns the shared flat-screen validation and frame contract; both creation and live measurements use it. Screens with missing faces, non-planar edits, modifiers or non-unit scale must be updated/restored first. Invalid projector scale is reported instead of contributing valid coverage.
+
+`auto_layout` converts the scalar solution to screen-space transforms, validates first-hit centres, and creates the ordinary projector/group objects. Failed creation removes its objects and restores selection. `layout_coverage` projects current corner rays onto the attached screen plane, uses convex intersections for pairs and a polygon union for coverage. Results are cached by geometry, transforms and optics. Changing overlap units preserves the requested physical overlap using the current anchor footprint. Pixel/percentage readouts use the group's anchor projector scale; they are a nominal common-plane measure when members have different resolutions, rotations or optics.
 
 ## Reverse Mapping: reveal existing UV content
 
@@ -82,7 +84,7 @@ Modes:
 
 The existing coverage engine supplies first-hit depth maps, including intervening geometry. A generated shader group evaluates each surface point in projector space, checks raster bounds and compares axial depth with that map. Masks combine as a union; a count greater than one drives overlap highlighting. The source material still evaluates with its own UV coordinates. Beam never reprojects its source texture.
 
-Each material slot gets an object-level copy of its source shader graph with a coverage wrapper. Original datablocks, shared meshes and UVs remain unchanged. Restore puts back original material references and slot link modes. A material manually assigned over a wrapper is preserved on restore. Edits to source image pixels remain shared; after changing the source shader graph, restore and re-enable to copy the new graph. Source/mode changes rebuild wrappers; movement only updates cached coverage images and scalar optics. No per-frame texture baking is used. GPU depth readback occurs when the depth-map signature changes, not on every idle frame.
+Each material slot gets an object-level copy of its source shader graph with a coverage wrapper. Original datablocks, shared meshes and UVs remain unchanged. Restore matches wrappers by identity, so material-slot reordering/removal does not lose the original material references or slot link modes. Every resolved EEVEE/Cycles material output is wrapped. A material manually assigned over a wrapper is preserved on restore. Edits to source image pixels remain shared; after changing the source shader graph, restore and re-enable to copy the new graph. Source/mode changes rebuild wrappers; movement only updates cached coverage images and scalar optics. Unused generated materials, node groups and coverage images are removed on restoration. Receiver errors fail closed independently and do not stop other receivers refreshing. No per-frame texture baking is used. GPU depth readback occurs when the depth-map signature changes, not on every idle frame.
 
 This first version supports up to 32 source projectors per receiver and requires a GPU viewport. Use Material Preview or Rendered viewport and Beam Study View PNG export. Packed masks preserve the last state in saved files, but **headless/final animation rendering is not a supported live-mask workflow**. Coverage resolution follows Beam's projection detail setting; small occlusion boundaries can show sampling/bias artifacts. More/larger masks cost memory and GPU readback time. Hidden uncovered geometry continues to participate in Beam's physical opaque-geometry occlusion model. It does not make a wall optically transparent.
 
@@ -112,6 +114,8 @@ Run tests only in disposable Blender sessions:
 - Existing milestones 1–15, group lifecycle, JSON contract, helper termination and screen builder/edge/beauty scripts remain regression checks.
 
 Manual acceptance: create a 16 × 3.375 m screen; generate three generic projectors with 200 px overlap; expect TR 1, 6 m throw, 6 × 3.375 m images and 0.625 m / 10.4167% overlap. Move the middle member 1 m sideways to produce a gap/incomplete coverage; Undo. Try a 6 m desired image height by Lens and 5 m distance by Position on a large flat target. On a UV chart, compare original, dimmed and overlap modes, move a projector and an occluder, then restore materials.
+
+The [PR #2 engineering review](PR2-ENGINEERING-REVIEW.md) records the review fixes, current validation and an eight-projector performance sanity check.
 
 ## Next milestone
 

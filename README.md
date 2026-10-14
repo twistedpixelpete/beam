@@ -6,7 +6,7 @@
 
 Use Beam to place projectors in a venue model, preview coverage and obstructions, plan overlapping projector groups, build projection screens or LED walls, and export study images and geometry.
 
-This feature branch adds inverse target solving, flat-screen Auto Blend, UV Reverse Mapping and contextual inspectors. **[Read the 0.9 how-to and limitations](docs/PLANNING-MILESTONE.md)**. The published download below remains the earlier 0.8.1 beta until this milestone is reviewed and released.
+The 0.9 development version adds inverse target solving, flat-screen Auto Blend, UV Reverse Mapping and contextual inspectors. **[Read the 0.9 how-to and limitations](docs/PLANNING-MILESTONE.md)**. The published download below remains the earlier 0.8.1 beta until a separate 0.9 release is published.
 
 ![Three Beam projectors casting overlapping calibration grids onto a wide screen](examples/0.8.1/projector-showcase.png)
 

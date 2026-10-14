@@ -117,3 +117,24 @@ shift; Auto Blend coverage is nominal planar coverage with centre-hit validation
 Reverse Mapping requires a GPU viewport, max 32 sources, finite shadow resolution.
 No final-render animation/headless live masking or cross-platform performance claim.
 No external PATCH importer/disguise Designer validation. See docs/PLANNING-MILESTONE.md.
+
+Beam PR #2 engineering review — 2026-10-14
+Blender 5.2.2 LTS d13f752e3b9c, macOS / Metal, disposable sessions.
+49/49 standalone Python tests; 10/10 new Blender review regressions PASS.
+All 15 existing Blender milestones and all 8 background acceptance scripts PASS.
+Planning GPU pixels + native Lens/Layout/Reverse Undo/Redo PASS.
+Position solve + group Reflow Undo/Redo; native group duplicate/modal lifecycle PASS.
+Exact save/reopen IDs/settings/locks/membership/metadata/material references PASS.
+Three GPU enable/disable cycles: zero generated wrapper/group/image orphans.
+Receiver failure isolation/recovery; GPU state; overlays-off map pruning PASS.
+Two unregister/register cycles: no remaining Beam handlers or screen timer PASS.
+Ten idle redraws and thirty idle refreshes: no extra depth uploads/wrapper rebuilds.
+Eight-projector 512-detail scene: idle median 1.77 ms; movement 4.49 ms;
+overlap 0.39 ms; lens solve 1.46 ms; 1000x600 viewport export 145 ms
+(earlier run 657 ms).
+These measure synchronous Beam work, not overall viewport FPS.
+Both tracked 0.9 examples reopen; original reverse materials restore PASS.
+Native dialogs/live preview/Cancel PASS, disposable captures only.
+Auto Blend SI export + frozen JSON schema/relations + 3 negative checks PASS.
+Compilation, diff whitespace checks and Blender extension archive validation PASS.
+See docs/PR2-ENGINEERING-REVIEW.md for findings, architecture and limitations.
