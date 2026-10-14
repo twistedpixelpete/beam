@@ -39,7 +39,8 @@ def create(context, source=None):
     unit = scene.unit_settings.scale_length
     name = next_identifier([o.ps.identifier for o in projectors(scene)] + list(bpy.data.objects.keys()))
     obj = bpy.data.objects.new(name, body_mesh(name, unit))
-    context.collection.objects.link(obj)
+    from .ui_collections import collection
+    destination=collection(scene,'PROJECTORS');destination.objects.link(obj)
     p = obj.ps
     if source:
         for prop in p.bl_rna.properties:
@@ -63,7 +64,7 @@ def create(context, source=None):
     obj.lock_scale = (True,True,True)
     obj.color = (*p.colour,1)
     obj.show_name = False
-    ensure_optics(obj, context.collection, unit)
+    ensure_optics(obj, destination, unit)
     for item in context.selected_objects:
         item.select_set(False)
     obj.select_set(True)

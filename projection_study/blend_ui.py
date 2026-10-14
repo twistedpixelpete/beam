@@ -1,54 +1,56 @@
-from . import blend_groups
+"""Compact cached summaries; pair-level measurements are progressively disclosed."""
+from . import blend_groups,ui_context
 from .display_units import dimension
 
+def overlap(value,mode):return f"{value['pixels']:,.0f} px" if mode=='PIXELS' else f"{value['percent']:.1f}%" if mode=='PERCENT' else f"{value['metres']:.2f} m"
 
-def overlap(value,mode):
-    return f"{value['pixels']:,.0f} px" if mode=='PIXELS' else f"{value['percent']:.1f}%" if mode=='PERCENT' else f"{value['metres']:.2f} m"
-
+def values(v,units):return f"{v['pixels']:.0f} px · {dimension(v['metres'],units)} · {v['percent']:.1f}%"
 
 def draw_groups(layout,context):
-    from .ui import section
-    settings=context.scene.ps_study
-    row=layout.row(align=True);row.operator('beam.create_group',text='Create Blend',icon='ADD');row.operator('beam.create_group',text='From Selection').from_selection=True
-    if not settings.blend_groups:return
-    layout.template_list('UI_UL_list','beam_groups',settings,'blend_groups',settings,'blend_group_index',rows=2)
-    group=blend_groups.active_group(context)
-    if not group:return
-    layout.prop(group,'name',text='Group')
-    layout.label(text=f'{group.layout.title()} · {len(group.members)} members')
-    if group.layout_screen:
-        from .layout_coverage import report
-        coverage=report(group,context)
-        layout.label(text='Screen: '+group.layout_screen.name)
-        if coverage:layout.label(text=f"{coverage['coverage']:.1f}% · {coverage['status']}",icon='CHECKMARK' if coverage['coverage']>=99.99 else 'ERROR')
-        layout.operator('beam.auto_blend',text='Auto Blend New Layout')
-    layout.prop(group,'input_mode',text='Overlap Units')
-    if group.layout!='VERTICAL':layout.prop(group,'overlap_h',text='Horizontal')
-    if group.layout!='HORIZONTAL':layout.prop(group,'overlap_v',text='Vertical')
-    pairs=blend_groups.pair_data(group,context)
-    if any(pair['reference_status']=='preview' for pair in pairs):layout.label(text='Preview plane · no centre hit',icon='INFO')
-    if pairs:layout.label(text='Nominal overlap · anchor pixel scale',icon='INFO')
-    for pair in pairs:
-        box=layout.box();box.label(text=f"{pair['a']} ↔ {pair['b']} · {'Horizontal' if pair['axis']=='H' else 'Vertical'}")
-        units=settings.display_units
-        for title,key in [('Requested','desired'),('Actual','actual')]:
-            v=pair[key];box.label(text=f"{title}: {v['pixels']:.1f} px · {dimension(v['metres'],units)} · {v['percent']:.1f}%")
-        if pair.get('gap_m',0)>1e-5:box.label(text='Gap: '+dimension(pair['gap_m'],units),icon='ERROR')
-    row=layout.row(align=True);row.operator('beam.group_action',text='Reflow').action='APPLY';row.operator('beam.group_action',text='Solo Group',icon='HIDE_OFF').action='SOLO'
-    box=section(layout,'blend_members','Members / Editing',True)
+    from .ui import section,status,actions
+    s=context.scene.ps_study;units=s.display_units
+    row=layout.row(align=True);row.operator('beam.create_group',text='New Blend',icon='ADD');row.operator('beam.create_group',text='From Selection').from_selection=True
+    if not s.blend_groups:status(layout,'No Blend Group');return
+    layout.template_list('UI_UL_list','beam_groups',s,'blend_groups',s,'blend_group_index',rows=2)
+    g=blend_groups.active_group(context)
+    if not g:return
+    layout.prop(g,'name',text='Group');actions(layout,context)
+    anchor=next((m.projector.ps.identifier for m in g.members if m.projector and m.projector.ps.uuid==g.anchor_uuid),'Missing')
+    layout.label(text=f'{len(g.members)} members · {g.layout.title()} · Anchor {anchor}')
+    if g.layout=='ARRAY':layout.label(text=f'{g.columns} columns × {g.rows} rows')
+    data=ui_context.summary(context,g);coverage=data.get('coverage');pairs=data.get('pairs',[])
+    if coverage:status(layout,f"{coverage['coverage']:.1f}% · {coverage['status']}",coverage['coverage']>=99.99 and coverage['status'].startswith('Valid'))
+    elif not data:status(layout,'Updating measurements')
+    box=section(layout,'blend_overlap','Overlap')
     if box:
-        positions=blend_groups.cells(group.layout,len(group.members),group.columns)
-        for i,(member,(column,row)) in enumerate(zip(group.members,positions)):
-            if not member.projector:continue
-            label=f'{i+1}. {member.projector.ps.identifier}'
-            if group.layout=='ARRAY':label+=f' · R{row+1} C{column+1}'
-            if member.projector.ps.uuid==group.anchor_uuid:label+=' · Anchor'
-            box.operator('beam.select_member',text=label,icon='OUTLINER_OB_CAMERA').index=i
-        row=box.row(align=True);row.operator('beam.group_action',text='Add Selected',icon='ADD').action='ADD_SELECTED';row.operator('beam.group_action',text='Remove',icon='REMOVE').action='REMOVE'
-        row=box.row(align=True);row.operator('beam.group_action',text='New Projector').action='ADD_NEW';row.operator('beam.group_action',text='Duplicate').action='DUPLICATE'
-        row=box.row(align=True);row.operator('beam.group_action',text='Select Controller').action='SELECT';row.operator('beam.group_action',text='Reset Member').action='RESET'
-    box=section(layout,'blend_advanced','Preview / Notes',True)
+        box.prop(g,'input_mode',text='Request Units')
+        if g.layout!='VERTICAL':box.prop(g,'overlap_h',text='Horizontal')
+        if g.layout!='HORIZONTAL':box.prop(g,'overlap_v',text='Vertical')
+        for axis,title in [('H','Horizontal'),('V','Vertical')]:
+            axis_pairs=[p for p in pairs if p['axis']==axis]
+            if not axis_pairs:continue
+            first=axis_pairs[0];box.label(text=title)
+            box.label(text='Request '+values(first['desired'],units))
+            lows={k:min(p['actual'][k] for p in axis_pairs) for k in ('pixels','metres','percent')};highs={k:max(p['actual'][k] for p in axis_pairs) for k in lows}
+            if highs['metres']-lows['metres']<1e-5:box.label(text='Actual '+values(first['actual'],units))
+            else:
+                box.label(text=values(lows,units)+' min');box.label(text=values(highs,units)+' max')
+            if any(p.get('gap_m',0)>1e-5 for p in axis_pairs):status(box,'GAP · '+dimension(max(p.get('gap_m',0) for p in axis_pairs),units))
+        detail=section(box,'blend_pairs','Pair Details',True)
+        if detail:
+            for pair in pairs:
+                detail.label(text=f"{pair['a']} ↔ {pair['b']} · {pair['axis']}")
+                detail.label(text='Request '+values(pair['desired'],units));detail.label(text='Actual '+values(pair['actual'],units))
+    row=layout.row(align=True);row.operator('beam.group_action',text='Reflow Group',icon='FILE_REFRESH').action='APPLY'
+    if g.layout_screen:
+        row.operator('beam.ui_new_auto',text='New Auto Blend',icon='ADD')
+    box=section(layout,'blend_members','Members')
     if box:
-        row=box.row(align=True);row.prop(group,'show_overlap',text='Overlap');row.prop(group,'preview_edge_blend',text='Feather')
-        box.prop(group,'combined',text='Combined Preview');box.prop(group,'notes')
-        box.operator('beam.group_action',text='Ungroup').action='UNGROUP'
+        box.template_list('BEAM_UL_members','beam_members',g,'members',s,'ui_member_index',rows=3,maxrows=4)
+        row=box.row(align=True);row.operator('beam.group_action',text='Add Selected',icon='ADD').action='ADD_SELECTED';row.operator('beam.group_action',text='Remove Selected',icon='REMOVE').action='REMOVE'
+        row=box.row(align=True);row.operator('beam.group_action',text='New Projector').action='ADD_NEW';row.operator('beam.group_action',text='Reset Member').action='RESET'
+    box=section(layout,'blend_advanced','Preview / Editing',True)
+    if box:
+        row=box.row(align=True);row.prop(g,'show_overlap',text='Overlap');row.prop(g,'preview_edge_blend',text='Feather')
+        box.prop(g,'combined',text='Combined Preview');box.prop(g,'notes')
+        row=box.row(align=True);row.operator('beam.group_action',text='Duplicate').action='DUPLICATE';row.operator('beam.group_action',text='Ungroup').action='UNGROUP'

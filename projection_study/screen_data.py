@@ -84,7 +84,7 @@ def active(context,persistent=False):
         from .study_data import _seen_selection
         current=context.view_layer.objects.active
         key=context.scene.as_pointer()
-        if current and current.select_get() and current.beam_screen.is_screen and key in _seen_selection and _seen_selection[key]!=current.as_pointer():return current
+        if not context.scene.ps_study.pin_context and current and current.select_get() and current.beam_screen.is_screen and key in _seen_selection and _seen_selection[key]!=current.as_pointer():return current
         obj=context.scene.ps_study.active_screen
         if obj and obj.name in context.scene.objects and obj.beam_screen.is_screen:return obj
     obj=context.view_layer.objects.active

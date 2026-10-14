@@ -1,5 +1,6 @@
 """Blend controllers own layout slots; projector local transforms remain editable."""
 import bpy
+from .ui_collections import collection as ui_collection
 from mathutils import Matrix,Vector
 from bpy.props import StringProperty,PointerProperty,CollectionProperty,EnumProperty,IntProperty,FloatProperty,BoolProperty
 from .utils import new_uuid
@@ -136,14 +137,14 @@ def create(context,objects,layout,columns,rows,overlap,mode,preserve=False):
         group.rows=(len(objects)+group.columns-1)//group.columns; group.input_mode=mode; group.previous_mode=mode
         group.overlap_h=group.overlap_v=overlap; group.anchor_uuid=objects[0].ps.uuid
     finally: _updating=False
-    controller=bpy.data.objects.new(group.name,None); context.scene.collection.objects.link(controller)
+    controller=bpy.data.objects.new(group.name,None); ui_collection(context.scene,'GROUPS').objects.link(controller)
     controller['beam_group_uuid']=group.uuid; controller.empty_display_type='PLAIN_AXES'; controller.empty_display_size=.5
     controller.matrix_world=objects[0].matrix_world.copy(); controller.lock_scale=(True,)*3
     group.controller=controller
     for obj in objects:
         world=obj.matrix_world.copy()
         slot=bpy.data.objects.new(f'{group.name} · {obj.ps.identifier} Layout',None)
-        context.scene.collection.objects.link(slot); slot['beam_layout_slot']=True; slot.hide_select=True
+        ui_collection(context.scene,'GROUPS').objects.link(slot); slot['beam_layout_slot']=True; slot.hide_select=True
         slot.empty_display_size=.01; slot.parent=controller; slot.matrix_parent_inverse=Matrix.Identity(4)
         slot.location=controller.matrix_world.inverted()@world.translation
         member=group.members.add(); member.projector=obj; member.projector_uuid=obj.ps.uuid; member.slot=slot
