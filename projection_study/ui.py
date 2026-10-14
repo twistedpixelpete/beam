@@ -29,7 +29,12 @@ class PS_PT_main(bpy.types.Panel):
         from . import presentation
         layout=self.layout;settings=context.scene.ps_study;obj=selected(context);p=obj.ps if obj else None
         units=settings.display_units;record=runtime.CACHE.get(obj.as_pointer()) if obj else None
-        box=section(layout,'projector','Projector')
+        context_kind=settings.inspector
+        header=layout.box();header.prop(settings,'project_name',text='Project');row=header.row(align=True);row.prop(settings,'venue');row.prop(settings,'revision',text='Rev')
+        row=header.row(align=True);row.prop(settings,'display_units',expand=True);row.operator('beam.presentation',text='Technical' if presentation.active(context.area) else 'Presentation',icon='SHADING_SOLID')
+        row=layout.row(align=True);row.operator('ps.add',text='+ Projector');row.operator('beam.screen_create',text='+ Screen');row.operator('ps.create_view',text='+ View')
+        row=layout.row(align=True);row.prop(settings,'inspector',expand=True)
+        box=section(layout,'projector','Projector') if context_kind=='PROJECTOR' else None
         if box:
             row=box.row(align=True);row.operator('ps.add',text='Add Projector',icon='ADD');row.operator('ps.duplicate',text='Duplicate',icon='DUPLICATE')
             row=box.row(align=True);row.prop(settings,'active_projector',text='Active');row.operator('ps.active_projector',text='',icon='EYEDROPPER')
@@ -41,7 +46,7 @@ class PS_PT_main(bpy.types.Panel):
                 box.label(text=p.identifier+' · '+context.scene.transform_orientation_slots[0].type.title()+' axes',icon='OUTLINER_OB_CAMERA')
                 if not runtime.rigid(obj):box.label(text='Restore projector / parent scale to 1',icon='ERROR')
             row=box.row(align=True);row.operator('beam.create_group',text='Create Blend',icon='GROUP');row.operator('beam.create_group',text='From Selected').from_selection=True
-        box=section(layout,'projection','Projection')
+        box=section(layout,'projection','Projection') if context_kind=='PROJECTOR' else None
         if box:
             if not p:box.label(text='Choose a Beam projector',icon='INFO')
             else:
@@ -51,7 +56,7 @@ class PS_PT_main(bpy.types.Panel):
                 row=box.row(align=True);row.use_property_split=False;row.prop(p,'shift_h',text='H Shift %');row.prop(p,'shift_v',text='V Shift %')
                 box.prop(p,'stack',text='Stack');box.prop(p,'brightness',text='Brightness %');box.prop(p,'lumens',text='Lumens')
                 if p.output_mode=='IMAGE':box.template_ID(p,'image',open='ps.load_image')
-        box=section(layout,'calculated','Calculated')
+        box=section(layout,'calculated','Calculated') if context_kind=='PROJECTOR' else None
         if box:
             if not record or not record['hit']:
                 box.label(text='No centre hit',icon='INFO')
@@ -59,14 +64,24 @@ class PS_PT_main(bpy.types.Panel):
             else:
                 m=record['metrics']
                 for label,value in [('Throw',length(m.distance,units)),('Image',f'{m.width:,.2f} × {m.height:,.2f} m' if units=='m' else f'{m.width*1000:,.0f} × {m.height*1000:,.0f} mm'),('Density',f'{m.pixels_per_metre:,.0f} px/m'),('Pixel Size',f'{m.pixel_size_m*1000:.2f} mm/px'),('DPI',f'{m.dpi:.1f}'),('Illuminance',f'{m.lux:,.0f} lux')]:readout(box,label,value)
-                box.label(text='Nominal image · estimated lux',icon='INFO')
+                box.label(text='Calculated · nominal image / estimated lux',icon='INFO')
+                solve=section(box,'inverse','Set Projection Target',True)
+                if solve:
+                    solve.prop(p,'solve_by')
+                    from .inverse_solver import FIELDS
+                    for field,title,_ in FIELDS:
+                        solve.operator('beam.solve',text='Set '+title+'…',icon='GREASEPENCIL').field=field
+                    locks=section(solve,'solve_locks','Locks',True)
+                    if locks:
+                        for name in ('solve_lock_position','solve_lock_lens','solve_lock_target'):locks.prop(p,name)
+                        locks.label(text='Resolution is always preserved')
             box.prop(settings,'display_units',text='Units',expand=True)
-        if settings.blend_groups:
-            box=section(layout,'blend','Blend Group',True)
+        if settings.blend_groups and context_kind=='GROUP':
+            box=section(layout,'blend','Blend Group')
             if box:
                 from .blend_ui import draw_groups
                 draw_groups(box,context)
-        box=section(layout,'views','Study Views',True)
+        box=section(layout,'views','Study Views') if context_kind=='VIEW' else None
         if box:
             row=box.row(align=True);row.operator('ps.create_view',text='Add View',icon='CAMERA_DATA');row.operator('ps.capture_current',text='Capture',icon='IMAGE_DATA')
             if settings.views:
@@ -81,6 +96,22 @@ class PS_PT_main(bpy.types.Panel):
                         advanced.prop(view,'camera');row=advanced.row(align=True);row.prop(view,'resolution_x',text='Width');row.prop(view,'resolution_y',text='Height')
                         for key in ('include_overlays','include_labels','include_frustums','include_projected_identifiers','include_grids'):advanced.prop(view,key)
                         advanced.operator('ps.remove_view',text='Remove View',icon='REMOVE')
+        receiver=context.view_layer.objects.active
+        if receiver and receiver.type=='MESH' and not receiver.ps.is_projector:
+            reverse=section(layout,'reverse_mapping','Reverse Mapping',True)
+            if reverse:
+                state=receiver.beam_reverse
+                reverse.prop(state,'source');reverse.prop(state,'mode')
+                if state.source=='SELECTED':reverse.prop(state,'projector')
+                if state.source=='GROUP':
+                    from .blend_groups import active_group
+                    group=next((g for g in settings.blend_groups if g.uuid==state.group_uuid),None)
+                    reverse.label(text='Group: '+(group.name if group else 'Choose active group below'))
+                    reverse.menu('BEAM_MT_reverse_groups',text='Choose Blend Group')
+                if state.mode=='DIM':reverse.prop(state,'dim')
+                reverse.operator('beam.reverse_mapping',text='Restore Materials' if state.enabled else 'Enable on Selected Mesh').action='DISABLE' if state.enabled else 'ENABLE'
+                if state.enabled:reverse.label(text=state.status)
+                reverse.label(text='Material Preview / Rendered viewport')
         box=section(layout,'display','Display',True)
         if box:
             box.operator('beam.presentation',text='Technical View' if presentation.active(context.area) else 'Presentation View',icon='SHADING_SOLID')
@@ -101,7 +132,7 @@ class PS_PT_main(bpy.types.Panel):
             if settings.views:
                 row=box.row(align=True);row.operator('ps.export_views',text='Export View');row.operator('ps.export_views',text='Export All').all_views=True
             box.label(text='Designer transforms unvalidated',icon='INFO')
-        box=section(layout,'position','Aim / Position',True)
+        box=section(layout,'position','Aim / Position',True) if context_kind=='PROJECTOR' else None
         if box and p:
             row=box.row();row.enabled=False;row.prop(p,'target',text='Centre Target')
             if record:
@@ -119,4 +150,12 @@ class PS_PT_main(bpy.types.Panel):
         box=section(layout,'metadata','Project Details',True)
         if box:
             for key in ('project_name','venue','revision','client','author'):box.prop(settings,key)
-            box.label(text='Beam 0.8 · Twisted Pixel',icon='INFO')
+            box.label(text='Beam 0.9 Beta · Twisted Pixel',icon='INFO')
+
+
+class BEAM_OT_inspector(bpy.types.Operator):
+    bl_idname='beam.inspector';bl_label='Beam Inspector'
+    kind:bpy.props.EnumProperty(items=[('SCREEN','Screen',''),('PROJECTOR','Projector',''),('GROUP','Blend',''),('VIEW','Views','')])
+    def execute(self,context):
+        context.scene.ps_study.inspector=self.kind
+        return {'FINISHED'}

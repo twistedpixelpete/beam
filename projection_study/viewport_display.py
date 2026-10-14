@@ -53,7 +53,11 @@ def build(obj,record):
 def draw_3d(options=None,projection=None):
     if _suppress: return
     from . import presentation
-    if not hasattr(bpy.types.Object,'ps') or (options is None and not bpy.context.space_data.overlay.show_overlays and not presentation.active(bpy.context.area)): return
+    if not hasattr(bpy.types.Object,'ps'):return
+    from . import reverse_mapping
+    reverse_mapping.refresh_gpu()
+    projection_renderer.prune_maps(runtime.CACHE)
+    if options is None and not bpy.context.space_data.overlay.show_overlays and not presentation.active(bpy.context.area):return
     options=options or dict(labels=True,frustums=True,grids=True,overlays=True)
     if not options['overlays']: return
     projection=projection if projection is not None else bpy.context.region_data.perspective_matrix
@@ -64,8 +68,7 @@ def draw_3d(options=None,projection=None):
     shaders()
     for key in list(_batches):
         if key not in runtime.CACHE: _batches.pop(key,None)
-    for key in list(projection_renderer._maps):
-        if key not in runtime.CACHE: projection_renderer._maps.pop(key)['offscreen'].free()
+    reverse_keys={o.as_pointer() for o in bpy.context.scene.objects if reverse_mapping.managed(o)}
     try:
         for obj in projectors(bpy.context.scene):
             if not visible(obj): continue
@@ -74,7 +77,7 @@ def draw_3d(options=None,projection=None):
             p=obj.ps
             settings=bpy.context.scene.ps_study
             if p.show_output and options['grids'] and settings.show_outputs:
-                projection_renderer.draw(obj,record,projection,options.get('projected_identifiers',True) and settings.show_projected_identifiers)
+                projection_renderer.draw(obj,record,projection,options.get('projected_identifiers',True) and settings.show_projected_identifiers,receiver_exclusions=reverse_keys)
             cached=_batches.get(key)
             if not cached or cached[0] is not record:
                 cached=(record,build(obj,record)); _batches[key]=cached

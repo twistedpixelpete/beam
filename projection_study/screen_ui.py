@@ -74,9 +74,13 @@ def parameters(layout,p,editing=False):
 
 
 class BEAM_PT_screens(bpy.types.Panel):
-    bl_label='Screen Builder';bl_idname='BEAM_PT_screens';bl_space_type='VIEW_3D';bl_region_type='UI';bl_category='Beam';bl_order=-1
+    bl_label='Screen Builder';bl_idname='BEAM_PT_screens';bl_space_type='VIEW_3D';bl_region_type='UI';bl_category='Beam';bl_order=1
+    @classmethod
+    def poll(cls,context):return context.scene.ps_study.inspector=='SCREEN'
     def draw(self,context):
-        layout=self.layout;obj=screen_data.active(context)
+        layout=self.layout;obj=screen_data.active(context,persistent=True)
+        layout.prop(context.scene.ps_study,'active_screen',text='Screen')
+        if obj and obj.beam_screen.screen_type=='FLAT':layout.operator('beam.auto_blend',text='Auto Blend',icon='GROUP')
         create=section(layout,'screen_create','Create Screen',True)
         if create:
             p=context.scene.beam_screen_draft;parameters(create,p)

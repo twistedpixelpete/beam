@@ -24,9 +24,15 @@ def units_changed(self,context):
     members=member_objects(self)
     if not members: self.previous_mode=self.input_mode; return
     anchor=next((o for o in members if o.ps.uuid==self.anchor_uuid),members[0])
+    width,height=self.reference_width,self.reference_height
+    if self.layout_screen and context:
+        from .layout_coverage import report
+        current=report(self,context)
+        if current and current.get('anchor_width',0)>0 and current.get('anchor_height',0)>0:
+            width,height=current['anchor_width'],current['anchor_height']
     old=self.previous_mode; _updating=True
     try:
-        for key,pixels,length in [('overlap_h',anchor.ps.resolution_x,self.reference_width),('overlap_v',anchor.ps.resolution_y,self.reference_height)]:
+        for key,pixels,length in [('overlap_h',anchor.ps.resolution_x,width),('overlap_v',anchor.ps.resolution_y,height)]:
             values=overlap_values(getattr(self,key),old,pixels,length)
             field={'PIXELS':'pixels','PERCENT':'percent','METRES':'metres'}[self.input_mode]
             setattr(self,key,values[field])
@@ -40,6 +46,7 @@ class BeamMember(bpy.types.PropertyGroup):
     projector_uuid: StringProperty()
 
 class BeamBlendGroup(bpy.types.PropertyGroup):
+    layout_screen: PointerProperty(name='Layout Screen',type=bpy.types.Object)
     uuid: StringProperty()
     name: StringProperty(name='Group Name')
     controller: PointerProperty(type=bpy.types.Object)
@@ -170,6 +177,10 @@ def remove_member(group,index):
 
 
 def pair_data(group,context):
+    if group.layout_screen:
+        from .layout_coverage import report
+        coverage=report(group,context)
+        if coverage is not None:return coverage['pairs']
     from . import runtime
     values=next((runtime.CACHE.get(m.projector.as_pointer()) for m in group.members if m.projector and m.projector.ps.uuid==group.anchor_uuid),None)
     if not values: return []
@@ -338,6 +349,12 @@ def serialize(context):
             measurement_plane=dict(space='blender_world',origin_m=list(plane*unit),rotation_quaternion_wxyz=list(record['rotation'].to_quaternion()),
                 status='target' if record['hit'] else 'preview',distance_m=record['metrics'].distance,
                 width_m=record['metrics'].width,height_m=record['metrics'].height)
+        if group.layout_screen:
+            from .layout_coverage import report
+            coverage=report(group,context)
+            if coverage and coverage.get('anchor_width',0)>0 and coverage.get('anchor_height',0)>0:
+                measurement_plane=dict(space='blender_world',origin_m=list(coverage['centre']*unit),rotation_quaternion_wxyz=list(coverage['rotation'].to_quaternion()),status='target',distance_m=coverage['distance'],width_m=coverage['anchor_width'],height_m=coverage['anchor_height'])
+            else:measurement_plane=None
         result.append(dict(uuid=group.uuid,name=group.name,layout=group.layout,anchor_projector_uuid=group.anchor_uuid,
             rows=max((row for col,row in positions),default=0)+1,
             columns=group.columns if group.layout=='ARRAY' else max((col for col,row in positions),default=0)+1,

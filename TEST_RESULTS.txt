@@ -85,3 +85,56 @@ PASS: Off/Minimal/Full, independent ID/dimension controls and live m/mm labels.
 PASS: native sidebar, expanded sections, Presentation enter/restore, screenshots inspected.
 Screen-only implementation changes; no projector or engineering implementation changed.
 Full Blender 4.5 runtime and non-macOS validation remain untested.
+
+Beam 0.9.0 feature beta — verified 2026-10-14
+Branch: feature/beam-auto-blend-reverse-mapping-ui
+Base: fee1b37 (released 0.8.1 beta); main left unchanged.
+Environment: Blender 5.2.2 LTS, macOS / Metal; disposable factory-startup processes.
+
+44 standalone Python tests PASS (11 new inverse/layout/union checks).
+Existing Blender milestones 1–15 PASS.
+Existing group lifecycle, frustum helpers, JSON contract, screen builder,
+screen edges and screen beauty regression scripts PASS.
+Auto Blend centimetre-scene JSON export: frozen schema and relationships PASS.
+New planning acceptance PASS:
+  six inverse values, locks, parent transform, angled lens solve, shifted-axis refusal;
+  exact count / Auto Count, horizontal / vertical / array, rotated screens;
+  identity / Study Colour independence, template optics/shift/lumens/stack;
+  equal spacing, px/m/percent, gaps, moving screens, anchor resolution;
+  copied group screen reference, persistent screen actions, obstruction rollback;
+  original shader/UV preservation and shared-mesh material isolation.
+Native Blender Undo/Redo PASS: inverse solve, Auto Blend, reverse enable/disable.
+GPU images + sampled pixels PASS: continuous UV content, dim/covered/hidden,
+union, overlap diagnostic, projector movement, occluder shadow and restoration.
+Save/load PASS: reverse settings and original material references restore.
+Cache PASS: ten forced idle redraws without depth uploads or material rebuilds.
+Live inverse target callback and Cancel rollback PASS.
+Reverse masks update with native overlays disabled PASS.
+Real sidebar, inverse dialog and Auto Blend dialog screenshots captured.
+
+Limitations: 0.9 remains an unreleased feature beta. Position solves reject lens
+shift; Auto Blend coverage is nominal planar coverage with centre-hit validation;
+Reverse Mapping requires a GPU viewport, max 32 sources, finite shadow resolution.
+No final-render animation/headless live masking or cross-platform performance claim.
+No external PATCH importer/disguise Designer validation. See docs/PLANNING-MILESTONE.md.
+
+Beam PR #2 engineering review — 2026-10-14
+Blender 5.2.2 LTS d13f752e3b9c, macOS / Metal, disposable sessions.
+49/49 standalone Python tests; 10/10 new Blender review regressions PASS.
+All 15 existing Blender milestones and all 8 background acceptance scripts PASS.
+Planning GPU pixels + native Lens/Layout/Reverse Undo/Redo PASS.
+Position solve + group Reflow Undo/Redo; native group duplicate/modal lifecycle PASS.
+Exact save/reopen IDs/settings/locks/membership/metadata/material references PASS.
+Three GPU enable/disable cycles: zero generated wrapper/group/image orphans.
+Receiver failure isolation/recovery; GPU state; overlays-off map pruning PASS.
+Two unregister/register cycles: no remaining Beam handlers or screen timer PASS.
+Ten idle redraws and thirty idle refreshes: no extra depth uploads/wrapper rebuilds.
+Eight-projector 512-detail scene: idle median 1.77 ms; movement 4.49 ms;
+overlap 0.39 ms; lens solve 1.46 ms; 1000x600 viewport export 145 ms
+(earlier run 657 ms).
+These measure synchronous Beam work, not overall viewport FPS.
+Both tracked 0.9 examples reopen; original reverse materials restore PASS.
+Native dialogs/live preview/Cancel PASS, disposable captures only.
+Auto Blend SI export + frozen JSON schema/relations + 3 negative checks PASS.
+Compilation, diff whitespace checks and Blender extension archive validation PASS.
+See docs/PR2-ENGINEERING-REVIEW.md for findings, architecture and limitations.

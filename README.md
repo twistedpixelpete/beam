@@ -1,10 +1,12 @@
 # Beam
 
-**Projection planning and screen building in Blender.** Maintained by **Twisted Pixel** · **0.8.1 — pre-release beta**
+**Projection planning and screen building in Blender.** Maintained by **Twisted Pixel** · **0.9.0 — feature beta, unreleased**
 
 > **Still in testing.** Beam is a pre-release beta, not a stable production release. Expect bugs, incomplete workflows and changes between versions. Keep backups of your Blender files and independently verify geometry, measurements and exported data before production use.
 
 Use Beam to place projectors in a venue model, preview coverage and obstructions, plan overlapping projector groups, build projection screens or LED walls, and export study images and geometry.
+
+The 0.9 development version adds inverse target solving, flat-screen Auto Blend, UV Reverse Mapping and contextual inspectors. **[Read the 0.9 how-to and limitations](docs/PLANNING-MILESTONE.md)**. The published download below remains the earlier 0.8.1 beta until a separate 0.9 release is published.
 
 ![Three Beam projectors casting overlapping calibration grids onto a wide screen](examples/0.8.1/projector-showcase.png)
 
@@ -170,9 +172,13 @@ python3 tools/build_release.py
 
 Alternatively, choose **Code → Download ZIP** on GitHub, extract it, and run `python3 tools/build_release.py` from the extracted folder. Python is needed only for this packaging step, not to run the installed add-on.
 
-The script creates `dist/beam-0.8.1.zip`. **Install this file, not GitHub’s source ZIP or `beam-source-0.8.1.zip`.**
+On this feature branch, the script creates `dist/beam-0.9.0.zip`. **Install this file, not GitHub’s source ZIP or `beam-source-0.9.0.zip`.**
 
 ## Examples and further reading
+
+- [0.9 planning guide](docs/PLANNING-MILESTONE.md) — inverse solving, Auto Blend, Reverse Mapping, architecture and beta limits.
+- [0.9 Auto Blend example](examples/0.9/Beam-Auto-Blend.blend) and [contextual inspector](examples/0.9/blend-inspector.png).
+- [Reverse Mapping example](examples/0.9/Beam-Reverse-Mapping.blend) and [overlap diagnostic](examples/0.9/reverse-overlap.png).
 
 - [Three-projector showcase](examples/0.8.1/Beam-Projector-Showcase.blend) — the scene pictured above, with an editable saved study view.
 
