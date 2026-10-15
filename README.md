@@ -193,3 +193,7 @@ On this feature branch, the script creates `dist/beam-0.9.0.zip`. **Install this
 For development, run `python3 -m unittest discover -s tests -p 'test_*.py'`. Blender integration scripts belong in disposable Blender sessions; some create scenes and quit the process. See the reference guides before running them against your own files.
 
 Licensed under **GPL-3.0-or-later**.
+
+### Optional Beam theme
+
+The development build includes an original charcoal/blue Blender theme. See [theme installation, screenshots and rollback](docs/THEME-WORKSPACE.md). It is optional and application-wide; installing or opening Beam does not apply it automatically. Still a prerelease beta, in testing.

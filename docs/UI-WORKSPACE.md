@@ -1,6 +1,6 @@
 # Beam workspace and navigation — development beta
 
-Maintainer: Twisted Pixel. Branch: `feature/beam-ui-workspace`, based on reviewed PR #2 merge `846d63a429824f75a127e0c4346dbd76d5f7a6f1`. This UI pass is still in testing; it does not publish a new release.
+Maintainer: Twisted Pixel. Original UI foundation: `feature/beam-ui-workspace`, based on reviewed PR #2 merge `846d63a429824f75a127e0c4346dbd76d5f7a6f1`. This UI pass is still in testing; it does not publish a new release.
 
 ## Open Beam
 
@@ -100,7 +100,7 @@ The projection/inverse/layout/coverage maths, Reverse Mapping/material wrappers,
 
 ## Blender API limits and migration
 
-Blender Python cannot register a full custom editor type or apply a separate theme/font to one workspace. This implementation therefore uses native Properties/sidebar controls, a compact navigation grid, blue accent icons and normal theme-selected buttons. Native button fill/fonts and editor chrome follow the user's Blender theme; the exact mock's left rail, large custom header and per-workspace dark palette are not reproduced. The global theme is not changed.
+Blender Python cannot register a full custom editor type or apply a separate theme/font to one workspace. This implementation therefore uses native Properties/sidebar controls, a compact navigation grid, blue accent icons and normal theme-selected buttons. Native button fill/fonts and editor chrome follow the user's Blender theme; the exact mock's left rail, large custom header and per-workspace dark palette are not reproduced. The workspace does not change the global theme automatically. An optional application-wide preset is now available: see [Theme and workspace](THEME-WORKSPACE.md).
 
 The optional workspace retains native Scene context headers and other Scene panels below Beam. Materials/modifiers remain one native tab away. Returning to Beam uses Scene or Open Beam Workspace. A user workspace already named Beam is not overwritten; Blender may suffix the new workspace name.
 

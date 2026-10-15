@@ -17,7 +17,10 @@ def checked_draw(layout,context):
    state["draft_drawn"]=True
   original_draw(layout,context)
 ui.draw=checked_draw
-out=root/'work/ui-workspace';out.mkdir(parents=True,exist_ok=True);state={};checks=[]
+themed='--beam-theme' in sys.argv
+if themed:
+ bpy.ops.script.execute_preset(filepath=str(root/'projection_study/themes/Beam.xml'),menu_idname='USERPREF_MT_interface_theme_presets')
+out=root/('work/theme-workspace' if themed else 'work/ui-workspace');out.mkdir(parents=True,exist_ok=True);state={};checks=[]
 
 def fail():
  text=traceback.format_exc();print(text,flush=True);(out/'result.txt').write_text(text);bpy.ops.wm.quit_blender()

@@ -206,6 +206,10 @@ def draw(layout,context):
     if box:
         for prop in ('venue','client','author'):box.prop(s,prop)
         box.operator('beam.workspace',icon='WORKSPACE');box.operator('beam.ui_action',text='Organise Beam Collections',icon='OUTLINER_COLLECTION').action='ORGANIZE'
+        from pathlib import Path
+        box.separator()
+        box.label(text='Theme · Application-wide (Optional)')
+        box.operator('preferences.theme_install',text='Install Beam Theme…',icon='PREFERENCES').filepath=str(Path(__file__).parent/'themes'/'Beam.xml')
         box.label(text='0.9 Beta · Twisted Pixel')
 
 class BEAM_UL_members(bpy.types.UIList):

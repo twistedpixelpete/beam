@@ -164,3 +164,22 @@ Screenshots and architecture/usage: docs/UI-WORKSPACE.md.
 Limitations: native theme/editor chrome remains; exact custom mock is not reproduced.
 Blender 4.5 and Windows/Linux are unverified. Still a development beta.
 Compilation, diff whitespace checks and Blender extension ZIP validation PASS.
+
+
+Beam theme/workspace increment — 2026-10-16
+Branch feature/beam-theme-workspace from stable main 846d63a.
+Prior UI foundation retained in bfe2a35 / 408bf3d.
+Blender 5.2.2 LTS, macOS Metal, isolated preferences and disposable scenes.
+49 standalone Python tests, 7 Blender UI-context tests PASS.
+Native XML load; opt-in registration lifecycle; 17 normal/selected text contrast
+pairs >=4.5:1; warning/key/animation/driver/selection colors preserved PASS.
+Themed full workspace GUI acceptance PASS, including Outliner, pin/receiver,
+inline edit/Undo/Redo, screen/Auto Blend/member operations, Presentation toggle,
+save/reopen and image export.
+Auto Blend, inverse solve, confirmation and export file-browser dialogs opened,
+captured and cancelled; native color/state fixture inspected; no export written.
+No engineering algorithms or patterns changed in this theme increment.
+Inherited engineering test results above were not all rerun for the palette change.
+Native theme is application-wide and opt-in. User preferences were not changed.
+Windows/Linux, Blender 4.5, physical brightness/calibration remain unverified.
+Final compilation/whitespace checks and Blender extension ZIP validation PASS.
