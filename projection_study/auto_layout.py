@@ -19,6 +19,8 @@ def calculate(context,op):
     if op.use_template and (not template or template.name not in context.scene.objects or not template.ps.is_projector):
         raise ValueError('Choose an active Beam projector, or turn off Use Active Projector Template')
     p=template.ps if template else None
+    from . import optics_validation
+    if p:optics_validation.require(p)
     result=planning_math.plan(width,height,p.resolution_x if p else 1920,p.resolution_y if p else 1080,
         p.throw_ratio if p else 1,op.layout_type,op.count,op.columns,op.rows,op.auto_count,
         op.overlap_h,op.overlap_v,op.input_mode,op.distance,op.fixed_distance,op.max_count,op.min_throw,op.max_throw)

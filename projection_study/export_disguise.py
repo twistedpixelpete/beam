@@ -28,7 +28,7 @@ def collect_rows(context,refresh=True):
         m=record['metrics']
         unit=context.scene.unit_settings.scale_length
         position=conversion.position_mm(record['origin'],unit)
-        target=conversion.position_mm(record['hit'][0],unit)
+        target=conversion.csv_target(record['origin'],record['rotation'],m.distance,unit)
         angles=conversion.orientation_degrees(record['rotation'])
         shift=conversion.lens_shift_percent(p.shift_h,p.shift_v)
         rows.append([p.identifier,p.stack,p.resolution_x,p.resolution_y,p.lumens,p.brightness,
