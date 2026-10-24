@@ -51,7 +51,17 @@ def camera_visibility(self,context):
     redraw(self,context)
 
 
+def analysis_changed(self,context):
+    from .analysis_runtime import invalidate
+    invalidate();redraw(self,context)
+
 class PS_SceneSettings(bpy.types.PropertyGroup):
+    analysis_receiver: PointerProperty(name='Receiver',type=bpy.types.Object,poll=lambda self,o:o.type=='MESH' and not o.ps.is_projector,update=analysis_changed)
+    analysis_scope: EnumProperty(name='Projectors',items=[('ALL','All projectors',''),('PROJECTOR','Active projector',''),('GROUP','Active Blend Group','')],default='ALL',update=analysis_changed)
+    analysis_detail: EnumProperty(name='Samples',items=[('512','Quick · 512',''),('2048','Standard · 2048',''),('8192','Detailed · 8192','')],default='2048',update=analysis_changed)
+    analysis_show: BoolProperty(name='Show Heatmap',default=False,update=redraw)
+    analysis_mode: EnumProperty(name='Heatmap',items=[('DENSITY','Density','Conservative worst-direction pixels per metre'),('STRETCH','Stretch','Principal pixel anisotropy: teal 1:1 to amber 3:1')],update=redraw)
+
     inspector: EnumProperty(name='Inspector',items=[('PROJECTOR','Projector',''),('SCREEN','Screen',''),('GROUP','Blend',''),('VIEW','Views',''),('EXPORT','Export','')],default='PROJECTOR',update=redraw)
     pin_context: BoolProperty(name='Pin Beam Context',description='Keep the active Beam objects and module when Blender selection changes',default=False,update=redraw)
     ui_create_screen: BoolProperty(default=False,update=redraw)

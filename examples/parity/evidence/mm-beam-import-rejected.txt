@@ -1,0 +1,402 @@
+- iframe [active]:
+  - button "Back to launcher":
+    - img "disguise"
+  - list:
+    - button "Mapping Matter"
+    - button "Untitled Production"
+  - generic: Twisted Pixel
+  - generic: Pete Lynn
+  - button "Sign out":
+  - button "Save scene":
+    - generic: Save
+  - button "Undo":
+    - generic: Undo
+  - button "Redo" [disabled]:
+    - generic: Redo
+  - button "Publish & share":
+    - generic: Publish
+  - button "Add projector":
+    - generic: Projector
+  - button "Add LED screen":
+    - generic: LED
+  - button "Add primitive":
+    - generic: Primitive
+  - button "Add effector":
+    - generic: Effector
+  - button "Import":
+    - generic: Import
+  - button "Add camera":
+    - generic: Camera
+  - button "Add mounting":
+    - generic: Mounting
+  - button "Add annotation":
+    - generic: Annotate
+  - button "Add dimension":
+    - generic: Dimension
+  - button "Copy":
+    - generic: Copy
+  - button "Paste" [disabled]:
+    - generic: Paste
+  - button "Duplicate":
+    - generic: Duplicate
+  - button "Group":
+    - generic: Group
+  - button "Hide selected":
+    - generic: Hide
+  - button "Delete":
+    - generic: Delete
+  - button "More edit actions":
+    - generic: More
+  - button "Exit projector view":
+    - generic: Exit
+  - generic: Study Overview
+  - button "Lock projector view":
+    - generic: Lock
+  - button "Show only projected area":
+    - generic: Solo
+  - button "Toggle acuity overlay":
+    - generic: Acuity
+  - button "Toggle grid" [pressed]:
+    - generic: Grid
+  - button "Wireframe":
+    - generic: Wire
+  - button "Projector focus mode" [pressed]:
+    - generic: Focus
+  - button "Projection blending" [pressed]:
+    - generic: Blend
+  - button "Photometric analysis":
+    - generic: Lux
+  - button "Pixel density heat-map" [pressed]:
+    - generic: Pixels
+  - button "Truss clash warnings" [pressed]:
+    - generic: Clash
+  - button "World space":
+    - generic: World
+  - button "Show projector frustums" [pressed]:
+    - generic: Frustums
+  - button "Show projector labels" [pressed]:
+    - generic: Labels
+  - button "No snap":
+    - generic: "Off"
+  - button "Export":
+    - generic: Export
+  - button "Help":
+    - generic: Help
+  - button "Feedback":
+    - generic: Feedback
+  - button "Disclaimer":
+  - toolbar "Panels":
+    - button "Scene" [pressed]:
+    - button "Properties" [pressed]:
+    - button "Layers":
+    - button "Brightness":
+    - button "Lux":
+    - button "Pixel density" [pressed]:
+    - button "Camera settings":
+    - button "Viewport settings":
+    - button "PDF layouts":
+    - button "Revisions":
+    - button "Scene settings":
+  - generic: 3375.6 mm
+  - generic: 6000.0 mm
+  - generic: "tr : 1.00"
+  - generic: 6000.0 mm
+  - generic: Proj 1
+  - generic: 494 lx ( -100% ) 2.2 mm
+  - generic: Proj 1
+  - generic: 10000 lumens
+  - generic: 2716px X 1528px
+  - text: objects 8 / 0
+  - text: vertices 15,192
+  - text: triangles 30,158
+  - generic: Scene
+  - button "Pop out panel":
+  - button "Sort alphabetically":
+  - tree:
+    - treeitem "Beam Comparison — 16m Screen" [level=1]:
+      - generic: Beam Comparison — 16m Screen
+      - button "Assign to layer"
+      - checkbox [checked]
+      - checkbox
+    - treeitem "Proj 1" [level=1]:
+      - generic: Proj 1
+      - button "Look from":
+      - button "Assign to layer"
+      - checkbox [checked]
+      - checkbox
+    - treeitem "Proj 2" [level=1]:
+      - generic: Proj 2
+      - button "Look from":
+      - button "Assign to layer"
+      - checkbox [checked]
+      - checkbox
+    - treeitem "Proj 3" [level=1]:
+      - generic: Proj 3
+      - button "Look from":
+      - button "Assign to layer"
+      - checkbox [checked]
+      - checkbox
+    - treeitem "Study Overview" [level=1]:
+      - generic: Study Overview
+      - button "Look from":
+      - button "Assign to layer"
+      - checkbox [checked]
+      - checkbox
+  - generic: Properties
+  - button "Pop out panel":
+  - generic: Parent
+  - combobox "Scene"
+  - button "Projector" [expanded]:
+    - generic: Projector
+  - region:
+    - generic: Name
+    - textbox: Proj 1
+    - generic: X
+    - generic: "Y"
+    - generic: Z
+    - generic: Position
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "-5000"
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "0"
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "1687.5"
+    - generic: Rotation
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "0"
+    - generic: °
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "0"
+    - generic: °
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "0"
+    - generic: °
+    - generic: Lens Rotation
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "0"
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "0"
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "0"
+    - generic: Christie
+    - generic: 4K10-HS
+    - generic: 2716 x 1528
+    - generic: 10000 lumens
+    - button "Change Projector…":
+      - generic: Change Projector…
+    - button "Edit Projector…":
+      - generic: Edit Projector…
+    - combobox "Native · 2716×1528 · 16:9"
+    - combobox "0.85-1.02:1 Zoom Lens (0.85–1.02)"
+    - button "Edit Lens…":
+      - generic: Edit Lens…
+    - generic: Throw Ratio
+    - generic: 0.85 - 1.02
+    - generic: V Shift
+    - generic: +140% / -140%
+    - generic: H Shift
+    - generic: +60% / -60%
+    - generic: Throw Ratio
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "1"
+    - generic: Lens Shift (%)
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "0"
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "0"
+    - generic: Brightness Factor (%)
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "100"
+    - button "Mounting" [expanded]:
+      - generic: Mounting
+    - region:
+      - generic: Show cage
+      - checkbox
+      - generic: Clamp pickups
+      - generic: Auto
+      - button "Edit…"
+      - generic: Mounted to
+      - combobox:
+        - option "Nothing" [selected]
+        - option "Truss…" [disabled]
+      - generic: Attach
+      - button "Ground tower"
+      - button "Flown truss"
+    - button "Projector Image" [expanded]:
+      - generic: Projector Image
+    - region:
+      - generic: Image
+      - switch [checked]
+      - generic "Click to select texture (alt+click to load local video)"
+      - button "Remove texture":
+      - generic: Border
+      - switch
+      - textbox
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "1"
+      - generic: "%"
+      - generic: Grid
+      - switch
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "10"
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "10"
+      - generic: Checkers
+      - switch
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "10"
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "10"
+      - generic: Orientation
+      - combobox "Front / Table"
+      - generic: Rotation
+      - combobox "0°"
+    - button "Test Pattern" [expanded]:
+      - generic: Test Pattern
+    - region:
+      - generic: Enable
+      - switch [checked]
+      - generic: Pattern
+      - combobox "TestPattern"
+      - generic: Grid spacing
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "100"
+      - generic: Sub-grid
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "10"
+      - generic: Circles
+      - switch [checked]
+      - generic: Circle radius
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "0.5"
+    - button "Projector Stack" [expanded]:
+      - generic: Projector Stack
+    - region:
+      - generic: Add Dummy Projectors
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "1"
+      - generic: Automatic Lumens Multiplication
+      - switch [checked] [disabled]
+      - generic: Offset
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "0"
+      - generic: mm
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "0"
+      - generic: mm
+      - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+        - /placeholder: ""
+        - text: "500"
+      - generic: mm
+    - button "Mirror":
+      - generic: Mirror
+    - button "Information":
+      - generic: Information
+    - generic: Visible
+    - switch [checked]
+    - generic: Locked
+    - switch
+    - generic: Powered
+    - switch [checked]
+  - button "MATERIAL" [expanded]:
+    - generic: MATERIAL
+  - region:
+    - radio [checked]
+    - generic: Gain
+    - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+      - /placeholder: ""
+      - text: "1"
+    - radio
+    - generic: Color
+    - generic: Map unavailable - No UVs defined
+    - separator
+    - generic: Side
+    - combobox "Double"
+    - generic: Rear projection
+    - switch
+    - generic: Wireframe
+    - switch
+  - button "GEOMETRY" [expanded]:
+    - generic: GEOMETRY
+  - region:
+    - generic: Vert. / Faces
+    - generic: 4978 / 10000
+  - generic: Projection Accuracy
+  - button "Dock panel":
+  - paragraph: Maximum Value
+  - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+    - /placeholder: ""
+    - text: "2000"
+  - button "Auto Adjust"
+  - paragraph: Minimum Value
+  - textbox "Drag or scroll to adjust — hold Shift for fine steps":
+    - /placeholder: ""
+    - text: "0"
+  - generic: px/m (Change unit)
+  - generic: Type
+  - radio "Pixel Density" [checked]
+  - text: Pixel Density
+  - radio "Pixel Stretch"
+  - text: Pixel Stretch
+  - switch "Scale Log"
+  - text: Scale Log
+  - text: "* Best metric across overlapping projectors:"
+  - text: density takes the max, stretch takes the min.
+  - generic: Stats — Density
+  - generic: Best (max)
+  - generic: 453 px/m
+  - generic: Worst (min)
+  - generic: 453 px/m
+  - generic: Average
+  - generic: 453 px/m
+  - generic: Coverage
+  - generic: 100%
+  - generic: Overlap
+  - generic: 12%
+  - generic: Per Surface
+  - table:
+    - rowgroup:
+      - row "Surface Coverage Overlap Avg Density ~H×V Total Pixels":
+        - columnheader "Surface"
+        - columnheader "Coverage"
+        - columnheader "Overlap"
+        - columnheader "Avg Density"
+        - columnheader "~H×V"
+        - columnheader "Total Pixels"
+    - rowgroup:
+      - row "Beam Comparison — 16m Screen 100% 12% 453 px/m ~7243×1528 11.1M":
+        - cell "Beam Comparison — 16m Screen"
+        - cell "100%"
+        - cell "12%"
+        - cell "453 px/m"
+        - cell "~7243×1528"
+        - cell "11.1M"
+  - paragraph: "* Coverage and overlap assume each projector has a clear line of sight; an object physically blocking a beam is not yet accounted for."
+  - dialog "Import from Designer CSV":
+    - generic: Import from Designer CSV
+    - paragraph: "No projectors were imported. 1 warning: • Line 1: Not a Designer Projector Study CSV — missing column(s): Name, Resolution X, Resolution Y, Brightness (lum), Lens Shift Horizontal, Lens Shift Vertical, Position X (m), Position Y (m), Position Z (m), Rotation X (deg), Rotation Y (deg), Rotation Z (deg)."
+    - button "OK" [active]

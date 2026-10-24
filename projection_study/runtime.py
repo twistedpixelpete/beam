@@ -92,6 +92,8 @@ def refresh(force=False):
         membership=tuple((o.as_pointer(),o.data.as_pointer() if o.data else 0,o.visible_get())
                          for o in scene.objects if o.type in {'MESH','CURVE','SURFACE','FONT','META'} and not o.ps.is_projector and not o.get('ps_helper'))
         if membership!=_venue_membership:
+            from .analysis_runtime import invalidate as invalidate_analysis
+            invalidate_analysis()
             from . import target_raycast
             target_raycast.invalidate(); invalidate()
             _venue_membership=membership
@@ -104,11 +106,16 @@ def refresh(force=False):
         keys = {o.as_pointer() for o in live}
         for key in list(CACHE):
             if key not in keys:
+                from .analysis_runtime import invalidate as invalidate_analysis
+                invalidate_analysis()
                 CACHE.pop(key,None); _signatures.pop(key,None)
                 did_change = True
         for obj in live:
             key = obj.as_pointer()
             signature = (tuple(v for row in obj.matrix_world for v in row), scene.unit_settings.scale_length)
+            if _signatures.get(key)!=signature:
+                from .analysis_runtime import invalidate as invalidate_analysis
+                invalidate_analysis()
             if force or _dirty or key in _dirty_ids or _signatures.get(key)!=signature:
                 CACHE[key] = update_one(obj, scene)
                 did_change = True
@@ -159,6 +166,8 @@ def depsgraph_changed(scene, depsgraph):
 
 @persistent
 def reset(*args):
+    from . import analysis_runtime
+    analysis_runtime.CACHE.clear()
     global _venue_membership,_known_objects
     _known_objects=None
     _venue_membership=None

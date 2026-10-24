@@ -56,6 +56,8 @@ def projector(layout,context):
         box.prop(p,'throw_ratio');row=box.row(align=True);row.use_property_split=False;row.prop(p,'shift_h',text='H Shift %');row.prop(p,'shift_v',text='V Shift %')
         box.prop(p,'output_mode',text='Output');box.prop(p,'colour',text='Study Colour')
         if p.output_mode=='IMAGE':box.template_ID(p,'image',open='ps.load_image')
+    from .analysis_ui import optics
+    optics(layout,p)
     draft=context.window_manager.beam_target
     editing=bool(draft.field and draft.projector==obj and draft.scene==context.scene)
     box=section(layout,'calculated','Calculated')
@@ -121,7 +123,8 @@ def views(layout,context):
 
 def exports(layout,context):
     row=layout.row(align=True);row.operator('ps.export',text='disguise CSV',icon='EXPORT');row.operator('ps.export_json',text='PATCH JSON',icon='FILE_TEXT')
-    status(layout,'Designer transforms unvalidated')
+    status(layout,'Mapping Matter checked · Designer import pending')
+    layout.operator('beam.study_package',text='Study Package · JSON + HTML + Views',icon='EXPORT')
     box=section(layout,'image_exports','Images')
     if box:
         box.operator('ps.capture_current',text='Export Current View',icon='IMAGE_DATA')
@@ -201,6 +204,9 @@ def draw(layout,context):
         else:row.label(text=('Pinned: ' if s.pin_context else 'Active: ')+(active.name if active else '—'))
         row.prop(s,'pin_context',text='',icon='PINNED' if s.pin_context else 'UNPINNED',toggle=True)
         if s.inspector!='EXPORT':receiver_status(layout,context)
+    from . import analysis_runtime
+    from .analysis_ui import draw as draw_analysis
+    if s.inspector!='EXPORT' and analysis_runtime.CACHE.get(context.scene.as_pointer()):draw_analysis(layout,context)
     layout.separator(factor=.4)
     if s.inspector=='PROJECTOR':projector(layout,context)
     elif s.inspector=='SCREEN':
@@ -211,7 +217,10 @@ def draw(layout,context):
         draw_groups(layout,context)
     elif s.inspector=='VIEW':views(layout,context)
     else:exports(layout,context)
-    if s.inspector!='EXPORT':reverse(layout,context)
+    if s.inspector!='EXPORT':
+        from .analysis_ui import draw as draw_analysis
+        if not analysis_runtime.CACHE.get(context.scene.as_pointer()):draw_analysis(layout,context)
+        reverse(layout,context)
     box=section(layout,'display','Global · Viewport Display',True)
     if box:
         box.prop(s,'label_detail',text='Label Detail',expand=True)
@@ -225,7 +234,7 @@ def draw(layout,context):
         box.separator()
         box.operator('beam.apply_theme',text='Apply Beam Theme',icon='PREFERENCES')
         box.operator('beam.restore_theme',text='Restore Previous Theme',icon='LOOP_BACK')
-        box.label(text='0.9 Beta · Twisted Pixel')
+        box.label(text='0.10 Beta · Twisted Pixel')
 
 class BEAM_UL_members(bpy.types.UIList):
     def draw_item(self,context,layout,data,item,icon,active_data,active_propname,index):

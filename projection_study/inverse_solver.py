@@ -26,6 +26,8 @@ def solve(context,obj,field,value):
                                    p.resolution_x,p.resolution_y,poslock,p.solve_lock_lens)
     if mode=='POSITION' and (abs(p.shift_h)>1e-6 or abs(p.shift_v)>1e-6):
         raise ValueError('Position solving needs zero lens shift to preserve both optical-axis motion and target aim')
+    from .optics_validation import require
+    require(p,tr)
     world=obj.matrix_world.copy();ratio=p.throw_ratio;target=record['hit'][0].copy();target_name=record['hit'][3]
     unit=context.scene.unit_settings.scale_length
     try:
@@ -47,6 +49,7 @@ def solve(context,obj,field,value):
             width=planning_math.desired_width(field,value,p.resolution_x,p.resolution_y)
             tr=current['metrics'].distance/width
             if not .05<=tr<=100:raise ValueError('Required throw ratio is outside 0.05–100')
+            require(p,tr)
             p.throw_ratio=tr
         else:raise ValueError('Cannot converge on this surface; try Position or a simpler target')
     except Exception:

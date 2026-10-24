@@ -1,12 +1,12 @@
 # Beam
 
-**Projection planning and screen building in Blender.** Maintained by **Twisted Pixel** · **0.9.0 — feature beta, unreleased**
+**Projection planning and screen building in Blender.** Maintained by **Twisted Pixel** · **0.10.0 — development beta, unreleased**
 
 > **Still in testing.** Beam is a pre-release beta, not a stable production release. Expect bugs, incomplete workflows and changes between versions. Keep backups of your Blender files and independently verify geometry, measurements and exported data before production use.
 
 Use Beam to place projectors in a venue model, preview coverage and obstructions, plan overlapping projector groups, build projection screens or LED walls, and export study images and geometry.
 
-The 0.9 development version adds inverse target solving, flat-screen Auto Blend, UV Reverse Mapping and contextual inspectors. **[Read the 0.9 how-to and limitations](docs/PLANNING-MILESTONE.md)**. The published download below remains the earlier 0.8.1 beta until a separate 0.9 release is published.
+The 0.9 planning milestone added inverse target solving, flat-screen Auto Blend, UV Reverse Mapping and contextual inspectors. **[Read the 0.9 how-to and limitations](docs/PLANNING-MILESTONE.md)**. The published download below remains the earlier 0.8.1 beta until a separate development release is published.
 
 The development UI now includes an optional native **Beam workspace**, contextual navigation and inline projection targets. **[Workspace guide and screenshots](docs/UI-WORKSPACE.md)**. The instructions below describe the development UI; the published 0.8.1 beta retains its earlier panel layout.
 
@@ -30,6 +30,18 @@ Beam requires **Blender 4.5 or newer**. It has been tested on **Blender 5.2.2 LT
 4. In the 3D View, press **N** to open the sidebar, then select **Beam**.
 
 When upgrading, replace the existing extension rather than enabling a second copy. Restart Blender after upgrading. Older files remain compatible; the internal extension name is still `projection_study`.
+
+## Analyse a surface and export a study (0.10 development beta)
+
+Under **Projector, Screen or Blend → Surface Analysis**, choose the receiving mesh, projector scope and sample count, then click **Analyse Surface**. Switch between Density and Stretch; after edits, analyse again. The overlay shows sampled values on actual geometry, including opaque first-hit occlusion. It is an estimate, not guaranteed coverage between samples.
+
+Under **Projector → Optics Guidance**, choose a preset and lens, or keep **Generic / Manual**. Use Preset Values explicitly applies native raster and lumens. Impossible lens settings remain visible and block solves/layouts. The initial real preset supports nominal throw only; its shift envelope is still unverified.
+
+Under **Export → Export Study Package**, select a new folder. Beam writes structured JSON, an HTML study sheet and UUID-named Study View images. Open `index.html` to review schedules and warnings. The format is designed for PATCH consumption; actual PATCH import has not been validated.
+
+The CSV conversion now matches ten live Mapping Matter exports, including rotated and shifted projectors. **Mapping Matter's Designer CSV importer uses a different header and rejected this export format.** Numeric fixture validation is not a successful Designer import.
+
+**[Read the comparison, screenshots, tests and remaining gaps](docs/MAPPING-MATTER-PARITY.md)** · [Sample study sheet](examples/parity/study-package/index.html).
 
 ## Make your first projection study
 

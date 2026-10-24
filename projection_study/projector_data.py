@@ -6,9 +6,19 @@ from bpy.props import (BoolProperty, IntProperty, FloatProperty, FloatVectorProp
 def changed(self, context):
     from . import runtime
     runtime.invalidate(self.id_data)
+    from . import analysis_runtime
+    analysis_runtime.invalidate()
 
+
+from . import optics_library
+
+def optics_changed(self,context):
+    self.optics_lens='MANUAL'
+    changed(self,context)
 
 class PS_Settings(bpy.types.PropertyGroup):
+    optics_model: EnumProperty(name='Projector Preset',items=optics_library.projector_items(),default='MANUAL',update=optics_changed)
+    optics_lens: EnumProperty(name='Lens',items=optics_library.lens_items,update=changed)
     data_version: IntProperty(default=0,options={'HIDDEN'})
     is_projector: BoolProperty(default=False)
     identifier: StringProperty()

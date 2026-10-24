@@ -10,7 +10,7 @@ from .interchange import SCHEMA_VERSION, timestamp
 from .export_table import HEADER
 
 
-EXPORTER_VERSION='1.0.0'
+EXPORTER_VERSION='1.1.0'
 
 # Stable machine-readable conventions; additive fields do not change schema 1.0.
 CONVENTIONS={
@@ -94,7 +94,7 @@ def document(context):
         projectors=items,study_views=views,
         current_view_image={'filename':settings.last_current_image or None,'exported_at':settings.last_current_exported_at or None},
         disguise={'transform_convention':transform_conversion.CONVENTION,'validated':transform_conversion.VALIDATED,
-                  'convention_id':'blender_xyz_euler_xyz_unvalidated_v1','columns':HEADER,'rows':rows,'error':error,
+                  'convention_id':transform_conversion.CONVENTION_ID,'mapping_matter_reference_validated':transform_conversion.REFERENCE_VALIDATED,'columns':HEADER,'rows':rows,'error':error,
                   'validation':{'scope':'disguise_rows','errors':errors}})
     from .json_contract import validate_relationships
     validate_relationships(data)

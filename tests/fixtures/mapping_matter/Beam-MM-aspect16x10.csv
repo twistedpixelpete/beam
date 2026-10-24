@@ -1,0 +1,5 @@
+Projector_Name,Projector_Qte(Stack),Projector_Native-Rez-X,Projector_Native-Rez-Y,Projector_Lumens(lux),Projector_Brightness(%),Projector_Total_Lumens(lux),Projector_Trow-Ratio,Lens_Shift-H(%),Lens_Shift-V(%),Lens_X,Lens_Y,Lens_Z,Pitch(deg),Yaw(deg),Roll(deg),Target_X,Target_Y,Target_Z,Target_Distance,Target_Width,Target_Height,Target_Illuminance,Target_DPI,Unit_Dim,Unit_Illuminance,Projector_UUID
+Proj 1,1,2716,1528,10000,100,10000,1,0,0,-5000,0,1687.5,0,0,0,-5000,6000,1687.5,6000,6000,3375.552282768778,494,11.50,mm,lux,cd615749-4b0e-45ac-abe1-4a44c2f65ff9
+Proj 2,1,2716,1528,10000,100,10000,1,0,0,0,0,1687.5,0,0,0,0,6000,1687.5,6000,6000,3375.552282768778,494,11.50,mm,lux,7a3b0bd7-b1ef-41f5-8c69-2ed9b642c6ba
+Proj 3,1,2716,1528,10000,100,10000,1,0,0,5000,0,1687.5,0,0,0,5000,6000,1687.5,6000,6000,3375.552282768778,494,11.50,mm,lux,30b0a359-0ec0-4b85-904c-ad136d803665
+Proj 4,1,1920,1200,10000,100,10000,0.9,18,-24,1234,2345,789,0,0,0,1234,6000,789,3655,4061.1111111111113,2538.1944444444443,970,12.01,mm,lux,0a3048c4-9ced-4e05-9592-1844342f3cf0

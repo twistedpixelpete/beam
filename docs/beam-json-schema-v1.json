@@ -355,7 +355,10 @@
           "const": false
         },
         "convention_id": {
-          "const": "blender_xyz_euler_xyz_unvalidated_v1"
+          "enum": [
+            "blender_xyz_euler_xyz_unvalidated_v1",
+            "beam_mapping_matter_transform_v1"
+          ]
         },
         "columns": {
           "const": [
