@@ -10,7 +10,7 @@ def validate(model_id,lens_id,ratio,h,v,resolution):
     if lens_id=='MANUAL':return errors
     if lens_id not in model.lenses:return errors+['Lens is incompatible with projector']
     lens=LENSES[lens_id]
-    if not lens.throw_min-1e-6<=ratio<=lens.throw_max+1e-6:errors.append(f'Outside lens range: throw {ratio:.2f}; lens {lens.throw_min:.2f}–{lens.throw_max:.2f}')
+    if not lens.throw_min-1e-6<=ratio<=lens.throw_max+1e-6:errors.append(f'Selected lens supports {lens.throw_min:.2f}–{lens.throw_max:.2f} throw. Current: {ratio:.2f}.')
     for label,value,limits in [('H',h,lens.h_limits),('V',v,lens.v_limits)]:
         if limits is None:
             if abs(value)>1e-6:errors.append(label+' Shift convention unverified for this lens')

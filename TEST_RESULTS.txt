@@ -1,3 +1,11 @@
+Beam 0.12.0 — internal-beta candidate — 2026-10-24
+
+PASS: 55 pure tests, Blender milestones 1–15, 13 background suites, Apply/Restore, native workspace/GPU.
+PASS: 24 interop edge combinations, real optics duplication and rollback, five-generation migration, 360-edit 32-projector soak, 16/32 benchmark and reopen.
+PASS: actual PATCH application importer (automated), legacy importer, Documents checks, native application build.
+See docs/INTERNAL-BETA-READINESS.md for exact results, readiness matrix, limits and shutdown diagnostic.
+No release/tag published. Designer application and Windows/Linux remain unvalidated; manual PATCH UI acceptance outstanding.
+
 Beam 0.11.0 — production-validation development beta — 2026-10-24
 
 PASS: 55 pure tests; Blender milestones 1–15; engineering, planning, lifecycle, screen, JSON, theme, workspace and GPU suites.

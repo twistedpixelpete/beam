@@ -63,5 +63,5 @@ try:auto_layout.create(c,op)
 except ValueError:pass
 else:raise AssertionError('Auto Blend accepted invalid lens')
 assert before==(len(c.scene.objects),len(c.scene.ps_study.blend_groups))
-print('PRODUCTION REGRESSIONS PASS: ten actual roundtrips, 28 Euler edges, seven sourced lenses and rollback')
+print('PRODUCTION REGRESSIONS PASS: ten actual roundtrips, 28 Euler edges, all sourced model/lens combinations and rollback')
 addon.unregister()

@@ -1,0 +1,18 @@
+{
+  "analysis" : 1,
+  "blend_groups" : 1,
+  "images" : 3,
+  "importer" : "PATCH ProjectionStudyImporter.load",
+  "modes" : [
+    "NONE",
+    "DENSITY",
+    "STRETCH"
+  ],
+  "negative_cases" : 9,
+  "optics" : 4,
+  "projectors" : 4,
+  "save_reopen" : true,
+  "screens" : 1,
+  "status" : "PASS",
+  "warnings" : 5
+}

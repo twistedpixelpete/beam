@@ -1,0 +1,131 @@
+{
+  "edits": 360,
+  "group_moves": 120,
+  "overlap_changes": 60,
+  "lens_changes": 30,
+  "analyses": 12,
+  "analysis_exports": 12,
+  "before": {
+    "objects": 114,
+    "meshes": 51,
+    "materials": 119,
+    "images": 2,
+    "node_groups": 1,
+    "cameras": 42
+  },
+  "after": {
+    "objects": 114,
+    "meshes": 51,
+    "materials": 119,
+    "images": 2,
+    "node_groups": 1,
+    "cameras": 42
+  },
+  "checkpoints": [
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    }
+  ],
+  "first60_median": 0.0023579164990223944,
+  "last60_median": 0.002357770499656908,
+  "max_update_seconds": 0.00821770800394006,
+  "max_rss_bytes": 851722240,
+  "status": "PASS",
+  "save_reopen": true,
+  "undo_redo": true,
+  "uuid_unique": true,
+  "handlers_stable": true
+}
