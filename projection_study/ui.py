@@ -116,14 +116,21 @@ def views(layout,context):
     layout.operator('ps.export_views',text='Export This View',icon='EXPORT')
     box=section(layout,'view_options','This View · Export Annotations',True)
     if box:
+        from . import analysis_runtime
+        result=analysis_runtime.CACHE.get(context.scene.as_pointer())
+        row=box.row();row.enabled=bool(result and not result['stale']) or view.analysis_overlay!='NONE'
+        row.prop(view,'analysis_overlay')
         for prop in ('include_overlays','include_labels','include_frustums','include_projected_identifiers','include_grids'):box.prop(view,prop)
     box=section(layout,'view_advanced','Camera / Editing',True)
     if box:box.prop(view,'camera');box.operator('ps.remove_view',text='Remove View',icon='REMOVE')
 
 
 def exports(layout,context):
-    row=layout.row(align=True);row.operator('ps.export',text='disguise CSV',icon='EXPORT');row.operator('ps.export_json',text='PATCH JSON',icon='FILE_TEXT')
-    status(layout,'Mapping Matter checked · Designer import pending')
+    layout.label(text='Projector Data')
+    layout.operator('ps.export',text='Mapping Matter CSV',icon='EXPORT')
+    layout.operator('beam.export_designer',text='Designer CSV',icon='EXPORT')
+    layout.operator('ps.export_json',text='Beam JSON',icon='FILE_TEXT')
+    status(layout,'Two explicit CSV formats · see export notes')
     layout.operator('beam.study_package',text='Study Package · JSON + HTML + Views',icon='EXPORT')
     box=section(layout,'image_exports','Images')
     if box:

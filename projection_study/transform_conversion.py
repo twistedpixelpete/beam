@@ -5,7 +5,8 @@ Beam's optical frame points local -Z, up +Y. MM rotates Rz(yaw) @ Rx(pitch)
 @ Ry(roll). MM shift percentages use HALF image dimensions (Beam uses full).
 CSV target is a virtual optical-axis point at shifted-hit axial depth, not the
 shifted physical surface hit. Controlled Mapping Matter exports prove this
-convention; a Designer import has not been performed.
+convention. The separate Designer-study schema is tested in Mapping Matter,
+not in the Designer application.
 """
 import math
 CONVENTION_ID='beam_mapping_matter_transform_v1'
@@ -26,3 +27,20 @@ def lens_shift_percent(horizontal,vertical):return 2*horizontal,2*vertical
 def csv_target(origin,rotation,axial_distance_m,metres_per_unit):
     from mathutils import Vector
     return position_mm(origin+rotation@Vector((0,0,-axial_distance_m/metres_per_unit)),metres_per_unit)
+
+# Designer Projector Study CSV, as consumed by Mapping Matter's Designer importer.
+# UI probe: Designer (x,y,z) -> MM (x,z,y); rotation (x,y,z) -> MM (x,-z,-y).
+DESIGNER_CONVENTION_ID='beam_designer_transform_v1'
+DESIGNER_IMPORT_VALIDATED=True  # Ten actual Mapping Matter imports/reexports; not the Designer application.
+
+def designer_position_m(position_blender,metres_per_unit):
+    x,y,z=(float(v)*metres_per_unit for v in position_blender)
+    return x,z,y
+
+def designer_orientation_degrees(rotation_matrix):
+    pitch,yaw,roll=orientation_degrees(rotation_matrix)
+    return pitch,-yaw,-roll
+
+def designer_lens_shift(horizontal,vertical):
+    h,v=lens_shift_percent(horizontal,vertical)
+    return h/100,v/100

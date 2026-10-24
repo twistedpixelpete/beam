@@ -41,7 +41,9 @@ def analyse(context,receiver,projectors,budget=2048):
             delta=point-r['origin'];hit=target_raycast.cast(r['origin'],delta.normalized())
             if hit and (hit[0]-point).length*unit<=max(1e-5,delta.length*unit*1e-6):sample['visible'].append(metrics)
         samples.append(sample)
-    result=dict(schema='beam-surface-analysis',version=1,receiver_uuid=receiver.beam_screen.uuid if receiver.beam_screen.is_screen else receiver.get('beam_receiver_uuid'),receiver_name=receiver.name,
+    from .utils import new_uuid
+    from .interchange import timestamp
+    result=dict(analysis_uuid=new_uuid(),generated_at=timestamp(),schema='beam-surface-analysis',version=1,receiver_uuid=receiver.beam_screen.uuid if receiver.beam_screen.is_screen else receiver.get('beam_receiver_uuid'),receiver_name=receiver.name,
         projector_uuids=[o.ps.uuid for o in projectors],projector_names=[o.ps.identifier for o in projectors],nominal_centre_density_px_m={o.ps.uuid:runtime.CACHE[o.as_pointer()]['metrics'].pixels_per_metre if runtime.CACHE[o.as_pointer()]['hit'] else None for o in projectors},
         statistics=surface_analysis.summarise(samples),samples=samples,stale=False,
         method='Equal-area systematic triangle strata, deterministic barycentric samples; area-weighted estimates',

@@ -83,28 +83,43 @@ def optics(layout,p):
             if limits:body.label(text=f'{label} {value:+.1f}% · range {limits[0]:+.0f} to {limits[1]:+.0f}%')
     issues=optics_validation.validate(p.optics_model,p.optics_lens,p.throw_ratio,p.shift_h,p.shift_v,(p.resolution_x,p.resolution_y))
     for text in issues:body.label(text=text,icon='ERROR')
-    if not issues:body.label(text='Within known limits',icon='CHECKMARK')
-    if lens and lens.h_limits is None:body.label(text='Shift envelope unverified',icon='INFO')
+    if not issues:body.label(text='VALID · known limits',icon='CHECKMARK')
+    if lens and lens.h_limits is None:
+        body.label(text='Shift limits unavailable',icon='INFO')
+        body.label(text=f'H {p.shift_h:+.1f}% · V {p.shift_v:+.1f}% · limit unknown')
 
 def overlay():
+    from . import viewport_display
+    if viewport_display._suppress:return
     context=bpy.context
     if not context.scene or not hasattr(context.scene,'ps_study') or not context.region_data:return
     if not context.space_data.overlay.show_overlays:return
     s=context.scene.ps_study;r=analysis_runtime.CACHE.get(context.scene.as_pointer())
     if not s.analysis_show or not r or r['stale']:return
+    draw_cached(r,s.analysis_mode,context.region_data.perspective_matrix)
+
+def draw_cached(r,mode,matrix):
     import gpu
     # Batches built once per mode/result; no geometry or analysis work in draw.
-    entry=r.get('_batches',{}).get(s.analysis_mode)
+    entry=r.get('_batches',{}).get(mode)
     if entry is None:return
     shader,batch=entry
     gpu.state.depth_test_set('LESS_EQUAL');gpu.state.depth_mask_set(False);gpu.state.program_point_size_set(True)
     try:
-        shader.bind();shader.uniform_float('viewProjection',context.region_data.perspective_matrix);batch.draw(shader)
+        shader.bind();shader.uniform_float('viewProjection',matrix);batch.draw(shader)
     finally:gpu.state.depth_test_set('NONE');gpu.state.depth_mask_set(True);gpu.state.program_point_size_set(False)
 
 @persistent
 def changed(scene,graph):
-    if any(isinstance(u.id,(bpy.types.Object,bpy.types.Mesh)) and (u.is_updated_geometry or u.is_updated_transform) for u in graph.updates):analysis_runtime.invalidate()
+    for update in graph.updates:
+        obj=update.id
+        if not (update.is_updated_geometry or update.is_updated_transform):continue
+        if isinstance(obj,bpy.types.Object):
+            if obj.type not in analysis_runtime.scene_geometry.SURFACE_TYPES or obj.get('ps_helper') or obj.get('beam_screen_detail'):continue
+            analysis_runtime.invalidate();return
+        if isinstance(obj,bpy.types.Mesh):
+            if any(o.data==obj and not o.get('ps_helper') and not o.get('beam_screen_detail') for o in scene.objects):
+                analysis_runtime.invalidate();return
 
 def register():
     global _handle

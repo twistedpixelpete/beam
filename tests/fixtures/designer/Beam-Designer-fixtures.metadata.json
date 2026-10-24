@@ -1,0 +1,51 @@
+{
+  "exporter": "Beam",
+  "exporter_version": "1.2.0",
+  "transform_convention": "beam_designer_transform_v1",
+  "exported_at": "2026-10-24T02:08:52+00:00",
+  "csv_sha256": "afbe8195edbbdc70745f6ba3d10a6c3bf3d62e1b4e476c548fc72c6e616c1ff4",
+  "projectors": [
+    {
+      "name": "Beam aspect16x10",
+      "uuid": "279bc8de-3ed9-4666-b9a5-8f649f1fe603"
+    },
+    {
+      "name": "Beam baseline",
+      "uuid": "a3a85bf6-ca6a-4d17-bda2-6cd43ca076fc"
+    },
+    {
+      "name": "Beam combined",
+      "uuid": "8c78948d-9b95-42b6-8e24-de1c716db5e7"
+    },
+    {
+      "name": "Beam hshift",
+      "uuid": "c89cb4ca-d3e5-45e0-a7b2-808f82884844"
+    },
+    {
+      "name": "Beam pitch",
+      "uuid": "d863c2c7-03b4-4320-a8d3-c4f22487e49e"
+    },
+    {
+      "name": "Beam roll",
+      "uuid": "aec4f0a1-a5c4-4760-9f57-0f6b2bc6f6ce"
+    },
+    {
+      "name": "Beam shift",
+      "uuid": "53c81c37-15ec-4fb4-842d-c80b403b2148"
+    },
+    {
+      "name": "Beam translation",
+      "uuid": "8e4d3e08-8141-457f-8868-bfc662bb908a"
+    },
+    {
+      "name": "Beam vshift",
+      "uuid": "96654a7f-89be-4354-ac55-fcd663983800"
+    },
+    {
+      "name": "Beam yaw",
+      "uuid": "30a5c23f-856a-45cd-bfd8-9ced3c366f22"
+    }
+  ],
+  "validation_scope": "Mapping Matter importer / controlled fixtures",
+  "designer_application_tested": false
+}

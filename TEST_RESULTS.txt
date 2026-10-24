@@ -1,3 +1,13 @@
+Beam 0.11.0 — production-validation development beta — 2026-10-24
+
+PASS: 55 pure tests; Blender milestones 1–15; engineering, planning, lifecycle, screen, JSON, theme, workspace and GPU suites.
+PASS: ten actual Mapping Matter Designer-CSV roundtrips, 28 internal Euler edges, seven real lenses with rollback, sampled geometry extensions, analysis Study Views and PATCH contract/hash checks.
+PASS: 16/32-projector representative venue timings and save/reopen.
+Details, limitations and exact timings: docs/PRODUCTION-VALIDATION.md
+Not tested: Designer application, PATCH application, other Blender/platform versions.
+
+Historical results follow:
+
 Projection Study 0.2.0 — verified 2026-10-03
 
 Environment: Blender 5.2.2 LTS (d13f752e3b9c), macOS / Metal

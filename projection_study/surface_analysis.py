@@ -40,5 +40,7 @@ def summarise(samples):
         overlap_area_m2=overlap,overlap_percent=100*overlap/total if total else 0,overlap_percent_of_covered=100*overlap/visible if visible else 0,
         density_min_px_m=min(values) if values else None,density_max_px_m=max(values) if values else None,
         density_average_px_m=average,density_variation_percent=100*(max(values)-min(values))/average if average else None,
+        min_anisotropy=min((v['anisotropy'] for v,w in covered),default=None),
+        average_anisotropy=sum(v['anisotropy']*w for v,w in covered)/visible if visible else None,
         max_anisotropy=max((v['anisotropy'] for v,w in covered),default=None),
         sample_count=len(samples),occluded_sample_count=occluded,occluded_sample_percent=100*occluded/len(samples) if samples else 0)

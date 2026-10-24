@@ -561,6 +561,36 @@
         "error"
       ],
       "additionalProperties": true
+    },
+    "export_formats": {
+      "type": "object",
+      "properties": {
+        "mapping_matter": {
+          "type": "object",
+          "properties": {
+            "convention_id": {
+              "const": "beam_mapping_matter_transform_v1"
+            },
+            "reference_validated": {
+              "type": "boolean"
+            }
+          }
+        },
+        "designer": {
+          "type": "object",
+          "properties": {
+            "convention_id": {
+              "const": "beam_designer_transform_v1"
+            },
+            "mapping_matter_import_validated": {
+              "type": "boolean"
+            },
+            "designer_application_tested": {
+              "const": false
+            }
+          }
+        }
+      }
     }
   },
   "required": [
@@ -1517,6 +1547,75 @@
             {
               "type": "null"
             }
+          ]
+        },
+        "analysis_overlay": {
+          "enum": [
+            "NONE",
+            "DENSITY",
+            "STRETCH"
+          ]
+        },
+        "analysis_image": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "analysis_uuid": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "mode": {
+              "enum": [
+                "DENSITY",
+                "STRETCH"
+              ]
+            },
+            "generated_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "receiver_uuid": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "projector_uuids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "image_filename": {
+              "type": "string",
+              "pattern": "^[^/\\\\]+\\.png$"
+            },
+            "image_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "statistics": {
+              "type": "object"
+            },
+            "method": {
+              "type": "string"
+            },
+            "visibility": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "analysis_uuid",
+            "mode",
+            "generated_at",
+            "receiver_uuid",
+            "projector_uuids",
+            "image_filename",
+            "image_sha256",
+            "statistics",
+            "method",
+            "visibility"
           ]
         }
       },

@@ -1,6 +1,6 @@
 # Beam
 
-**Projection planning and screen building in Blender.** Maintained by **Twisted Pixel** · **0.10.0 — development beta, unreleased**
+**Projection planning and screen building in Blender.** Maintained by **Twisted Pixel** · **0.11.0 — development beta, unreleased**
 
 > **Still in testing.** Beam is a pre-release beta, not a stable production release. Expect bugs, incomplete workflows and changes between versions. Keep backups of your Blender files and independently verify geometry, measurements and exported data before production use.
 
@@ -31,15 +31,19 @@ Beam requires **Blender 4.5 or newer**. It has been tested on **Blender 5.2.2 LT
 
 When upgrading, replace the existing extension rather than enabling a second copy. Restart Blender after upgrading. Older files remain compatible; the internal extension name is still `projection_study`.
 
-## Analyse a surface and export a study (0.10 development beta)
+## Analyse a surface and export a study (0.11 development beta)
 
 Under **Projector, Screen or Blend → Surface Analysis**, choose the receiving mesh, projector scope and sample count, then click **Analyse Surface**. Switch between Density and Stretch; after edits, analyse again. The overlay shows sampled values on actual geometry, including opaque first-hit occlusion. It is an estimate, not guaranteed coverage between samples.
 
-Under **Projector → Optics Guidance**, choose a preset and lens, or keep **Generic / Manual**. Use Preset Values explicitly applies native raster and lumens. Impossible lens settings remain visible and block solves/layouts. The initial real preset supports nominal throw only; its shift envelope is still unverified.
+Under **Projector → Optics Guidance**, choose a preset and lens, or keep **Generic / Manual**. Use Preset Values explicitly applies native raster and lumens. Impossible lens settings remain visible and block solves/layouts. Seven sourced lenses across Panasonic, Epson, Christie and Barco support nominal throw guidance. Their shift envelopes remain unknown; nonzero shifted solves are blocked.
 
 Under **Export → Export Study Package**, select a new folder. Beam writes structured JSON, an HTML study sheet and UUID-named Study View images. Open `index.html` to review schedules and warnings. The format is designed for PATCH consumption; actual PATCH import has not been validated.
 
-The CSV conversion now matches ten live Mapping Matter exports, including rotated and shifted projectors. **Mapping Matter's Designer CSV importer uses a different header and rejected this export format.** Numeric fixture validation is not a successful Designer import.
+Under **Export → Projector Data**, choose **Mapping Matter CSV** for the established Mapping Matter export schema, or **Designer CSV** for Mapping Matter’s Designer-study importer. Both include a version/hash metadata sidecar. The new Designer CSV passed ten actual Mapping Matter import/re-export geometry checks; the Designer application itself remains untested.
+
+For an analysis image, first run **Analyse Surface**, then open **Views → This View · Export Annotations → Analysis Overlay** and choose Density or Stretch. Export the Study View or Study Package. Images include a compact legend; the package and image sidecars carry sample counts, receiver/projector references, visibility assumptions and timestamps. Stale analysis must be recalculated. PATCH owns client-facing document generation.
+
+**[Production validation, timings, optics sources and PATCH fixture](docs/PRODUCTION-VALIDATION.md)**.
 
 **[Read the comparison, screenshots, tests and remaining gaps](docs/MAPPING-MATTER-PARITY.md)** · [Sample study sheet](examples/parity/study-package/index.html).
 

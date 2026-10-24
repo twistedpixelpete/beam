@@ -7,6 +7,7 @@ from . import export_json,analysis_runtime,optics_validation
 
 
 def document(context):
+    from .study_guidance import THRESHOLDS,BASIS
     source=export_json.document(context);warnings=[]
     for p in source['projectors']:
         if not p['calculated']:warnings.append(dict(code='NO_TARGET',uuid=p['uuid'],message='No centre target'))
@@ -32,12 +33,13 @@ def document(context):
     if result and not result['stale']:
         analysis=[{k:v for k,v in result.items() if k!='samples' and not k.startswith('_')}]
         stats=result['statistics']
-        if stats['density_min_px_m'] is not None and stats['density_min_px_m']<100:warnings.append(dict(code='LOW_DENSITY',uuid=result['receiver_uuid'],message='Minimum sampled density below study guidance threshold of 100 px/m (not a universal content requirement)'))
-        if stats['coverage_percent']<99.5:warnings.append(dict(code='INCOMPLETE_COVERAGE',uuid=result['receiver_uuid'],message='Sampled receiver coverage below 99.5%'))
-        if (stats['max_anisotropy'] or 0)>2:warnings.append(dict(code='EXCESSIVE_STRETCH',uuid=result['receiver_uuid'],message='Sampled pixel anisotropy exceeds 2:1'))
+        if stats['density_min_px_m'] is not None and stats['density_min_px_m']<THRESHOLDS['min_density_px_m']:warnings.append(dict(code='LOW_DENSITY',uuid=result['receiver_uuid'],message=f"Minimum sampled density below Beam guidance {THRESHOLDS['min_density_px_m']:g} px/m"))
+        if stats['coverage_percent']<THRESHOLDS['min_coverage_percent']:warnings.append(dict(code='INCOMPLETE_COVERAGE',uuid=result['receiver_uuid'],message=f"Sampled receiver coverage below Beam guidance {THRESHOLDS['min_coverage_percent']:g}%"))
+        if (stats['max_anisotropy'] or 0)>THRESHOLDS['max_anisotropy']:warnings.append(dict(code='EXCESSIVE_STRETCH',uuid=result['receiver_uuid'],message=f"Sampled pixel anisotropy exceeds Beam guidance {THRESHOLDS['max_anisotropy']:g}:1"))
     else:warnings.append(dict(code='NO_CURRENT_ANALYSIS',uuid=None,message='Surface analysis absent or stale; projector measurements are nominal only'))
     receivers=[dict(uuid=o.get('beam_receiver_uuid'),name=o.name) for o in context.scene.objects if o.get('beam_receiver_uuid') and not o.beam_screen.is_screen]
     return dict(schema='beam-study',schema_version='1.0.0',exported_at=source['exported_at'],project=source['project_metadata'],units=source['units'],
+        study_guidance=dict(thresholds=THRESHOLDS,basis=BASIS),export_formats=source['export_formats'],
         projectors=source['projectors'],blend_groups=source['blend_groups'],screens=screens,receivers=receivers,views=source['study_views'],optics=optics,
         surface_analysis=analysis,warnings=warnings,assumptions=['Nominal projector measurements do not guarantee visible coverage.','Surface analysis is sampled, two-sided opaque evaluated geometry; thin occluders and between-sample regions remain untested.','Illuminance is nominal, not photometrically calibrated.'],
         transform_validation={k:source['disguise'][k] for k in ('convention_id','transform_convention','validated','mapping_matter_reference_validated')})
@@ -61,7 +63,13 @@ def validate(data):
         if optic['projector_uuid'] not in projectors:raise ValueError('Unresolved optics reference')
     for warning in data['warnings']:
         if warning.get('uuid') is not None and warning['uuid'] not in seen:raise ValueError('Unresolved warning reference')
+    analyses={a.get('analysis_uuid'):a for a in data['surface_analysis'] if a.get('analysis_uuid')}
     for view in data['views']:
+        image=view.get('analysis_image')
+        if image:
+            source=analyses.get(image['analysis_uuid'])
+            if not source or image['receiver_uuid']!=source['receiver_uuid'] or image['projector_uuids']!=source['projector_uuids']:raise ValueError('Unresolved analysis image reference')
+            if image['mode']!=view.get('analysis_overlay') or image['statistics']!=source['statistics']:raise ValueError('Analysis image metadata differs from its source')
         if view.get('package_image') not in (None,'views/view-'+view['uuid']+'.png'):raise ValueError('Unexpected study image path')
     json.dumps(data,allow_nan=False)
 
@@ -101,7 +109,7 @@ def export(context,destination,include_views=True,area=None):
         for view,record in zip(context.scene.ps_study.views,data['views']):
             record['package_image']=None
             if include_views:
-                name='view-'+view.uuid+'.png';export_view(context,view,temp/'views'/name,area)
+                name='view-'+view.uuid+'.png';record['analysis_image']=export_view(context,view,temp/'views'/name,area)
                 record['package_image']='views/'+name
                 record['exported_image_filename']=name;record['exported_at']=view.exported_at
             else:data['warnings'].append(dict(code='VIEW_NOT_RENDERED',uuid=view.uuid,message='View metadata only; image export disabled'))
