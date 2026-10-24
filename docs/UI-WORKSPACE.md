@@ -2,6 +2,8 @@
 
 Maintainer: Twisted Pixel. Original UI foundation: `feature/beam-ui-workspace`, based on reviewed PR #2 merge `846d63a429824f75a127e0c4346dbd76d5f7a6f1`. This UI pass is still in testing; it does not publish a new release.
 
+Current refinement and screenshots: [UI/UX refinement](UI-UX-REFINEMENT.md).
+
 ## Open Beam
 
 From a normal Blender **Layout** containing a 3D View, Outliner and Properties editor, open **N → Beam** and click the workspace icon beside **BEAM**, or search **Open Beam Workspace** with F3.
@@ -10,7 +12,7 @@ Beam duplicates that layout into an optional **Beam** workspace. The original wo
 
 Switch to any other workspace at any time. In Beam, native Properties tabs still expose materials, modifiers and transforms. Click the **Scene** tab to return to the Beam inspector, or use **Open Beam Workspace** again. The regular **N → Beam** sidebar remains available in other layouts.
 
-The compact labelled module navigation is the native equivalent of the reference's left rail. It uses Projector, Screen, Blend, Views and Export. No custom object tree, replacement editor, global theme change or forced workspace switch is installed. If the current layout lacks the required native editors, Beam gives a clear message instead of attempting fragile screen splits.
+The compact module rail uses the viewport's native left toolbar. Widen that toolbar to reveal labels; hover icons for module names. If the toolbar is hidden, navigation returns to the inspector. It uses Projector, Screen, Blend, Views and Export. No custom object tree, replacement editor, global theme change or forced workspace switch is installed. If the current layout lacks the required native editors, Beam gives a clear message instead of attempting fragile screen splits.
 
 ![Optional native Beam workspace](../examples/ui-workspace/full-workspace.png)
 
@@ -28,9 +30,9 @@ Automatic Outliner-to-Properties *tab switching* is disabled only inside the Bea
 
 ## Projector and targets
 
-Projection contains resolution, throw ratio, lens shift, output and Study Colour. Calculated/Targets shows Solve By and position/lens/target locks before the values. Unsupported edits are disabled; relevant mode/lock/shift restrictions are visible and have tooltips.
+Projection contains resolution, throw ratio, lens shift, output and Study Colour. Calculated shows plain measurements with separate edit buttons. Solver groups Solve By, position/lens/target locks and the active draft. Unsupported edits are disabled; relevant mode/lock/shift restrictions are visible and have tooltips.
 
-Click a calculated value to stage an **inline** target. Edit the number, then click the checkmark to Apply or the X to Cancel. Staging does not move or change a projector. Apply calls the existing transactional solver and supports native Undo/Redo. Changing active projector or scene prevents a stale draft from applying to another object. Drafts clear on load/Undo/Redo and are not durable project engineering data.
+Click the pencil beside a calculated value to stage an **inline** target in its Solver section. Edit the number, then click the checkmark to Apply or the X to Cancel. Staging does not move or change a projector. Apply calls the existing transactional solver and supports native Undo/Redo. Changing active projector or scene prevents a stale draft from applying to another object. Drafts clear on load/Undo/Redo and are not durable project engineering data.
 
 Lengths use the displayed m/mm units captured when editing begins; pixel size explicitly uses mm. Density is px/m and ratio is dimensionless. DPI and estimated illuminance remain read-only. The direct optical throw-ratio field keeps its existing behavior; solver locks apply to solved target edits.
 
@@ -91,7 +93,7 @@ Existing scenes are not reorganised on load. **Project/Workspace → Organise Be
 - `ui_context.py`: ephemeral inline drafts, restriction display and cached group summaries. Apply delegates to the existing solver.
 - `ui_workspace.py`: optional workspace creation, native viewport context bridges, receiver/member UI actions and a 250 ms UI state timer. Redraws occur on state changes; the timer does not continuously invalidate engineering caches.
 - `ui_collections.py`: native creation routing and explicit organisation only.
-- `ui_icons.py` and two small bundled icons: reference blue `#005BD3` and restrained positive mint `#7ED4B4` accents. Study Colours remain separate.
+- `ui_icons.py` supplies a small positive-state icon. Active module buttons now use native icons and the optional Beam theme’s blue. Study Colours remain separate.
 - `study_data.py`: saved module/pin/receiver/UI selection state alongside existing active-object pointers.
 
 Panel drawing does not run runtime refresh, coverage calculation or pair measurement. The native UI test deliberately forbids those calls while drawing. Group summaries update outside panel drawing and reuse existing coverage state. Collection integration changes only creation/linking boundaries in projector, screen, group and Study View modules.
@@ -100,7 +102,7 @@ The projection/inverse/layout/coverage maths, Reverse Mapping/material wrappers,
 
 ## Blender API limits and migration
 
-Blender Python cannot register a full custom editor type or apply a separate theme/font to one workspace. This implementation therefore uses native Properties/sidebar controls, a compact navigation grid, blue accent icons and normal theme-selected buttons. Native button fill/fonts and editor chrome follow the user's Blender theme; the exact mock's left rail, large custom header and per-workspace dark palette are not reproduced. The workspace does not change the global theme automatically. An optional application-wide preset is now available: see [Theme and workspace](THEME-WORKSPACE.md).
+Blender Python cannot register a full custom editor type or apply a separate theme/font to one workspace. This implementation therefore uses native Properties/sidebar controls, a native toolbar rail with an inspector grid fallback and normal theme-selected buttons. Native button fill/fonts and editor chrome follow the user's Blender theme; the mock’s custom editor chrome and per-workspace dark palette are not reproduced. The workspace does not change the global theme automatically. An optional application-wide preset is now available: see [Theme and workspace](THEME-WORKSPACE.md).
 
 The optional workspace retains native Scene context headers and other Scene panels below Beam. Materials/modifiers remain one native tab away. Returning to Beam uses Scene or Open Beam Workspace. A user workspace already named Beam is not overwritten; Blender may suffix the new workspace name.
 

@@ -7,7 +7,7 @@ Maintainer: **Twisted Pixel**. This milestone is an unreleased, experimental bet
 ## Set a projection target
 
 1. Select a projector aimed at receiving geometry.
-2. In **Beam → Projector → Calculated / Targets**, choose **Solve By**, inspect the locks, then click Height, Width, Throw, Ratio, Density or Pixel Size.
+2. In **Beam → Projector → Calculated**, click the pencil beside Height, Width, Throw, Ratio, Density or Pixel Size, then inspect Solve By and the locks in Solver.
 3. Edit the inline value. Apply with the checkmark to solve, or Cancel with X to discard the draft. Staging the value does not change the projector. The original **Set Projection Target** dialog remains available through operator search.
 4. Check the calculated readouts and target. An invalid request reports a warning and restores the original state.
 

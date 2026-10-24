@@ -2,13 +2,15 @@
 
 Maintainer: Twisted Pixel. Branch: `feature/beam-theme-workspace`, created from stable main `846d63a`. The prior tested native UI foundation is included because it has not yet merged into main. Still a prerelease, in testing.
 
+Current refinement: [UI/UX refinement](UI-UX-REFINEMENT.md).
+
 ## Install and revert
 
 1. Install the Beam extension ZIP using Blender **Preferences → Add-ons → Install from Disk**. Restart Blender after replacing an older build.
 2. The theme is optional. Export your current customised theme first in **Preferences → Themes → Save Theme** if you want to preserve it as a preset.
-3. In Beam's **Project / Workspace**, choose **Install Beam Theme…**, then confirm `Beam.xml` in Blender's native file browser. Alternatively install the separately supplied `Beam.xml` through **Preferences → Themes → Install**.
-4. Theme installation applies the theme to **all Blender workspaces and editors** and adds it to the preset list. Blender's own Auto-Save Preferences setting determines persistence. Beam does not force preference saving.
-5. To revert, select your previous theme (or Blender Dark) in Preferences → Themes. Uninstalling the add-on does not revert a separately installed theme.
+3. In Beam's **Project / Workspace**, choose **Apply Beam Theme**, then confirm the application-wide change. This captures your current theme for **Restore Previous Theme**, including after restart. Alternatively install the separately supplied `Beam.xml` through **Preferences → Themes → Install**.
+4. Applying the theme affects **all Blender workspaces and editors**. Installing the standalone XML also adds it to the native preset list. Blender's own Auto-Save Preferences setting determines persistence. Beam does not force preference saving.
+5. To revert an Apply Beam Theme action, use **Restore Previous Theme**. For manually installed XML, select your previous theme (or Blender Dark) in Preferences → Themes. Uninstalling the add-on does not revert a separately installed theme.
 6. Use F3 → **Open Beam Workspace** from a native Layout containing a 3D View, Outliner and Properties editor. Existing workspaces remain available.
 
 Installing/enabling the extension, loading a study and opening the workspace never apply the theme automatically. The `.blend` does not carry the global theme. There is no projection-data or export-schema migration. Existing collection organisation remains opt-in.
@@ -45,7 +47,7 @@ Native fonts, sizes, menus and editing workflows remain familiar. No font instal
 
 ## Workspace and navigation
 
-The optional workspace keeps a large native viewport, native Outliner at upper right and contextual Beam inspector below it. The compact five-module navigation stays at the top of the inspector. Blender Python does not provide a custom editor registration API, so this pass retains the tested native navigation grid rather than adding a fragile substitute left-hand editor. Standard editing, transforms, materials and modifiers stay available.
+The optional workspace keeps a large native viewport, native Outliner at upper right and contextual Beam inspector below it. The compact five-module navigation lives in the viewport’s native toolbar, with an inspector fallback when that toolbar is hidden. Blender Python does not provide a custom editor registration API, so the rail uses the existing native toolbar rather than a substitute editor. Standard editing, transforms, materials and modifiers stay available.
 
 Selection follows Projector, Screen, Blend and Study View objects; pinning holds Beam context while selecting venue geometry. Inline target editing, scoped annotations, cached overlap summaries and distinct New Auto Blend/Reflow actions are retained. See the [workspace guide](UI-WORKSPACE.md) for details.
 
@@ -64,7 +66,7 @@ Screenshots are actual Blender captures, not mockups. Monitor brightness, colour
 
 ## Implementation
 
-`projection_study/themes/Beam.xml` is the installable native preset. `tools/build_theme.py` reproducibly builds it inside a disposable factory Blender process. The UI merely opens Blender's existing theme installer. No new theme timer, handlers or scene data are added.
+`projection_study/themes/Beam.xml` is the installable native preset. `tools/build_theme.py` reproducibly builds it inside a disposable factory Blender process. The UI now exposes an opt-in Apply/Restore adapter around Blender’s native XML preset loader; the refinement guide describes its persistent backup. No new theme timer, handlers or scene data are added.
 
 The previous UI foundation is carried in commits `bfe2a35` and `408bf3d`. The theme increment changes no projection maths, inverse solver, Auto Blend, Reverse Mapping, Blend maths, CSV/JSON schema, UUID logic or test-pattern generation.
 

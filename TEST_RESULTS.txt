@@ -183,3 +183,27 @@ Inherited engineering test results above were not all rerun for the palette chan
 Native theme is application-wide and opt-in. User preferences were not changed.
 Windows/Linux, Blender 4.5, physical brightness/calibration remain unverified.
 Final compilation/whitespace checks and Blender extension ZIP validation PASS.
+
+
+Beam UI/UX refinement — 2026-10-24
+Branch feature/beam-ui-ux-refinement from clean stable main 846d63a.
+Prior UI/theme foundation carried in 224b73b, 604bb7d, 760152b.
+Blender 5.2.2 LTS, macOS Metal; disposable scenes and isolated preferences.
+49 standalone Python tests and 7 UI-context tests PASS.
+All 8 engineering acceptance scripts PASS, including 10 engineering review
+regressions, planning, lifecycle, frustum helpers, JSON contract and screen suites.
+Native workspace tests PASS with new plan_new and reflow UI adapters;
+Outliner selection, pin/receiver separation, inverse edit Undo/Redo, Screen Update,
+new Auto Blend Undo/Redo, members/Reflow, file save/reopen, export and cleanup.
+Planning dialog draws with calculate forbidden; first draw contains cached result.
+Planning parity including 32-projector array and adapter execution PASS.
+Theme Apply/Restore across separate Blender processes PASS; repeated Apply retains
+original custom-theme backup. 17 normal/selected text pairs >=4.5:1 PASS.
+Fresh GUI process workspace reopening and no duplicate workspace PASS.
+Toolbar-hidden navigation fallback, missing receiver source, simulated GPU absence,
+Presentation/Technical round trip and Outliner state fixture PASS.
+UI idle timer median approximately 0.04 ms; no overall viewport FPS claim.
+Existing engineering/material/GPU/schema algorithms unchanged.
+No claim of cross-platform, Blender 4.5 or physical-display calibration validation.
+See docs/UI-UX-REFINEMENT.md for screenshots, installation and limitations.
+Final compilation/whitespace checks and Blender extension ZIP validation PASS.

@@ -197,3 +197,7 @@ Licensed under **GPL-3.0-or-later**.
 ### Optional Beam theme
 
 The development build includes an original charcoal/blue Blender theme. See [theme installation, screenshots and rollback](docs/THEME-WORKSPACE.md). It is optional and application-wide; installing or opening Beam does not apply it automatically. Still a prerelease beta, in testing.
+
+### UI/UX refinement beta
+
+The latest local refinement adds a native left module rail, measured values with separate edit buttons, a compact Auto Blend preview, and Apply/Restore Theme. See the [refinement guide and screenshots](docs/UI-UX-REFINEMENT.md). Theme application remains optional and application-wide.
