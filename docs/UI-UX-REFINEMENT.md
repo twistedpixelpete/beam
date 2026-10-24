@@ -4,7 +4,7 @@ Maintainer: Twisted Pixel. Branch: `feature/beam-ui-ux-refinement`, created from
 
 ## What changed
 
-- A compact five-module rail lives in the native 3D View toolbar at the left. Native Blender tools remain above it. Frame/Solo/Lock appear beneath the module icons when applicable. Widen the toolbar for labels; narrow mode uses native icons and tooltips. Hide it with Blender's normal toolbar toggle and navigation/actions return to the inspector. Other workspaces keep the normal Beam sidebar.
+- A compact five-module rail lives in the native 3D View toolbar at the left. Native Blender tools remain above it. Frame/Solo/Lock appear beneath the module icons when applicable. Widen the toolbar for labels; narrow mode uses native icons and tooltips. Labelled module buttons also remain visible in the inspector for discoverability. Hide the toolbar with Blender's normal toggle and utility actions return to the inspector. Other workspaces keep the normal Beam sidebar.
 - The project header uses two rows. Repeated IDs and unnecessary selection rows are removed: **Active** identifies Beam's context; a separate **Selected** row appears when native selection differs. **Pinned** and **Receiver** remain explicit and independent. Export has no irrelevant active-object block.
 - Calculated measurements are plain, aligned text. Separate pencil buttons stage edits; disabled buttons expose restrictions in tooltips. Density is concise and pixel size is explicitly **mm/px**. Stored precision is unchanged.
 - An active edit exposes **Solver**, with target value, Solve By, locks, Apply/Cancel and errors together. Idle Solver collapses to a short mode heading. Advanced photometric readouts are moved out of the common path. No Target is shown once.

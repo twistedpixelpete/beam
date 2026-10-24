@@ -207,3 +207,7 @@ Existing engineering/material/GPU/schema algorithms unchanged.
 No claim of cross-platform, Blender 4.5 or physical-display calibration validation.
 See docs/UI-UX-REFINEMENT.md for screenshots, installation and limitations.
 Final compilation/whitespace checks and Blender extension ZIP validation PASS.
+
+Stage 1 pre-merge rerun 2026-10-24: 49 Python tests, 8 engineering scripts,
+UI-context, theme and native workspace acceptance PASS. Labelled module navigation
+now always visible; Open Beam Workspace has REGISTER search visibility.

@@ -8,6 +8,7 @@ _seen_ui={}
 def is_beam(context):return bool(context.workspace and context.workspace.get('beam_workspace'))
 
 class BEAM_OT_workspace(bpy.types.Operator):
+    bl_options={'REGISTER'}
     bl_idname='beam.workspace';bl_label='Open Beam Workspace';bl_description='Duplicate this native layout as Beam; keep the original workspace and scene intact'
     def execute(self,context):
         existing=next((w for w in bpy.data.workspaces if w.get('beam_workspace')),None)

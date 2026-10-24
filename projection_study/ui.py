@@ -191,7 +191,7 @@ def draw(layout,context):
     row.prop(s,'project_name',text='',placeholder='Project');row.prop(s,'revision',text='',placeholder='Revision')
     area=next((a for a in context.screen.areas if a.type=='VIEW_3D'),None)
     row=layout.row(align=True);row.prop(s,'display_units',expand=True);row.operator('beam.ui_action',text='Presentation' if presentation.active(area) else 'Technical',icon='SHADING_SOLID',depress=presentation.active(area)).action='PRESENTATION'
-    if not rail_visible(context):navigation(layout,context)
+    navigation(layout,context)
     if s.inspector!='EXPORT':
         current=context.view_layer.objects.active;active=ui_context.subject(context)
         if current!=active:

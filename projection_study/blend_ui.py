@@ -23,7 +23,7 @@ def draw_groups(layout,context):
     elif not data:status(layout,'Updating measurements')
     box=section(layout,'blend_overlap','Overlap')
     if box:
-        box.prop(g,'input_mode',text='Request Units')
+        box.prop(g,'input_mode',text='Units')
         if g.layout!='VERTICAL':box.prop(g,'overlap_h',text='Horizontal')
         if g.layout!='HORIZONTAL':box.prop(g,'overlap_v',text='Vertical')
         for axis,title in [('H','Horizontal'),('V','Vertical')]:
