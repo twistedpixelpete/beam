@@ -10,7 +10,7 @@ from .interchange import SCHEMA_VERSION, timestamp
 from .export_table import HEADER
 
 
-EXPORTER_VERSION='1.1.0'
+EXPORTER_VERSION='1.2.0'
 
 # Stable machine-readable conventions; additive fields do not change schema 1.0.
 CONVENTIONS={
@@ -76,6 +76,7 @@ def document(context):
             camera=None if camera is None else dict(space='blender_world',position_m=[v*unit for v in camera.matrix_world.translation],
                 rotation_quaternion_wxyz=list(camera.matrix_world.to_quaternion()),type=camera.data.type,
                 lens_mm=camera.data.lens,ortho_scale_m=camera.data.ortho_scale*unit),
+            analysis_overlay=view.analysis_overlay,
             resolution={'x':view.resolution_x,'y':view.resolution_y},
             overlays={'projected_identifiers':view.include_projected_identifiers,'enabled':view.include_overlays,'labels':view.include_labels,'frustums':view.include_frustums,'grids':view.include_grids},
             expected_image_filename=filenames[view.uuid],
@@ -87,7 +88,9 @@ def document(context):
         exporter_version=EXPORTER_VERSION,blender_version=bpy.app.version_string,
         blender_build_hash=bpy.app.build_hash.decode('ascii',errors='replace'))
     from .blend_groups import serialize
-    data=dict(producer=producer,conventions=CONVENTIONS,product='Beam',maintainer='Twisted Pixel',project_metadata={key:getattr(settings,key) for key in ('project_name','venue','revision','client','author')},blend_groups=serialize(context),schema='projection-study',schema_version=SCHEMA_VERSION,exported_at=timestamp(),
+    from . import transform_conversion as conversion
+    formats=dict(mapping_matter=dict(convention_id=conversion.CONVENTION_ID,reference_validated=conversion.REFERENCE_VALIDATED),designer=dict(convention_id=conversion.DESIGNER_CONVENTION_ID,mapping_matter_import_validated=conversion.DESIGNER_IMPORT_VALIDATED,designer_application_tested=False))
+    data=dict(export_formats=formats,producer=producer,conventions=CONVENTIONS,product='Beam',maintainer='Twisted Pixel',project_metadata={key:getattr(settings,key) for key in ('project_name','venue','revision','client','author')},blend_groups=serialize(context),schema='projection-study',schema_version=SCHEMA_VERSION,exported_at=timestamp(),
         scene_name=scene.name,helper_visibility={key:getattr(settings,key) for key in ('show_frustums','show_centre_rays','show_projected_identifiers','show_labels','show_outputs','show_study_cameras')},projection_model={'receivers':'visible_evaluated_surfaces','coordinates':'perspective_raster','occlusion':'gpu_first_depth','target_role':'automatic_centre_reference_only','shadow_max_dimension':int(settings.shadow_resolution)},units={'internal_length':'m','display_length':settings.display_units,'disguise_length':'mm',
         'pixel_density':'px/m','pixel_size':'m/px','illuminance':'lux','coordinate_space':'blender_world','rotation':'degrees','quaternion':'unitless_wxyz','resolution':'px',
         'luminous_flux':'lm','brightness':'percent','lens_shift':'percent_of_full_image','dpi':'px/in','overlap_by_input_mode':{'PIXELS':'px','PERCENT':'percent','METRES':'m'}},

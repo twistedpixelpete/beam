@@ -31,6 +31,7 @@ class PS_StudyView(bpy.types.PropertyGroup):
     include_frustums: BoolProperty(name='Frustums',description='Include projector frustums in this saved view’s export',default=True)
     include_grids: BoolProperty(name='Grids / Output',description='Include projected grids and output in this saved view’s export',default=True)
     include_overlays: BoolProperty(name='Study Overlays',default=True)
+    analysis_overlay: EnumProperty(name='Analysis Overlay',items=[('NONE','None',''),('DENSITY','Density','Current surface analysis'),('STRETCH','Stretch','Current surface analysis')],default='NONE')
     image_filename: StringProperty()
     exported_at: StringProperty()
 

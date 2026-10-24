@@ -52,8 +52,8 @@ def rows_for_scene(context):
 
 class PS_OT_export(bpy.types.Operator):
     bl_idname='ps.export'
-    bl_label='Export CSV'
-    bl_description='Export the supported table schema; transform convention still requires Designer validation'
+    bl_label='Export Mapping Matter CSV'
+    bl_description='Mapping Matter export schema with version metadata; use Designer CSV for Mapping Matter’s Designer-study importer'
     filepath: bpy.props.StringProperty(subtype='FILE_PATH',default='Beam_projectors.csv')
     filter_glob: bpy.props.StringProperty(default='*.csv',options={'HIDDEN'})
     check_existing: bpy.props.BoolProperty(default=True,options={'HIDDEN'})
@@ -73,7 +73,8 @@ class PS_OT_export(bpy.types.Operator):
             # Validate all rows before opening the destination file.
             import io
             buffer=io.StringIO(); write_table(buffer,rows)
-            path.write_text(buffer.getvalue(),encoding='utf-8')
+            from .export_designer import write_with_metadata
+            write_with_metadata(path,buffer.getvalue(),conversion.CONVENTION_ID,[dict(name=r[0],uuid=r[-1]) for r in rows])
         except (ValueError,OSError) as exc:
             self.report({'ERROR'},str(exc)); return {'CANCELLED'}
         self.report({'INFO'},f'Exported {len(rows)} projector(s) to {path}')

@@ -63,12 +63,15 @@ def export_view(context,view,path,area=None):
         raise ValueError(f'{view.name}: missing scene camera')
     if view.camera.data.type not in {'PERSP','ORTHO'}: raise ValueError('Perspective and orthographic study cameras only')
     area,region=viewport(context,area)
+    from . import analysis_images
+    analysis=analysis_images.current(context,view.analysis_overlay)
     width,height=view.resolution_x,view.resolution_y
     options=dict(projected_identifiers=view.include_projected_identifiers,labels=view.include_labels,frustums=view.include_frustums,grids=view.include_grids,overlays=view.include_overlays)
     with context.temp_override(area=area,region=region):
         context.view_layer.update(); runtime.refresh(True)
         from . import reverse_mapping
         reverse_mapping.refresh_gpu()
+        analysis=analysis_images.current(context,view.analysis_overlay)
         graph=context.evaluated_depsgraph_get(); cam=view.camera.evaluated_get(graph)
         view_matrix=cam.matrix_world.inverted()
         projection=cam.calc_matrix_camera(graph,x=width,y=height,scale_x=1,scale_y=1)
@@ -94,22 +97,30 @@ def export_view(context,view,path,area=None):
                 gpu.matrix.load_matrix(view_matrix); gpu.matrix.load_projection_matrix(projection)
                 # draw_view3d resolves colour, but does not expose its scene depth.
                 # Populate a depth-only mesh pass for correctly occluded overlays.
-                if options['overlays']:
+                if options['overlays'] or analysis:
                     depth_pass(context,graph)
-                    viewport_display.draw_3d(options,projection@view_matrix)
+                    if options['overlays']:viewport_display.draw_3d(options,projection@view_matrix)
+                    if analysis:
+                        from .analysis_ui import draw_cached
+                        draw_cached(analysis,view.analysis_overlay,projection@view_matrix)
             with off.bind(),gpu.matrix.push_pop(),gpu.matrix.push_pop_projection():
                 gpu.state.viewport_set(0,0,width,height)
-                if options['overlays']:
+                if options['overlays'] or analysis:
                     gpu.matrix.load_matrix(Matrix.Identity(4))
                     gpu.matrix.load_projection_matrix(typography.pixel_matrix(width,height))
-                    viewport_display.draw_labels(projection@view_matrix,width,height,options)
+                    if options['overlays']:viewport_display.draw_labels(projection@view_matrix,width,height,options)
+                    if analysis:analysis_images.legend(analysis,view.analysis_overlay,width,height)
+            analysis_images.current(context,view.analysis_overlay)
             with off.bind():
                 buffer=gpu.state.active_framebuffer_get().read_color(0,0,width,height,4,0,'UBYTE')
                 buffer.dimensions=width*height*4
                 write_png(path,width,height,buffer)
         finally:
             off.free(); gpu.state.viewport_set(*old_viewport)
+    if not analysis:Path(path).with_suffix('.analysis.json').unlink(missing_ok=True)
+    metadata=analysis_images.write_metadata(path,analysis,view.analysis_overlay) if analysis else None
     view.image_filename=Path(path).name; view.exported_at=timestamp()
+    return metadata
 
 
 class PS_OT_create_view(bpy.types.Operator):

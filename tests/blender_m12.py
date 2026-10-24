@@ -60,7 +60,7 @@ assert not path.exists()
 with path.with_suffix('.csv').open() as stream: rows=list(csv.reader(stream))
 assert rows[0]==list(HEADER) and len(rows)==6
 assert rows[1][-3:-1]==['mm','lux'] and rows[1][-1]==identity
-assert bpy.ops.ps.export.get_rna_type().name=='Export CSV'
+assert bpy.ops.ps.export.get_rna_type().name=='Export Mapping Matter CSV'
 print('MILESTONE 12 native Shift-D / Alt-D / copy-paste / colour / independence / rename / CSV PASS')
 
 # A paste into another scene must not retain the source UUID/identifier.

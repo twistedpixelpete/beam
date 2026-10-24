@@ -386,6 +386,14 @@
           },
           "stale": {
             "const": false
+          },
+          "analysis_uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }
@@ -450,6 +458,61 @@
     },
     "schema_version": {
       "const": "1.0.0"
+    },
+    "export_formats": {
+      "type": "object",
+      "properties": {
+        "mapping_matter": {
+          "type": "object",
+          "properties": {
+            "convention_id": {
+              "const": "beam_mapping_matter_transform_v1"
+            },
+            "reference_validated": {
+              "type": "boolean"
+            }
+          }
+        },
+        "designer": {
+          "type": "object",
+          "properties": {
+            "convention_id": {
+              "const": "beam_designer_transform_v1"
+            },
+            "mapping_matter_import_validated": {
+              "type": "boolean"
+            },
+            "designer_application_tested": {
+              "const": false
+            }
+          }
+        }
+      }
+    },
+    "study_guidance": {
+      "type": "object",
+      "properties": {
+        "basis": {
+          "type": "string"
+        },
+        "thresholds": {
+          "type": "object",
+          "properties": {
+            "min_density_px_m": {
+              "type": "number",
+              "minimum": 0
+            },
+            "min_coverage_percent": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max_anisotropy": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        }
+      }
     }
   },
   "additionalProperties": true,
@@ -1394,6 +1457,75 @@
             "null"
           ],
           "pattern": "^views/view-[0-9a-f-]{36}\\.png$"
+        },
+        "analysis_overlay": {
+          "enum": [
+            "NONE",
+            "DENSITY",
+            "STRETCH"
+          ]
+        },
+        "analysis_image": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "analysis_uuid": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "mode": {
+              "enum": [
+                "DENSITY",
+                "STRETCH"
+              ]
+            },
+            "generated_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "receiver_uuid": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "projector_uuids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "image_filename": {
+              "type": "string",
+              "pattern": "^[^/\\\\]+\\.png$"
+            },
+            "image_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "statistics": {
+              "type": "object"
+            },
+            "method": {
+              "type": "string"
+            },
+            "visibility": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "analysis_uuid",
+            "mode",
+            "generated_at",
+            "receiver_uuid",
+            "projector_uuids",
+            "image_filename",
+            "image_sha256",
+            "statistics",
+            "method",
+            "visibility"
+          ]
         }
       },
       "required": [
