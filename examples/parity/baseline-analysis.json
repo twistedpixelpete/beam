@@ -1,0 +1,44 @@
+{
+  "schema": "beam-surface-analysis",
+  "version": 1,
+  "receiver_uuid": "64e6f25d-1164-4d78-949f-2d26186e7ea0",
+  "receiver_name": "Receiver",
+  "projector_uuids": [
+    "eed46d37-fcbc-49bc-bd40-50fb68624f8c",
+    "417b05d1-96c3-4f89-a542-d9e7e6406c52",
+    "738ed2f2-b82e-4df1-be68-5fa6fd2bbd72"
+  ],
+  "projector_names": [
+    "PJ01",
+    "PJ02",
+    "PJ03"
+  ],
+  "nominal_centre_density_px_m": {
+    "eed46d37-fcbc-49bc-bd40-50fb68624f8c": 452.666702641384,
+    "417b05d1-96c3-4f89-a542-d9e7e6406c52": 452.666702641384,
+    "738ed2f2-b82e-4df1-be68-5fa6fd2bbd72": 452.666702641384
+  },
+  "statistics": {
+    "surface_area_m2": 54.0,
+    "nominal_covered_area_m2": 54.0,
+    "visible_covered_area_m2": 54.0,
+    "coverage_percent": 100.0,
+    "uncovered_percent": 0.0,
+    "overlap_area_m2": 6.769775390625,
+    "overlap_percent": 12.53662109375,
+    "overlap_percent_of_covered": 12.53662109375,
+    "density_min_px_m": 452.6666257881567,
+    "density_max_px_m": 452.66673861610707,
+    "density_average_px_m": 452.66670034277786,
+    "density_variation_percent": 2.4925171277046974e-05,
+    "max_anisotropy": 1.0000000194363747,
+    "sample_count": 8192,
+    "occluded_sample_count": 0,
+    "occluded_sample_percent": 0.0
+  },
+  "stale": false,
+  "method": "Equal-area systematic triangle strata, deterministic barycentric samples; area-weighted estimates",
+  "visibility": "CPU evaluated-geometry first hit, opaque two-sided surfaces; not GPU depth; transparent materials treated opaque",
+  "untested": "Between-sample regions and invisible/excluded scene geometry; thin features may be missed",
+  "elapsed_seconds": 0.1415589589960291
+}

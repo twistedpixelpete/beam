@@ -211,3 +211,31 @@ Final compilation/whitespace checks and Blender extension ZIP validation PASS.
 Stage 1 pre-merge rerun 2026-10-24: 49 Python tests, 8 engineering scripts,
 UI-context, theme and native workspace acceptance PASS. Labelled module navigation
 now always visible; Open Beam Workspace has REGISTER search visibility.
+
+Beam 0.10.0 development beta — 2026-10-24 — Mapping Matter validation
+UI PR #3 merged first; main 87598d548d0373e044afbed9a0a7147d16a23a88.
+Engineering isolated on feature/beam-mapping-matter-parity.
+55 pure Python tests PASS; all 15 Blender integration milestones PASS.
+Eight engineering acceptance scripts PASS; UI context and theme PASS.
+Cross-process theme apply/restore PASS (initial restore-only harness invocation corrected).
+Native workspace, engineering GPU/Undo/Redo, projection engine, current/saved views,
+Reverse Mapping persistence, workspace restart PASS. Disposable Blender 5.2.2 macOS Metal only.
+Ten actual Mapping Matter CSV exports reproduced; checked positions, rotations,
+virtual targets, dimensions, distances, ratio, shifts and raster. Maximum numeric
+error <0.0016; tolerance 0.02 (mm / degrees as applicable). Central reference
+convention beam_mapping_matter_transform_v1. Actual MM Designer CSV import attempted
+and rejected for incompatible headers; Designer import remains unvalidated.
+Flat/angled/stepped/blocked surface tests PASS. 8192-sample flat/angled CPU ~0.13–0.15s;
+4096 blocked samples ~0.07s in a simple three-projector fixture, not a venue benchmark.
+Native Metal density/stretch overlays visible and inspected; no analysis in draw.
+Cache invalidation after projector movement and receiver visibility changes PASS.
+Real nominal-throw and synthetic optics, both zoom bounds, H/V limits, raster mismatch,
+image-height inverse solve, failure rollback, Auto Blend preset propagation PASS.
+Study package with UUID image, metadata, schedules, warnings and current analysis PASS;
+portable schema and negative UUID/path/type/false-validation checks PASS.
+Semantic duplicate/dangling UUID and existing-folder refusal checks PASS.
+HTML sheet viewed in browser. Numeric comparison, actual screenshots and assumptions:
+docs/MAPPING-MATTER-PARITY.md and examples/parity/.
+Gaps: successful Designer/MM import, actual PATCH consumption, off-axis metric parity,
+real coupled/shifted lens envelopes, MM stepped/curved tests, large venues, other OS/Blender versions.
+No new public release and no change to the user's installed add-on/live Blender scene.
