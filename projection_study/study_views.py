@@ -29,7 +29,8 @@ def create_view(context,name):
     while any(v.name==name for v in settings.views):
         name=f'{base} {count:02d}'; count+=1
     camera=bpy.data.objects.new('Study · '+name,bpy.data.cameras.new('Study · '+name))
-    scene.collection.objects.link(camera)
+    from .ui_collections import collection
+    collection(scene,'VIEWS').objects.link(camera)
     camera.matrix_world=rv.view_matrix.inverted()
     camera.data.sensor_fit='HORIZONTAL'; camera.data.sensor_width=36
     projection=rv.window_matrix; aspect=region.width/region.height

@@ -37,10 +37,8 @@ def acknowledge(p,*keys):
 
 
 def collection(scene):
-    c=next((c for c in scene.collection.children if c.get('beam_screens')),None)
-    if c is None:
-        c=bpy.data.collections.new('Beam · Screens');c['beam_screens']=True;scene.collection.children.link(c)
-    return c
+    from .ui_collections import collection as beam_collection
+    return beam_collection(scene,'SCREENS')
 
 
 def material(led=False):

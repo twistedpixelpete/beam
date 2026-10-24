@@ -1,5 +1,5 @@
 """Context-sensitive creation/edit panels using Beam's native layout language."""
-import json,textwrap
+import textwrap
 import bpy
 from . import screen_data,screen_math,screen_objects
 from .ui import section,readout
@@ -13,7 +13,9 @@ def parameters(layout,p,editing=False):
     layout.use_property_split=True;layout.use_property_decorate=False
     if not editing:layout.prop(p,'screen_type');layout.prop(p,'category')
     if p.category=='LED':
-        layout.prop(p,'preset');action(layout,'Apply Cabinet Preset','PRESET')
+        layout.prop(p,'preset')
+        if editing:action(layout,'Apply Cabinet Preset','PRESET')
+        else:layout.operator('beam.draft_preset',text='Apply Cabinet Preset')
         for a,b,ta,tb in [('cabinet_width','cabinet_height','W m','H m'),('cabinet_px','cabinet_py','X px','Y px'),('columns','rows','Columns','Rows')]:
             row=layout.row(align=True);row.use_property_split=False;row.prop(p,a,text=ta);row.prop(p,b,text=tb)
         layout.prop(p,'cabinet_depth')
@@ -73,68 +75,46 @@ def parameters(layout,p,editing=False):
         except ValueError as exc:layout.label(text=str(exc),icon='ERROR')
 
 
-class BEAM_PT_screens(bpy.types.Panel):
-    bl_label='Screen Builder';bl_idname='BEAM_PT_screens';bl_space_type='VIEW_3D';bl_region_type='UI';bl_category='Beam';bl_order=1
-    @classmethod
-    def poll(cls,context):return context.scene.ps_study.inspector=='SCREEN'
-    def draw(self,context):
-        layout=self.layout;obj=screen_data.active(context,persistent=True)
-        layout.prop(context.scene.ps_study,'active_screen',text='Screen')
-        if obj and obj.beam_screen.screen_type=='FLAT':layout.operator('beam.auto_blend',text='Auto Blend',icon='GROUP')
-        create=section(layout,'screen_create','Create Screen',True)
+def draw_screen(layout,context):
+    from .ui import status,actions
+    s=context.scene.ps_study;obj=screen_data.active(context,persistent=True)
+    layout.prop(s,'ui_create_screen',text='New Screen',icon='ADD',toggle=True)
+    if s.ui_create_screen or not obj:
+        create=section(layout,'screen_create','Create Screen')
         if create:
-            p=context.scene.beam_screen_draft;parameters(create,p)
-            action(create,'Use Selected Source','SOURCE','EYEDROPPER');create.operator('beam.screen_create',icon='ADD')
-        if not obj:return
-        p=obj.beam_screen
-        edit=section(layout,'screen_edit','Screen · '+p.identifier)
-        if edit:
-            edit.prop(p,'name');parameters(edit,p,True)
-            action(edit,'Update Screen','UPDATE','FILE_REFRESH')
-            if abs(p.unit_scale-context.scene.unit_settings.scale_length)>1e-8:edit.label(text='Scene units changed · update required',icon='ERROR')
-            if p.built_signature!=screen_objects.signature(p):edit.label(text='Parameters changed · update required',icon='INFO')
-            if any(abs(s-1)>1e-5 for s in obj.matrix_world.to_scale()):edit.label(text='Scaled object: parameter sizes are local',icon='ERROR')
-        appearance=section(layout,'screen_display','Appearance')
-        if appearance:
-            row=appearance.row(align=True)
-            action(row,'Clean Pattern','PATTERN');action(row,'Neutral Surface','NEUTRAL')
-            appearance.prop(p,'show_outline',text='Border')
-            if p.category=='LED':appearance.prop(p,'show_detail')
-        labels=section(layout,'screen_labels','Labels')
-        if labels:
-            row=labels.row(align=True);row.prop(p,'show_label',text='Screen ID');row.prop(p,'show_dimensions',text='Dimensions')
-            labels.prop(context.scene.ps_study,'label_detail',text='Detail')
-            row=labels.row(align=True);row.prop(context.scene.ps_study,'display_units',text='Units',expand=True)
-        actions=section(layout,'screen_actions','Actions',True)
-        if actions:
-            row=actions.row(align=True);action(row,'Duplicate','DUPLICATE','DUPLICATE');action(row,'Flip Front','FLIP')
-        technical=section(layout,'screen_technical','Technical Overlays',True)
-        if technical:
-            technical.prop(p,'show_wire')
-            markers=technical.column();markers.enabled=context.scene.ps_study.label_detail=='FULL'
-            markers.label(text='Markers · Full detail')
-            for key in ('show_normal','show_centre'):markers.prop(p,key)
-            if p.category=='LED':
-                for key in ('show_cabinet_lines','show_cabinet_ids'):markers.prop(p,key)
-        mapping=section(layout,'screen_mapping','Mapping / Surface',True)
-        if mapping:
-            mapping.prop(p,'uv_method')
-            if p.uv_method=='PROJECTED':mapping.prop(p,'uv_plane')
-            if p.uv_method=='DISTANCE':mapping.label(text='Rectangular quad grid only',icon='INFO')
-            action(mapping,'Apply UV Mapping','REMAP')
-            mapping.prop(p,'conform_target');mapping.prop(p,'conform_offset');action(mapping,'Conform to Surface','CONFORM')
-            mapping.label(text='Nearest surface · source preserved')
-            row=mapping.row();action(row,'Make Surface','SURFACE');action(row,'Bake Mesh','BAKE')
-        diagnostics=section(layout,'screen_diagnostics','Diagnostics',True)
-        if diagnostics:
-            action(diagnostics,'Validate Geometry / UV','VALIDATE','CHECKMARK')
-            for line in textwrap.wrap(p.diagnostic,40):diagnostics.label(text=line)
-            diagnostics.label(text='Front: '+('reversed' if p.direction=='REVERSED' else 'local −Y (generated walls)'))
-        export=section(layout,'screen_export','Export Geometry',True)
-        if export:
-            export.prop(p,'export_mode');export.prop(p,'export_space')
-            export.label(text='Metres · +Z up · no annotations')
-            row=export.row(align=True)
-            for fmt in ('OBJ','FBX'):row.operator('beam.screen_export',text='Export '+fmt,icon='EXPORT').format=fmt
+            parameters(create,context.scene.beam_screen_draft)
+            action(create,'Use Selected Source','SOURCE','EYEDROPPER');create.operator('beam.screen_create',text='Create Screen',icon='ADD')
+    if not obj:status(layout,'No screen selected');return
+    p=obj.beam_screen;actions(layout,context)
+    pending=p.built_signature!=screen_objects.signature(p)
+    if abs(p.unit_scale-context.scene.unit_settings.scale_length)>1e-8:status(layout,'Scene units changed · Update Screen')
+    if pending:status(layout,'Parameters changed · Update Screen')
+    if any(abs(v-1)>1e-5 for v in obj.matrix_world.to_scale()):status(layout,'Scaled screen · local dimensions')
+    edit=section(layout,'screen_edit','Screen')
+    if edit:
+        edit.prop(p,'name');parameters(edit,p,True);action(edit,'Update Screen','UPDATE','FILE_REFRESH')
+    if p.screen_type=='FLAT':layout.operator('beam.plan_new',text='New Auto Blend',icon='ADD')
+    appearance=section(layout,'screen_display','Appearance / This Screen')
+    if appearance:
+        row=appearance.row(align=True);action(row,'Test Pattern','PATTERN');action(row,'Neutral','NEUTRAL')
+        row=appearance.row(align=True);row.prop(p,'show_label',text='Screen ID');row.prop(p,'show_dimensions',text='Dimensions')
+        appearance.prop(p,'show_outline',text='Border')
+        if p.category=='LED':appearance.prop(p,'show_detail')
+    technical=section(layout,'screen_technical','This Screen · Technical',True)
+    if technical:
+        for key in ('show_wire','show_normal','show_centre'):technical.prop(p,key)
+        if p.category=='LED':
+            for key in ('show_cabinet_lines','show_cabinet_ids'):technical.prop(p,key)
+    mapping=section(layout,'screen_mapping','Mapping / Surface',True)
+    if mapping:
+        mapping.prop(p,'uv_method')
+        if p.uv_method=='PROJECTED':mapping.prop(p,'uv_plane')
+        action(mapping,'Apply UV Mapping','REMAP');mapping.prop(p,'conform_target');mapping.prop(p,'conform_offset');action(mapping,'Conform to Surface','CONFORM')
+        row=mapping.row(align=True);action(row,'Make Surface','SURFACE');action(row,'Bake Mesh','BAKE')
+    advanced=section(layout,'screen_actions','Editing / Diagnostics',True)
+    if advanced:
+        row=advanced.row(align=True);action(row,'Duplicate','DUPLICATE','DUPLICATE');action(row,'Flip Front','FLIP')
+        action(advanced,'Validate Geometry / UV','VALIDATE','CHECKMARK')
+        for line in textwrap.wrap(p.diagnostic,40):advanced.label(text=line)
 
-CLASSES=(BEAM_PT_screens,)
+CLASSES=()

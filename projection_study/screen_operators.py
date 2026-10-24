@@ -17,7 +17,7 @@ class BEAM_OT_screen_create(bpy.types.Operator):
         if p.screen_type in {'CURVE','SURFACE'} and not p.source:p.source=context.view_layer.objects.active
         try:obj=screen_objects.create(context,p)
         except (ValueError,RuntimeError,TypeError) as exc:self.report({'ERROR'},str(exc));return {'CANCELLED'}
-        screen_objects.select(context,obj);return {'FINISHED'}
+        screen_objects.select(context,obj);context.scene.ps_study.ui_create_screen=False;return {'FINISHED'}
 
 
 class BEAM_OT_screen_action(bpy.types.Operator):

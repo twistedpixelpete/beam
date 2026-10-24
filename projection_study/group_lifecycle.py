@@ -1,6 +1,7 @@
 """Editable membership and independent group copies, including native clipboard copies."""
 import json
 import bpy
+from .ui_collections import collection as ui_collection
 from mathutils import Matrix,Vector
 from . import blend_groups as groups
 from .projector_object import create as create_projector
@@ -41,7 +42,7 @@ def add_member(group,obj,context,sort=True):
     if not group.controller:raise ValueError('Group controller is missing')
     context.view_layer.update();world=obj.matrix_world.copy()
     slot=bpy.data.objects.new(f'{group.name} · {obj.ps.identifier} Layout',None)
-    context.scene.collection.objects.link(slot);slot['beam_layout_slot']=True;slot.hide_select=True;slot.empty_display_size=.01
+    ui_collection(context.scene,'GROUPS').objects.link(slot);slot['beam_layout_slot']=True;slot.hide_select=True;slot.empty_display_size=.01
     slot.parent=group.controller;slot.matrix_parent_inverse=Matrix.Identity(4)
     slot.location=group.controller.matrix_world.inverted()@world.translation
     member=group.members.add();member.projector=obj;member.projector_uuid=obj.ps.uuid;member.slot=slot
@@ -156,7 +157,7 @@ def instantiate(recipe,context,source_controller,controller=None,offset=True):
     name=groups.next_group_name(context.scene)
     group=settings.blend_groups.add();group.uuid=new_uuid();group.name=name
     if controller is None:
-        controller=bpy.data.objects.new(name,None);context.scene.collection.objects.link(controller)
+        controller=bpy.data.objects.new(name,None);ui_collection(context.scene,'GROUPS').objects.link(controller)
         controller.matrix_world=matrix_units(recipe['world'],unit)
     else:controller.name=name
     group.controller=controller;controller['beam_group_uuid']=group.uuid
@@ -172,7 +173,7 @@ def instantiate(recipe,context,source_controller,controller=None,offset=True):
             for key,value in item['settings'].items():setattr(obj.ps,key,value)
             image=source_controller.get(f'beam_member_image_{i}')
             if image:obj.ps.image=image.copy()
-            slot=bpy.data.objects.new(f'{name} · {obj.ps.identifier} Layout',None);context.scene.collection.objects.link(slot)
+            slot=bpy.data.objects.new(f'{name} · {obj.ps.identifier} Layout',None);ui_collection(context.scene,'GROUPS').objects.link(slot)
             slot['beam_layout_slot']=True;slot.hide_select=True;slot.empty_display_size=.01
             slot.parent=controller;slot.matrix_parent_inverse=Matrix.Identity(4);slot.matrix_basis=matrix_units(item['slot'],unit)
             obj.parent=slot;obj.matrix_parent_inverse=matrix_units(item['parent_inverse'],unit);obj.matrix_basis=matrix_units(item['basis'],unit)

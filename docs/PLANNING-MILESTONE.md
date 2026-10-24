@@ -7,15 +7,15 @@ Maintainer: **Twisted Pixel**. This milestone is an unreleased, experimental bet
 ## Set a projection target
 
 1. Select a projector aimed at receiving geometry.
-2. In **Beam → Projector → Calculated → Set Projection Target**, choose **Set Image Height**, Width, Throw Distance, Throw Ratio, Pixel Density or Pixel Size.
-3. Choose **Solve By** and type the desired value. The viewport previews the result when the field changes. Confirm to keep it, or Cancel to restore the starting transform, throw ratio and solve mode.
+2. In **Beam → Projector → Calculated**, click the pencil beside Height, Width, Throw, Ratio, Density or Pixel Size, then inspect Solve By and the locks in Solver.
+3. Edit the inline value. Apply with the checkmark to solve, or Cancel with X to discard the draft. Staging the value does not change the projector. The original **Set Projection Target** dialog remains available through operator search.
 4. Check the calculated readouts and target. An invalid request reports a warning and restores the original state.
 
 **Lens** keeps position fixed and adjusts throw ratio. **Position** holds throw ratio and orientation, moving along the optical axis. **Auto** chooses Position for distance or when the lens is locked; otherwise it chooses Lens. It is a deterministic choice, not a rigging optimiser. Position, lens and target locks are available. Resolution is always preserved. Native location locks are respected too.
 
 Distance is Beam's existing axial centre-target depth, not slant distance. Position solving currently requires zero horizontal and vertical lens shift: with a shifted lens, keeping orientation, target position and optical-axis-only movement is generally incompatible. Beam reports this instead of moving sideways or silently changing aim. Lens solving with shift can change the centre target; leave Target locked to reject that change, or unlock it deliberately. Constrained projectors and non-unit/sheared transforms are rejected.
 
-Widths, heights, distances and pixel sizes in the target dialog use the m/mm display setting captured when the dialog opens. Density is px/m; ratio is dimensionless. The normal throw ratio control remains editable as before.
+The original target dialog uses the m/mm display setting captured when it opens. Inline lengths use the captured m/mm display setting; inline pixel size is explicitly in mm. Density is px/m; ratio is dimensionless. The normal throw ratio control remains editable as before.
 
 ### Equations and architecture
 
@@ -33,7 +33,7 @@ The unchanged forward solver, `projection_math.calculate`, remains authoritative
 ## Auto Blend
 
 1. Create or select a **flat rectangular Beam Screen**, and click **Update Screen** if its parameters are pending.
-2. Click **Auto Blend** in the Screen inspector. Choose the active projector template or generic defaults.
+2. Click **New Auto Blend** in the Screen inspector. Choose the active projector template or generic defaults.
 3. Choose Horizontal, Vertical or Array. Enter a projector count, or columns and rows for an array. **Auto Count** searches for the smallest fitting arrangement at the entered throw distance.
 4. Set horizontal/vertical overlap in pixels, percent or metres. The result updates as you edit; no objects are created during this calculation.
 5. Review the result and each adjacent slot's overlap. Click **Create Layout**, or Cancel.
@@ -92,9 +92,9 @@ The usual projected grid/image overlay is suppressed on Reverse Mapping receiver
 
 ## Contextual interface
 
-The compact project header contains project, venue, revision, units and Technical/Presentation controls. The quick bar adds a projector, screen or saved view. Projector, Screen, Blend and Views tabs expose the relevant inspector, and selection follows the matching Beam object. Selecting venue geometry preserves Beam's active projector/screen/group context. Screen commands act on the screen shown in the inspector even when venue geometry is selected.
+The compact project header contains project, revision, units and Technical/Presentation controls. Venue/client/author live in Project/Workspace. See the [workspace guide](UI-WORKSPACE.md) for the current navigation and inline target workflow. Contextual creation actions add a projector, screen or saved view. Projector, Screen, Blend, Views and Export tabs expose the relevant inspector, and selection follows the matching Beam object. Selecting venue geometry preserves Beam's active projector/screen/group context. Screen commands act on the screen shown in the inspector even when venue geometry is selected.
 
-Calculated values remain read-only. Explicit **Set…** buttons open target edits; advanced locks, display options, metadata and export details use collapsible sections. Blend results identify each axis and show requested versus actual px, physical units and percent. Existing Frame, Solo, Lock, Reflow, group-member and export actions remain available in context.
+Calculated values now offer staged inline target edits with Apply/Cancel; DPI and estimated illuminance remain read-only; solve locks stay beside the target fields; display options, metadata and advanced details use collapsible sections. Blend results identify each axis and show requested versus actual px, physical units and percent. Existing Frame, Solo, Lock, Reflow, group-member and export actions remain available in context.
 
 Recommended workspace: a large 3D View with the Beam sidebar open, an Outliner at upper right and a compact Properties editor below. Save this as a personal Blender workspace if useful. Beam does not replace or force a workspace.
 
