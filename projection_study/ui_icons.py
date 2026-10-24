@@ -1,4 +1,4 @@
-"""Small PATCH accents; never change Blender's global theme or study colours."""
+"""Restrained positive-state icon; active controls use the native Blender theme."""
 from pathlib import Path
 import bpy.utils.previews
 _preview=None
@@ -8,7 +8,7 @@ def icon(name):return _preview[name].icon_id if _preview and name in _preview el
 def register():
     global _preview
     _preview=bpy.utils.previews.new()
-    for name in ('active','valid'):_preview.load(name,str(Path(__file__).parent/'icons'/(name+'.png')),'IMAGE')
+    for name in ('valid',):_preview.load(name,str(Path(__file__).parent/'icons'/(name+'.png')),'IMAGE')
 
 def unregister():
     global _preview

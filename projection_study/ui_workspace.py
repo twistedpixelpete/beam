@@ -30,12 +30,16 @@ class BEAM_OT_workspace(bpy.types.Operator):
                 if area.type=='PROPERTIES':
                     area.spaces.active.context='SCENE'
                     if hasattr(area.spaces.active,'outliner_sync'):area.spaces.active.outliner_sync='NEVER'
-                elif area.type=='VIEW_3D':area.spaces.active.show_region_ui=False
+                elif area.type=='VIEW_3D':
+                    area.spaces.active.show_region_ui=False;area.spaces.active.show_region_toolbar=True
         return {'FINISHED'}
 
 class BEAM_OT_ui_action(bpy.types.Operator):
     bl_idname='beam.ui_action';bl_label='Beam Action';bl_options={'UNDO'}
     action:bpy.props.EnumProperty(items=[(k,k.replace('_',' ').title(),'') for k in ('FRAME','LOCK','SOLO','PRESENTATION','LOOK','AIM_CLICK','ORGANIZE')])
+    @classmethod
+    def description(cls,context,properties):
+        return {'FRAME':'Frame the active Beam object without changing selection','SOLO':'Isolate this projector or group’s projection output','LOCK':'Toggle native location and rotation locks','PRESENTATION':'Toggle reduced viewport guides; restore Technical settings on exit','ORGANIZE':'Organise Beam objects into native collections; keep venue geometry'}.get(properties.action,'Operate on the active Beam object')
     def execute(self,context):
         from . import ui_collections
         if self.action=='ORGANIZE':ui_collections.organize(context.scene);return {'FINISHED'}
@@ -113,7 +117,7 @@ class BEAM_OT_new_auto(bpy.types.Operator):
         group=active_group(context)
         if not group or not group.layout_screen:self.report({'WARNING'},'No layout screen');return {'CANCELLED'}
         context.scene.ps_study.active_screen=group.layout_screen
-        bpy.ops.beam.auto_blend('INVOKE_DEFAULT');return {'FINISHED'}
+        bpy.ops.beam.plan_new('INVOKE_DEFAULT');return {'FINISHED'}
 
 class BEAM_OT_draft_preset(bpy.types.Operator):
     bl_idname='beam.draft_preset';bl_label='Apply Cabinet Preset';bl_options={'UNDO'}

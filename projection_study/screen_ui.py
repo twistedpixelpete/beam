@@ -85,7 +85,7 @@ def draw_screen(layout,context):
             parameters(create,context.scene.beam_screen_draft)
             action(create,'Use Selected Source','SOURCE','EYEDROPPER');create.operator('beam.screen_create',text='Create Screen',icon='ADD')
     if not obj:status(layout,'No screen selected');return
-    p=obj.beam_screen;layout.label(text=p.identifier+' · '+p.name);actions(layout,context)
+    p=obj.beam_screen;actions(layout,context)
     pending=p.built_signature!=screen_objects.signature(p)
     if abs(p.unit_scale-context.scene.unit_settings.scale_length)>1e-8:status(layout,'Scene units changed · Update Screen')
     if pending:status(layout,'Parameters changed · Update Screen')
@@ -93,7 +93,7 @@ def draw_screen(layout,context):
     edit=section(layout,'screen_edit','Screen')
     if edit:
         edit.prop(p,'name');parameters(edit,p,True);action(edit,'Update Screen','UPDATE','FILE_REFRESH')
-    if p.screen_type=='FLAT':layout.operator('beam.auto_blend',text='New Auto Blend',icon='ADD')
+    if p.screen_type=='FLAT':layout.operator('beam.plan_new',text='New Auto Blend',icon='ADD')
     appearance=section(layout,'screen_display','Appearance / This Screen')
     if appearance:
         row=appearance.row(align=True);action(row,'Test Pattern','PATTERN');action(row,'Neutral','NEUTRAL')

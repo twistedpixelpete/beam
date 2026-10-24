@@ -20,7 +20,8 @@ ui.draw=checked_draw
 themed='--beam-theme' in sys.argv
 if themed:
  bpy.ops.script.execute_preset(filepath=str(root/'projection_study/themes/Beam.xml'),menu_idname='USERPREF_MT_interface_theme_presets')
-out=root/('work/theme-workspace' if themed else 'work/ui-workspace');out.mkdir(parents=True,exist_ok=True);state={};checks=[]
+refined='--beam-refinement' in sys.argv
+out=root/('work/refinement-workspace' if refined else 'work/theme-workspace' if themed else 'work/ui-workspace');out.mkdir(parents=True,exist_ok=True);state={};checks=[]
 
 def fail():
  text=traceback.format_exc();print(text,flush=True);(out/'result.txt').write_text(text);bpy.ops.wm.quit_blender()
@@ -109,7 +110,7 @@ def step():
     assert bpy.ops.beam.screen_action(action='UPDATE')=={'FINISHED'};c.view_layer.update();assert abs(wall.dimensions.x-(width+1))<.001
     wall.beam_screen.width=width;bpy.ops.beam.screen_action(action='UPDATE')
     count=len(c.scene.ps_study.blend_groups);bpy.ops.ed.undo_push(message='Inspector Auto Blend')
-    assert bpy.ops.beam.auto_blend('EXEC_DEFAULT',True,use_template=False,count=3,overlap_h=200)=={'FINISHED'}
+    assert (bpy.ops.beam.plan_new if refined else bpy.ops.beam.auto_blend)('EXEC_DEFAULT',True,use_template=False,count=3,overlap_h=200)=={'FINISHED'}
     assert len(c.scene.ps_study.blend_groups)==count+1
     bpy.ops.ed.undo();refresh();assert len(c.scene.ps_study.blend_groups)==count
     bpy.ops.ed.redo();refresh();assert len(c.scene.ps_study.blend_groups)==count+1
@@ -119,7 +120,7 @@ def step():
     bpy.ops.ps.add();new=c.view_layer.objects.active;s.blend_group_index=0
     n=len(s.blend_groups[0].members);assert bpy.ops.beam.group_action(action='ADD_SELECTED')=={'FINISHED'};assert len(s.blend_groups[0].members)==n+1
     assert bpy.ops.beam.group_action(action='REMOVE')=={'FINISHED'};assert len(s.blend_groups[0].members)==n
-    bpy.data.objects.remove(new,do_unlink=True);assert bpy.ops.beam.group_action(action='APPLY')=={'FINISHED'}
+    bpy.data.objects.remove(new,do_unlink=True);assert (bpy.ops.beam.reflow() if refined else bpy.ops.beam.group_action(action='APPLY'))=={'FINISHED'}
    checks.append('Screen edit/update, Auto Blend Undo/Redo, member selection/add/remove and Reflow from Properties inspector')
    s=c.scene
    checks.extend(['Workspace and receiver restoration survive save/reload','Frame, Lock, Presentation and PNG export from Properties inspector'])

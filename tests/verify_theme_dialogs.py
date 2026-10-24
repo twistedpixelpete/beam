@@ -3,10 +3,18 @@ import bpy,sys,traceback
 from pathlib import Path
 root=Path(__file__).resolve().parents[1];sys.path.insert(0,str(root))
 import projection_study as addon
-from projection_study import runtime,study_data
-out=root/'work/theme-dialogs';out.mkdir(exist_ok=True)
+from projection_study import runtime,study_data,ui_planning,auto_layout
+from unittest.mock import patch
+original_plan_draw=ui_planning.BEAM_OT_plan_new.draw
+def checked_plan_draw(self,context):
+ assert getattr(self,'_result',None),'Auto Blend result missing on first draw'
+ with patch.object(auto_layout,'calculate',side_effect=AssertionError('Planning inside dialog draw')):
+  original_plan_draw(self,context)
+ui_planning.BEAM_OT_plan_new.draw=checked_plan_draw
+refined='--beam-refinement' in sys.argv
+out=root/('work/refinement-dialogs' if refined else 'work/theme-dialogs');out.mkdir(exist_ok=True)
 bpy.context.preferences.view.show_splash=False
-addon.register();bpy.ops.wm.open_mainfile(filepath=str(root/'work/theme-workspace/Beam-Workspace.blend'))
+addon.register();bpy.ops.wm.open_mainfile(filepath=str(root/('work/refinement-workspace/Beam-Workspace.blend' if refined else 'work/theme-workspace/Beam-Workspace.blend')))
 bpy.ops.script.execute_preset(filepath=str(root/'projection_study/themes/Beam.xml'),menu_idname='USERPREF_MT_interface_theme_presets')
 class States(bpy.types.Operator):
  bl_idname='beam_test.states';bl_label='Theme state inspection'
@@ -35,7 +43,7 @@ def step():
     for o in c.selected_objects:o.select_set(False)
     obj.select_set(True);c.view_layer.objects.active=obj;study_data.sync_selection(c);runtime.refresh(True)
     win.event_simulate(type='MOUSEMOVE',value='NOTHING',x=800,y=700)
-    if name=='auto-blend':result=bpy.ops.beam.auto_blend('INVOKE_DEFAULT')
+    if name=='auto-blend':c.scene.ps_study.inspector='SCREEN';result=bpy.ops.beam.plan_new('INVOKE_DEFAULT') if refined else bpy.ops.beam.auto_blend('INVOKE_DEFAULT')
     elif name=='inverse-solve':result=bpy.ops.beam.solve('INVOKE_DEFAULT')
     elif name=='states-colour-picker':result=bpy.ops.beam_test.states('INVOKE_DEFAULT')
     elif name=='confirmation':result=bpy.ops.beam_test.confirm('INVOKE_DEFAULT')

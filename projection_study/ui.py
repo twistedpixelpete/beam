@@ -16,31 +16,38 @@ def readout(layout,label,value):
 
 def length(value,units):return f'{value:,.2f} m' if units=='m' else f'{value*1000:,.0f} mm'
 
-def status(layout,text,good=False):
+def status(layout,text,good=False,error=False):
     from . import ui_icons
-    row=layout.row();row.label(text=text,icon_value=ui_icons.icon('valid') if good else 0,icon='NONE' if good else 'INFO')
+    row=layout.row();row.alert=error;row.label(text=text,icon_value=ui_icons.icon('valid') if good else 0,icon='NONE' if good else ('ERROR' if error else 'INFO'))
 
-def navigation(layout,context,labels=False):
-    from . import ui_icons
-    row=layout.grid_flow(row_major=True,columns=3,even_columns=True,align=True)
+def rail_visible(context):
+    from .ui_workspace import is_beam
+    return is_beam(context) and any(a.type=='VIEW_3D' and a.spaces.active.show_region_toolbar for a in context.screen.areas)
+
+def navigation(layout,context,vertical=False):
+    row=layout.column(align=True) if vertical else layout.grid_flow(row_major=True,columns=3,even_columns=True,align=True)
+    compact=vertical and context.region.width<140
     for kind,title,icon in MODULES:
-        active=context.scene.ps_study.inspector==kind
-        op=row.operator('beam.inspector',text=title,icon=icon if not active else 'NONE',icon_value=ui_icons.icon('active') if active else 0,depress=active);op.kind=kind
+        op=row.operator('beam.inspector',text='' if compact else title,icon=icon,depress=context.scene.ps_study.inspector==kind);op.kind=kind
 
-def actions(layout,context):
+def actions(layout,context,vertical=False):
+    if not vertical and rail_visible(context):return
     obj=ui_context.subject(context)
     if not obj:return
-    row=layout.row(align=True);row.operator('beam.ui_action',text='Frame',icon='VIEWZOOM').action='FRAME'
-    if context.scene.ps_study.inspector in {'PROJECTOR','GROUP'}:row.operator('beam.ui_action',text='Solo',icon='HIDE_OFF').action='SOLO'
+    row=layout.column(align=True) if vertical else layout.row(align=True)
+    compact=vertical and context.region.width<140
+    row.operator('beam.ui_action',text='' if compact else 'Frame',icon='VIEWZOOM').action='FRAME'
+    if context.scene.ps_study.inspector in {'PROJECTOR','GROUP'}:row.operator('beam.ui_action',text='' if compact else 'Solo',icon='HIDE_OFF').action='SOLO'
     locked=any(obj.lock_location) or any(obj.lock_rotation)
-    row.operator('beam.ui_action',text='Unlock' if locked else 'Lock',icon='LOCKED' if locked else 'UNLOCKED',depress=locked).action='LOCK'
+    row.operator('beam.ui_action',text='' if compact else ('Unlock' if locked else 'Lock'),icon='LOCKED' if locked else 'UNLOCKED',depress=locked).action='LOCK'
+
 
 def projector(layout,context):
     s=context.scene.ps_study;obj=selected(context);units=s.display_units
     row=layout.row(align=True);row.operator('ps.add',text='New Projector',icon='ADD')
     if obj:row.operator('ps.duplicate',text='Duplicate',icon='DUPLICATE')
     if not obj:status(layout,'No projector selected');return
-    p=obj.ps;record=runtime.CACHE.get(obj.as_pointer());status(layout,p.identifier+' · '+('TARGET' if record and record['hit'] else 'NO TARGET'),bool(record and record['hit']))
+    p=obj.ps;record=runtime.CACHE.get(obj.as_pointer());status(layout,'TARGET' if record and record['hit'] else 'No Target',bool(record and record['hit']))
     actions(layout,context)
     box=section(layout,'projection','Projection')
     if box:
@@ -49,28 +56,33 @@ def projector(layout,context):
         box.prop(p,'throw_ratio');row=box.row(align=True);row.use_property_split=False;row.prop(p,'shift_h',text='H Shift %');row.prop(p,'shift_v',text='V Shift %')
         box.prop(p,'output_mode',text='Output');box.prop(p,'colour',text='Study Colour')
         if p.output_mode=='IMAGE':box.template_ID(p,'image',open='ps.load_image')
-    box=section(layout,'calculated','Calculated / Targets')
+    draft=context.window_manager.beam_target
+    editing=bool(draft.field and draft.projector==obj and draft.scene==context.scene)
+    box=section(layout,'calculated','Calculated')
     if box:
-        box.prop(p,'solve_by',text='Solve By')
-        row=box.row(align=True);row.prop(p,'solve_lock_position',text='Position',icon='LOCKED' if p.solve_lock_position else 'UNLOCKED');row.prop(p,'solve_lock_lens',text='Lens',icon='LOCKED' if p.solve_lock_lens else 'UNLOCKED');row.prop(p,'solve_lock_target',text='Target',icon='LOCKED' if p.solve_lock_target else 'UNLOCKED')
-        reason=ui_context.restriction(obj,record)
-        if reason:status(box,reason)
-        elif p.solve_by=='LENS':box.label(text='Distance: choose Position or Auto')
-        elif p.solve_by=='POSITION':box.label(text='Ratio: choose Lens or Auto')
         if record and record['hit']:
-            m=record['metrics'];draft=context.window_manager.beam_target
-            entries=[('DISTANCE','Throw',length(m.distance,units)),('WIDTH','Width',length(m.width,units)),('HEIGHT','Height',length(m.height,units)),('RATIO','Ratio',f'{p.throw_ratio:.4f}'),('DENSITY','Density',f'{m.pixels_per_metre:,.1f} px/m'),('PIXEL_SIZE','Pixel Size',f'{m.pixel_size_m*1000:.3f} mm')]
+            m=record['metrics']
+            entries=[('DISTANCE','Throw',length(m.distance,units)),('WIDTH','Width',length(m.width,units)),('HEIGHT','Height',length(m.height,units)),('RATIO','Ratio',f'{p.throw_ratio:.3f}'),('DENSITY','Density',f'{m.pixels_per_metre:,.0f} px/m'),('PIXEL_SIZE','Pixel Size',f'{m.pixel_size_m*1000:.2f} mm/px')]
             for field,title,value in entries:
                 row=box.row(align=True);row.label(text=title)
-                editing=draft.field==field and draft.projector==obj and draft.scene==context.scene
-                if editing:
-                    row.prop(draft,'value',text=draft.units if field in {'WIDTH','HEIGHT','DISTANCE','PIXEL_SIZE'} else '');row.operator('beam.apply_target',text='',icon='CHECKMARK');row.operator('beam.apply_target',text='',icon='X').cancel=True
-                    if draft.message:status(box,draft.message)
-                else:
-                    sub=row.row(align=True);sub.enabled=not ui_context.restriction(obj,record,field)
-                    sub.operator('beam.edit_target',text=value,icon='GREASEPENCIL').field=field
-            readout(box,'DPI',f'{m.dpi:.1f}');readout(box,'Illuminance',f'{m.lux:,.0f} lux')
+                val=row.row();val.alignment='RIGHT';val.label(text=value)
+                edit=row.row(align=True);edit.enabled=not ui_context.restriction(obj,record,field)
+                edit.operator('beam.edit_target',text='',icon='GREASEPENCIL',depress=editing and draft.field==field).field=field
         else:box.prop(s,'preview_distance_display',text='Preview ('+units+')')
+    reason=ui_context.restriction(obj,record,draft.field if editing else None)
+    if reason and reason!='No Target':status(layout,reason)
+    # Active drafts always expose their solver, even if the idle section was closed.
+    box=layout.column() if editing else section(layout,'solver','Solver · '+{'LENS':'Lens','POSITION':'Position','AUTO':'Auto'}[p.solve_by],True)
+    if box:
+        if editing:box.label(text='Solver · '+dict(DISTANCE='Throw',WIDTH='Width',HEIGHT='Height',RATIO='Ratio',DENSITY='Density',PIXEL_SIZE='Pixel Size').get(draft.field,draft.field))
+        box.prop(p,'solve_by',text='Solve By')
+        row=box.row(align=True)
+        for key,title in [('solve_lock_position','Position'),('solve_lock_lens','Lens'),('solve_lock_target','Target')]:row.prop(p,key,text=title,icon='LOCKED' if getattr(p,key) else 'UNLOCKED')
+        if editing:
+            row=box.row(align=True);row.prop(draft,'value',text=draft.units if draft.field in {'WIDTH','HEIGHT','DISTANCE','PIXEL_SIZE'} else 'Target')
+            apply=row.row(align=True);apply.enabled=not reason;apply.operator('beam.apply_target',text='',icon='CHECKMARK')
+            row.operator('beam.apply_target',text='',icon='X').cancel=True
+            if draft.message:status(box,draft.message,error=True)
     box=section(layout,'per_projector_display','This Projector · Annotations',True)
     if box:
         for a,b in [('show_identifier','show_projected_identifier'),('show_frustum','show_centre_ray'),('show_target_marker','show_grid')]:
@@ -85,6 +97,8 @@ def projector(layout,context):
     box=section(layout,'projector_advanced','Advanced',True)
     if box:
         for prop in ('stack','brightness','lumens','active','notes'):box.prop(p,prop)
+        if record and record['hit']:
+            readout(box,'DPI',f"{record['metrics'].dpi:.1f}");readout(box,'Illuminance',f"{record['metrics'].lux:,.0f} lux")
 
 
 def views(layout,context):
@@ -172,19 +186,21 @@ def reverse(layout,context):
 def draw(layout,context):
     from . import presentation,ui_workspace
     s=context.scene.ps_study;layout.use_property_decorate=False
-    row=layout.row();row.label(text='BEAM')
+    row=layout.row(align=True);row.label(text='BEAM')
     if not ui_workspace.is_beam(context):row.operator('beam.workspace',text='',icon='WORKSPACE')
-    row=layout.row(align=True);row.prop(s,'project_name',text='',placeholder='Project');row.prop(s,'revision',text='',placeholder='Revision')
+    row.prop(s,'project_name',text='',placeholder='Project');row.prop(s,'revision',text='',placeholder='Revision')
     area=next((a for a in context.screen.areas if a.type=='VIEW_3D'),None)
     row=layout.row(align=True);row.prop(s,'display_units',expand=True);row.operator('beam.ui_action',text='Presentation' if presentation.active(area) else 'Technical',icon='SHADING_SOLID',depress=presentation.active(area)).action='PRESENTATION'
-    navigation(layout,context)
-    current=context.view_layer.objects.active;active=ui_context.subject(context)
-    row=layout.row();row.label(text='Selected: '+(current.name if current else '—'),icon='RESTRICT_SELECT_OFF')
-    row=layout.row(align=True)
-    if s.inspector in {'PROJECTOR','SCREEN'}:row.prop(s,'active_projector' if s.inspector=='PROJECTOR' else 'active_screen',text='Pinned' if s.pin_context else 'Active')
-    else:row.label(text=('Pinned: ' if s.pin_context else 'Active: ')+(active.name if active else '—'))
-    row.prop(s,'pin_context',text='',icon='PINNED' if s.pin_context else 'UNPINNED',toggle=True)
-    if s.inspector!='EXPORT':receiver_status(layout,context)
+    if not rail_visible(context):navigation(layout,context)
+    if s.inspector!='EXPORT':
+        current=context.view_layer.objects.active;active=ui_context.subject(context)
+        if current!=active:
+            row=layout.row();row.label(text='Selected: '+(current.name if current else '—'),icon='RESTRICT_SELECT_OFF')
+        row=layout.row(align=True)
+        if s.inspector in {'PROJECTOR','SCREEN'}:row.prop(s,'active_projector' if s.inspector=='PROJECTOR' else 'active_screen',text='Pinned' if s.pin_context else 'Active')
+        else:row.label(text=('Pinned: ' if s.pin_context else 'Active: ')+(active.name if active else '—'))
+        row.prop(s,'pin_context',text='',icon='PINNED' if s.pin_context else 'UNPINNED',toggle=True)
+        if s.inspector!='EXPORT':receiver_status(layout,context)
     layout.separator(factor=.4)
     if s.inspector=='PROJECTOR':projector(layout,context)
     elif s.inspector=='SCREEN':
@@ -206,10 +222,9 @@ def draw(layout,context):
     if box:
         for prop in ('venue','client','author'):box.prop(s,prop)
         box.operator('beam.workspace',icon='WORKSPACE');box.operator('beam.ui_action',text='Organise Beam Collections',icon='OUTLINER_COLLECTION').action='ORGANIZE'
-        from pathlib import Path
         box.separator()
-        box.label(text='Theme · Application-wide (Optional)')
-        box.operator('preferences.theme_install',text='Install Beam Theme…',icon='PREFERENCES').filepath=str(Path(__file__).parent/'themes'/'Beam.xml')
+        box.operator('beam.apply_theme',text='Apply Beam Theme',icon='PREFERENCES')
+        box.operator('beam.restore_theme',text='Restore Previous Theme',icon='LOOP_BACK')
         box.label(text='0.9 Beta · Twisted Pixel')
 
 class BEAM_UL_members(bpy.types.UIList):
@@ -221,6 +236,18 @@ class BEAM_UL_members(bpy.types.UIList):
 class PS_PT_main(bpy.types.Panel):
     bl_label='Beam';bl_idname='PS_PT_main';bl_space_type='VIEW_3D';bl_region_type='UI';bl_category='Beam';bl_options={'HIDE_HEADER'}
     def draw(self,context):draw(self.layout,context)
+
+class BEAM_PT_rail(bpy.types.Panel):
+    bl_label='Beam';bl_idname='BEAM_PT_rail';bl_space_type='VIEW_3D';bl_region_type='TOOLS';bl_options={'HIDE_HEADER'};bl_order=-100
+    @classmethod
+    def poll(cls,context):
+        from .ui_workspace import is_beam
+        return is_beam(context)
+    def draw(self,context):
+        navigation(self.layout,context,True)
+        self.layout.separator(factor=.5)
+        actions(self.layout,context,True)
+        self.layout.separator()
 
 class BEAM_PT_workspace(bpy.types.Panel):
     bl_label='Beam';bl_idname='BEAM_PT_workspace';bl_space_type='PROPERTIES';bl_region_type='WINDOW';bl_context='scene';bl_order=-1000;bl_options={'HIDE_HEADER'}
@@ -237,4 +264,4 @@ class BEAM_OT_inspector(bpy.types.Operator):
     def description(cls,context,properties):return next(t+' inspector' for k,t,i in MODULES if k==properties.kind)
     def execute(self,context):context.scene.ps_study.inspector=self.kind;return {'FINISHED'}
 
-CLASSES=(BEAM_UL_members,BEAM_OT_inspector,PS_PT_main,BEAM_PT_workspace)
+CLASSES=(BEAM_UL_members,BEAM_OT_inspector,PS_PT_main,BEAM_PT_workspace,BEAM_PT_rail)

@@ -1,10 +1,10 @@
 """Beam: Blender 4.5+ extension. GPL-3.0-or-later."""
 import bpy
-from . import screens, inverse_solver, auto_layout, reverse_mapping, ui_workspace, ui_icons
+from . import screens, inverse_solver, auto_layout, reverse_mapping, ui_workspace, ui_icons, ui_theme, ui_planning
 from . import blend_groups, presentation, local_orientation, group_lifecycle
 from . import projector_data, operators, ui, runtime, viewport_display, export_disguise, study_data, study_views, export_json
 
-CLASSES = (*inverse_solver.CLASSES,*auto_layout.CLASSES,*reverse_mapping.CLASSES,*screens.CLASSES,*group_lifecycle.CLASSES,*blend_groups.CLASSES,*presentation.CLASSES,*study_data.CLASSES, projector_data.PS_Settings, *operators.CLASSES, export_disguise.PS_OT_export, *study_views.CLASSES, export_json.PS_OT_export_json, *ui_workspace.CLASSES,*ui.CLASSES)
+CLASSES = (*inverse_solver.CLASSES,*auto_layout.CLASSES,*reverse_mapping.CLASSES,*screens.CLASSES,*group_lifecycle.CLASSES,*blend_groups.CLASSES,*presentation.CLASSES,*study_data.CLASSES, projector_data.PS_Settings, *operators.CLASSES, export_disguise.PS_OT_export, *study_views.CLASSES, export_json.PS_OT_export_json, *ui_workspace.CLASSES,*ui_theme.CLASSES,*ui_planning.CLASSES,*ui.CLASSES)
 
 def register():
     for cls in CLASSES:
@@ -12,7 +12,7 @@ def register():
     bpy.types.Object.ps = bpy.props.PointerProperty(type=projector_data.PS_Settings)
     bpy.types.Scene.ps_study = bpy.props.PointerProperty(type=study_data.PS_SceneSettings)
     screens.register()
-    ui_workspace.register();ui_icons.register()
+    ui_workspace.register();ui_icons.register();ui_theme.refresh()
     reverse_mapping.register()
     runtime.register()
     local_orientation.register()
