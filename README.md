@@ -1,194 +1,139 @@
 # Beam
 
-**Projection planning and screen building in Blender.** Maintained by **Twisted Pixel** · **0.13.0 — controlled Internal Production Beta, unreleased**
+Beam is a professional projection-planning and study tool built inside Blender. Blender provides the 3D authoring environment; Beam adds projection-specific planning, engineering and review tools to place projectors, check coverage and obstructions, plan blends, and export a study for handoff.
 
-> **Still in testing.** Beam is a pre-release beta, not a stable production release. Expect bugs, incomplete workflows and changes between versions. Keep backups of your Blender files and independently verify geometry, measurements and exported data before production use.
+**Maintainer:** Twisted Pixel
 
-Use Beam to place projectors in a venue model, preview coverage and obstructions, plan overlapping projector groups, build projection screens or LED walls, and export study images and geometry.
+**Current:** Beam 0.13.0 — Internal Production Beta
 
-The 0.9 planning milestone added inverse target solving, flat-screen Auto Blend, UV Reverse Mapping and contextual inspectors. **[Read the 0.9 how-to and limitations](docs/PLANNING-MILESTONE.md)**. The published download below remains the earlier 0.8.1 beta until a separate development release is published.
+**Tested:** Blender 5.2.2 LTS · macOS 26.7 · Apple silicon / Metal
 
-The development UI now includes an optional native **Beam workspace**, contextual navigation and inline projection targets. **[Workspace guide and screenshots](docs/UI-WORKSPACE.md)**. The instructions below describe the development UI; the published 0.8.1 beta retains its earlier panel layout.
+> Still in testing, not stable production software. Work on copies and independently verify geometry, measurements and exported data before production use. Windows/Linux are not yet validated.
 
-![Three Beam projectors casting overlapping calibration grids onto a wide screen](examples/0.8.1/projector-showcase.png)
+**[Download 0.13.0](https://github.com/twistedpixelpete/beam/releases/tag/v0.13.0-beta)** · **[Start Here](#start-here)** · [User Guide](output/pdf/Beam_Onboarding/Beam_User_Guide.pdf) · [Quick Start](output/pdf/Beam_Onboarding/Beam_Quick_Start.pdf)
 
-*Historical 0.8.1 viewport example. For the current UI/build, use the [documentation baseline](docs/manual/DOCUMENTATION_BASELINE.md).*
+## Download
 
-*Actual Beam viewport capture: three projectors, visible throw frustums, projected IDs and overlapping coverage on a 16 m screen.*
+The [0.13.0 release](https://github.com/twistedpixelpete/beam/releases/tag/v0.13.0-beta) contains:
 
-**[Internal-beta readiness assessment, PATCH integration and soak evidence](docs/INTERNAL-BETA-READINESS.md)**. The 0.12 onboarding baseline remains frozen. See the [0.13 Surface Intelligence delta](docs/manual/0.13-SURFACE-INTELLIGENCE-DELTA.md) and [engineering review / field validation](docs/surface-intelligence/PR8-REVIEW.md). No stable release has been published.
+- **[beam-0.13.0.zip](https://github.com/twistedpixelpete/beam/releases/download/v0.13.0-beta/beam-0.13.0.zip)** — installable Blender extension. Keep this ZIP zipped.
+- **[Beam-Onboarding-0.13.0-beta.zip](https://github.com/twistedpixelpete/beam/releases/download/v0.13.0-beta/Beam-Onboarding-0.13.0-beta.zip)** — clean onboarding package, including the same installer.
 
-## Current internal onboarding
+0.13.0 is the first GitHub release after 0.8.1 and consolidates the internal 0.9–0.12 development milestones. Those milestones were not separate published GitHub releases.
 
-The **[Beam 0.13 onboarding folder](output/pdf/Beam_Onboarding)** starts with START_HERE.pdf and includes the User Guide, Quick Start, training project and 21-exercise companion. It covers all five Surface Analysis modes and includes the exact internal installation ZIP used for validation. The original 0.12 documentation baseline remains frozen. Editable sources and validation evidence stay in the internal build folder; they are excluded from the user download.
+## Install
 
-## Install the beta
+1. Download `beam-0.13.0.zip` and open Blender.
+2. Open **Edit → Preferences → Get Extensions**.
+3. Open the menu at the top right and choose **Install from Disk**.
+4. Select `beam-0.13.0.zip` and enable Beam if prompted.
+5. Restart Blender after replacing an older build. Keep only one Beam installation enabled.
+6. With the pointer over the 3D View, press **F3**, search for **Open Beam Workspace**, and run it. If your keyboard configuration uses F3 differently, use **Edit → Menu Search**. Alternatively, press **N**, open the **Beam** tab, expand **Project / Workspace**, and click **Open Beam Workspace**.
 
-**[Download Beam 0.8.1 Beta](https://github.com/twistedpixelpete/beam/releases/download/v0.8.1-beta/beam-0.8.1.zip)** · [Release notes](https://github.com/twistedpixelpete/beam/releases/tag/v0.8.1-beta)
+The manifest requires Blender **4.5+**; validation is on the tested environment above. No separate Python installation is needed to use Beam. Install the extension ZIP, not GitHub's source-code archive.
 
-Download the ZIP above and install it directly in Blender. No Python installation or build step is needed. Do not extract the ZIP.
+## Start Here
 
-Beam requires **Blender 4.5 or newer**. It has been tested on **Blender 5.2.2 LTS on macOS/Metal**; other versions and platforms have not yet been verified.
+Extract **[Beam-Onboarding-0.13.0-beta.zip](https://github.com/twistedpixelpete/beam/releases/download/v0.13.0-beta/Beam-Onboarding-0.13.0-beta.zip)** and open `Beam_Onboarding/START_HERE.pdf`. The package contains exactly six files:
 
-### Install in Blender
-
-1. Download `beam-0.8.1.zip` using the link above, then open **Edit → Preferences → Get Extensions**.
-2. Open the menu at the top right and choose **Install from Disk**.
-3. Select `beam-0.8.1.zip` and enable Beam if prompted.
-4. In the 3D View, press **N** to open the sidebar, then select **Beam**.
-
-When upgrading, replace the existing extension rather than enabling a second copy. Restart Blender after upgrading. Older files remain compatible; the internal extension name is still `projection_study`.
-
-## Analyse a surface and export a study (0.12 internal-beta candidate)
-
-Under **Projector, Screen or Blend → Surface Analysis**, choose the receiving mesh, projector scope and sample count, then click **Analyse Surface**. Switch between Density and Stretch; after edits, analyse again. The overlay shows sampled values on actual geometry, including opaque first-hit occlusion. It is an estimate, not guaranteed coverage between samples.
-
-Under **Projector → Optics Guidance**, choose a preset and lens, or keep **Generic / Manual**. Use Preset Values explicitly applies native raster and lumens. Impossible lens settings remain visible and block solves/layouts. Ten sourced lenses across Panasonic, Epson, Christie and Barco support nominal throw guidance. Their shift envelopes remain unknown; nonzero shifted solves are blocked.
-
-Under **Export → Export Study Package**, select a new folder. Beam writes structured JSON, an HTML study sheet and UUID-named Study View images. Open `index.html` to review schedules and warnings. The format is designed for PATCH consumption; the PATCH application importer is now tested programmatically against the committed package; manual GUI acceptance remains outstanding.
-
-Under **Export → Projector Data**, choose **Mapping Matter CSV** for the established Mapping Matter export schema, or **Designer CSV** for Mapping Matter’s Designer-study importer. Both include a version/hash metadata sidecar. The new Designer CSV passed ten actual Mapping Matter import/re-export geometry checks; the Designer application itself remains untested.
-
-For an analysis image, first run **Analyse Surface**, then open **Views → This View · Export Annotations → Analysis Overlay** and choose Density or Stretch. Export the Study View or Study Package. Images include a compact legend; the package and image sidecars carry sample counts, receiver/projector references, visibility assumptions and timestamps. Stale analysis must be recalculated. PATCH owns client-facing document generation.
-
-**[Production validation, timings, optics sources and PATCH fixture](docs/PRODUCTION-VALIDATION.md)**.
-
-**[Read the comparison, screenshots, tests and remaining gaps](docs/MAPPING-MATTER-PARITY.md)** · [Sample study sheet](examples/parity/study-package/index.html).
-
-## Make your first projection study
-
-This example produces a **6 × 3.375 m** image on a flat screen.
-
-1. Start a new scene and remove the default cube so it will not block the projection. In **Scene Properties → Units**, choose Metric and leave Unit Scale at **1.0**. Leave the 3D cursor at the world origin.
-2. Open **Beam → Screen → New Screen**. Choose **Flat**, category **Projection**, Width **6**, Height **3.375**, and Aspect **Free**. Click **Create Screen**.
-3. With the screen selected, set its Location to **X 0, Y 6, Z 0** in Blender’s Item panel. Leave rotation at zero and scale at one. Its default origin is Bottom Centre.
-4. Under **Beam → Projector**, click **Add Projector**. Set its Location to **X 0, Y 0, Z 1.6875**. A new projector already faces the screen along world +Y.
-5. Under **Projection**, set Throw Ratio to **1.0**, resolution to **1920 × 1080**, and both lens shifts to **0**. Choose **Calibration Grid** for Output.
-6. Check **Calculated**. With an unobstructed centre ray, Throw should be **6 m** and Image should be **6 × 3.375 m**.
-7. Use the **Technical / Presentation** switch in the Beam header for a cleaner view or to restore your previous viewport settings.
-8. Save your `.blend` file. It stores the projectors, screens, groups and saved views.
-
-A Beam screen is optional: ordinary visible venue geometry can receive the projection too. Keep projectors and their parents at scale **1**; position and rotate them with Blender’s normal tools.
-
-## Position and aim projectors
-
-Use **Projector → Add Projector** or **Duplicate**. Blender’s normal duplicate and copy/paste workflows also create independent Beam projector identities.
-
-Under **Aim / Position**:
-
-- **Click Surface:** click a visible surface to aim at it; press Esc to cancel.
-- **Object Centre:** select the receiving object, then aim the retained active projector at that object’s origin.
-- **3D Cursor:** aim at the cursor’s position.
-- **Look Through:** inspect the projector’s view; press Esc to return.
-- **Further / Closer:** move along the aim direction while retaining the aim point.
-
-The **Active** field identifies the projector being edited, even when you select venue geometry. Use **Frame** to find it, **Solo** to isolate its study output, and **Lock / Unlock** to protect or adjust its position.
-
-Under **Projection**, set throw ratio, resolution, lens shift, lumens, brightness and stack count. Choose a solid colour, calibration grid, identifier, checkerboard, Blender grid, or custom image. Custom Image reveals an image selector.
-
-**Calculated** reports nominal image size, density, pixel size, DPI and estimated illuminance. These describe the reference image at the centre target, not a full analysis of distortion or brightness across a curved surface. Metres/Millimetres changes display formatting, not scene scale.
-
-## Build and edit screens
-
-Open **Screen → New Screen**, choose a type, enter its parameters, then click **Create Screen**.
-
-| Type | Use it for |
+| File | Purpose |
 | --- | --- |
-| Flat | A rectangular screen with width, height and optional fixed aspect ratio. |
-| Arc | A circular screen defined by combinations of radius, angle, arc length or chord. |
-| Curve | A screen extruded from one selected Bezier, Poly or NURBS spline. Set the source and height. |
-| Closed | A cylindrical screen, including a full 360° surface with a UV seam. |
-| Surface | A copy of an existing mesh or selected faces, with existing or generated UVs. |
+| [START_HERE.pdf](output/pdf/Beam_Onboarding/START_HERE.pdf) | Installation and learning order. |
+| [Beam_Quick_Start.pdf](output/pdf/Beam_Onboarding/Beam_Quick_Start.pdf) | First screen, projector and layout. |
+| [Beam_User_Guide.pdf](output/pdf/Beam_Onboarding/Beam_User_Guide.pdf) | Full workflow and control reference. |
+| [Beam_Training_Project.blend](output/pdf/Beam_Onboarding/Beam_Training_Project.blend) | Self-contained starting scene; use Save As to make a working copy. |
+| [Beam_Training_Project_Guide.pdf](output/pdf/Beam_Onboarding/Beam_Training_Project_Guide.pdf) | 21 guided exercises. |
+| [Install/beam-0.13.0.zip](output/pdf/Beam_Onboarding/Install/beam-0.13.0.zip) | Validated extension installer. |
 
-Fields marked **(m)** always take physical metres: enter **0.5** for 500 mm. Ordinary generated screens face local −Y, toward a new Beam projector facing +Y.
+The training project demonstrates projectors, a screen, a Blend Group, Auto Blend / Reflow, Reverse Mapping, all five Surface Intelligence modes, an Observer, Study Views and exports. Screenshots are embedded in the guides; no separate image downloads are required.
 
-To edit a screen:
+## Main features
 
-1. Select it in the viewport or Outliner.
-2. Change its name or parameters under **Screen**. Width comes before Height for flat screens.
-3. Click **Update Screen** to rebuild it. Parameter and source-curve edits do not rebuild automatically.
-4. Use **Actions → Duplicate** for another screen, or **Flip Front** to reverse its facing direction.
+### Projector Planning
 
-For Curve or Surface, select the source and use **Use Selected Source** before creating the screen. The source remains intact. For an existing mesh with authored mapping, choose **Existing UV**. Surface Distance mapping supports rectangular quad grids; use authored UVs for more complex shapes.
+Create and duplicate projector objects, target venue geometry, and preview real-time frustums and projected output. Set throw ratio, lens shift, raster, lumens and brightness; inspect calculated image size, density and pixel size. Ordinary visible venue meshes can receive projection; a Beam screen is optional.
 
-### Appearance and labels
+### Screens
 
-- **Appearance → Clean Pattern** applies the modern calibration chart. Use this to refresh charts saved by an older Beam version.
-- **Neutral Surface** returns to the plain screen material, useful when inspecting projector output.
-- **Border** toggles the screen outline.
-- **Labels** controls Screen ID and Dimensions independently. Width sits below the screen and height beside it.
-- **Detail → Off** hides measurement and technical overlays; the enabled screen ID can remain. **Minimal** shows the ID and dimensions. **Full** adds name, resolution and enabled technical information.
+Build managed Flat, Arc, Curve, Closed or Surface screens with dimensions, aspect, calibration patterns and labels. LED workflows add cabinet-based dimensions and raster. Use **Update Screen** after parameter changes; export evaluated display geometry as OBJ or FBX. See the [Screen Builder reference](docs/SCREEN-BUILDER.md).
 
-Detail and m/mm settings are shared with projector annotations. They do not remove text printed inside the Clean pattern, whose physical size is shown in metres. Presentation View temporarily uses Minimal detail.
+### Blend Groups
 
-### LED walls
+Group existing projectors or use **New Auto Blend** for a screen layout. Set overlap, compare requested versus actual overlap, duplicate groups and edit members. **Reflow** recalculates spacing after optics or distance changes and clears member position tweaks. Overlap and feather previews use a nominal reference plane; inspect actual receiver coverage separately.
 
-Choose category **LED** with Flat, Arc or Closed. Enter cabinet width/height/depth, pixels per cabinet, columns and rows. For example, **0.5 × 0.5 m**, **192 × 192 px**, **20 columns × 8 rows** gives a **10 × 4 m**, **3840 × 1536 px** wall.
+### Inverse Solver
 
-For an arc, choose **Smooth** for a continuous curve or **Faceted Cabinets** for flat cabinet faces joined at an angle. The included cabinet presets are generic examples, not manufacturer specifications.
+Solve from image width, height or throw by adjusting lens or position, subject to locks and optics constraints. Transactional validation refuses unsupported results without leaving a partial change. See the [planning workflow reference](docs/PLANNING-MILESTONE.md).
 
-For conforming, baking, UV diagnostics and detailed cabinet geometry, see the [Screen Builder guide](docs/SCREEN-BUILDER.md).
+### Optics Guidance
 
-## Make a multi-projector blend
+Use **Generic / Manual** settings or sourced projector/lens presets with validated nominal throw ranges. Unknown shift envelopes and unsupported constraints remain explicit; a preset is not evidence that every shifted or coupled lens configuration is supported. See [optics sources and validation](docs/PRODUCTION-VALIDATION.md).
 
-1. Position and configure the first projector. It becomes the group’s anchor.
-2. Choose **Projector → Create Blend**. Select Horizontal, Vertical or Array, the count, and desired overlap.
-3. Open **Blend Group** to adjust overlap in pixels, percent or metres. Compare **Desired** with **Actual** for each adjacent pair.
-4. Enable **Overlap** to inspect the nominal overlap regions. Use **Feather** for a simple edge-blend preview and **Combined Preview** to spread the anchor’s output across the group canvas.
-5. Use **Select Controller** to move or rotate the whole group. Keep its scale at one.
+### Study Views
 
-To group projectors you already positioned, select them and use **From Selected**. This preserves their positions. The member list provides selection, Add Member, New Projector, Remove and Duplicate controls.
+Save review cameras, switch between **Technical / Presentation** workflows, choose annotations and analysis overlays, then export individual views or a batch. Study Views recall cameras, not receiver selection. Run **Analyse Surface** again after scene changes or reopening before exporting analysis.
 
-After changing anchor optics or distance, use **Reflow** to recalculate spacing. **Reflow clears member position tweaks**; aiming and lens shifts remain. **Reset Member** clears only the active member’s positional tweak. **Ungroup** preserves the projectors and their world positions.
+### Reverse Mapping
 
-Overlap is measured on a nominal reference plane, not across every point on curved or obstructed receivers. When the anchor misses geometry, Beam explicitly labels the reference as a preview plane.
+Preview coverage while preserving the source material and its UV mapping. Choose **Covered Only**, **Uncovered Dimmed**, **Uncovered Hidden** or **Overlap Diagnostic**. Use Material Preview or Rendered viewport for material-based coverage review.
 
-## Save views and export images
+![Beam 0.13 training workspace showing three projectors and Covered Only Reverse Mapping on a UV chart](docs/images/beam-013-workspace-reverse.png)
 
-1. Optionally fill in **Project Details**: project name, venue, revision, client and author.
-2. Navigate to the view you want to keep.
-3. Open **Views → New Study View** and give it a useful name.
-4. Use **View**, **Previous**, **Next** and **Exit** to navigate saved views.
-5. Under **View Options**, choose output dimensions and which Beam overlays to include.
-6. Choose **Export This View**, or **Export → Export All Study Views**, then select the destination and filenames. Use **Export → Export Current View** for the composited viewport.
+*Current 0.13 training workspace: source UV content is revealed within projector coverage.*
 
-Presentation View supplies a neutral, uncluttered style for study images. Default filenames use project, revision and view names, such as `Town_Hall_R02_Front_Coverage.png`. Filenames are editable; replacing existing files requires the overwrite option.
+### Surface Intelligence
 
-**Projector projection is a viewport effect. Use Beam’s image export for coverage studies; it is not included in a normal F12 render.**
+Under **Surface Analysis**, choose the receiver, projector scope and sample count, then click **Analyse Surface**. Five modes provide sampled planning guidance:
 
-## Export data or screen geometry
+| Mode | What it shows |
+| --- | --- |
+| Density | Projected pixel density on the receiver. |
+| Stretch | Local projected-pixel distortion. |
+| Estimated Illuminance | Estimated incident illumination, not certified or calibrated photometric simulation. |
+| Projection Distance | Distance from visible projection sources, not focus certification. |
+| Observer Acuity | Apparent pixel size from an Observer position with adjustable threshold guidance, not a prediction of eyesight. |
 
-| What you need | Where to find it | What it produces |
-| --- | --- | --- |
-| Projector table | **Beam → Export → disguise CSV** | Mapping Matter/disguise-style projector rows. Included projectors need valid targets and unit scale. |
-| Structured study data | **Beam → Export → PATCH JSON** | Projector/group metadata, calculations, transforms and view information. See the [JSON contract](docs/BEAM-JSON-V1.md). |
-| Screen mesh | Select a screen → **Beam → Export → Screen Geometry** | OBJ or FBX with the evaluated display surface and UVs. |
+Analysis overlays and exported sidecars retain assumptions and sample metadata. See [workflows](docs/surface-intelligence/USER_DELTA.md) and [maths and assumptions](docs/surface-intelligence/MATHS_AND_ASSUMPTIONS.md).
 
-For screen geometry, choose **Production Surface** for the display only, or **Detailed / Previs** to include available LED backing. Choose **World Metres** to bake its scene placement or **Screen Local Metres** for geometry at its own origin. Exports omit preview materials, annotations and unrelated scene objects.
+![Beam 0.13 Estimated Illuminance study of an architectural facade, with sampled overlay and lux legend](docs/images/beam-013-illuminance.png)
 
-Click **Update Screen** before exporting pending parameter changes. Use **Diagnostics → Validate Geometry / UV** to investigate invalid mapping or geometry. Screen metadata stays in the `.blend` file; it is not added to the projector JSON contract.
+*Estimated Illuminance on angled and recessed geometry, with opaque first-hit shadows and a fixed lux scale.*
 
-OBJ/FBX uses metres with Blender +Z up / +Y forward. Check the receiving application’s units and axes. The CSV Designer transform convention has not been validated end to end; test the handoff before relying on it for production.
+## Interoperability
+
+**Export → Projector Data** offers **Mapping Matter CSV** and **Designer CSV** projector-study exports with metadata sidecars. Designer CSV has passed ten actual geometry import/re-export checks through **Mapping Matter's Designer CSV importer**. This does not establish direct disguise Designer application validation; that application remains unverified. See [Mapping Matter validation and remaining gaps](docs/MAPPING-MATTER-PARITY.md).
+
+**Beam JSON** carries structured study data; see the [JSON contract](docs/BEAM-JSON-V1.md). **Export → Export Study Package** writes JSON, an HTML study sheet and UUID-named Study View images to a new folder for PATCH handoff. PATCH is intended to own document/report composition. Its application importer has programmatic validation against committed packages; manual PATCH GUI acceptance remains outstanding.
+
+Screen OBJ/FBX exports use metres, Blender +Z up / +Y forward. Check destination units and axes before production handoff. Beam supplies study data and images, rather than client-facing report layouts.
+
+## Current limitations and validation
+
+- **Internal Production Beta**, validated primarily on Blender 5.2.2 LTS / macOS 26.7 / Apple silicon / Metal. Windows/Linux and other Blender versions remain unverified.
+- Conventional pinhole projector model; UST/mirror optics are not represented by that model. Unknown lens constraints must not be treated as validated settings.
+- Surface Analysis is sampled and may miss detail between samples. Estimated Illuminance is not calibrated photometry; blend previews do not provide calibrated gamma, black-level correction or warped-surface optimisation.
+- Reverse Mapping depends on a GPU viewport, supported source projectors, source shader/material graphs and receiver UVs. It supports up to 32 coverage sources per receiver; depth resolution and bias can affect fine occlusion edges. Hidden uncovered geometry still acts as opaque geometry for projection. Live masks in headless/final animation rendering are unsupported.
+- Projector output is a viewport effect; use Beam image exports for studies rather than normal F12 rendering.
+- Direct Designer application validation and manual PATCH receiving-GUI acceptance remain unverified. Complex venues need project-specific checks.
+
+**Validation:** 71 Python tests passed for 0.13.0. Recorded acceptance includes all 15 Blender milestone suites, 21 background regression scripts, native GPU/workspace review, representative 16/32-projector production benchmarks, architectural field validation and fresh-process save/reopen on the tested macOS environment. This is engineering and scripted/visual acceptance, not independent certification. See the [0.13 engineering review and field evidence](docs/surface-intelligence/PR8-REVIEW.md) and [internal-beta readiness assessment](docs/INTERNAL-BETA-READINESS.md).
 
 ## Troubleshooting
 
 | Symptom | Check |
 | --- | --- |
-| Beam is missing from the sidebar | Enable the extension, place the pointer over the 3D View, press N, and choose the Beam tab. Restart after upgrading. |
-| “No centre hit” | Aim the centre ray at visible geometry and check for intervening objects. Off-centre parts of the image can still project when its centre misses. |
-| Projection is missing | Check **Global · Viewport Display → Projected Output**, the active projector’s **Projection Output**, and any Solo setting. Use a neutral screen surface to distinguish projection from its own test chart. |
-| Projector cannot move or aim | Unlock it under Projector. Check Blender transform locks and parent scale. |
+| Beam is missing | Enable the extension, restart after upgrading, then use Open Beam Workspace or the 3D View's N → Beam tab. |
+| No centre hit | Aim at visible geometry and check intervening objects. Off-centre coverage can still exist. |
+| Projection is missing | Check Global · Viewport Display → Projected Output, the projector's output and Solo settings. |
+| Projector cannot move or aim | Check Beam and Blender transform locks and keep projector/parent scale at one. |
 | Screen edits have not appeared | Select the screen and click Update Screen. |
-| Screen technical markers are missing | Choose Full detail and enable the relevant Technical Overlays. |
-| Screen export is refused | Apply pending updates, check scene units, run UV diagnostics, and choose a new filename or enable overwrite. |
-| Labels overlap or leave the view | Use Minimal detail, disable unneeded labels, or frame the scene more widely. |
-| Thin occlusion edges look jagged | Increase **Global · Viewport Display → Projection Detail**; higher settings cost GPU performance. |
+| Analysis is stale | Select the intended receiver and run Analyse Surface again. |
+| Labels overlap | Use Minimal detail, disable unneeded annotations or frame more widely. |
+| Thin occlusion edges look jagged | Increase Projection Detail; higher settings cost GPU performance. |
 
-Beam is a planning tool, not a calibrated photometric or edge-blending system. Projection treats geometry as opaque; group previews do not implement calibrated gamma, black-level correction or warped-surface optimisation. Large scenes and many projectors need project-specific performance checks.
+## Development and references
 
-## Build from source (optional)
-
-If you prefer to build the extension yourself, the repository contains the source. To build the extension ZIP, use **Python 3.11 or newer**:
+To build with **Python 3.11+**:
 
 ```sh
 git clone https://github.com/twistedpixelpete/beam.git
@@ -196,36 +141,20 @@ cd beam
 python3 tools/build_release.py
 ```
 
-Alternatively, choose **Code → Download ZIP** on GitHub, extract it, and run `python3 tools/build_release.py` from the extracted folder. Python is needed only for this packaging step, not to run the installed add-on.
+The builder reads the extension manifest and creates `dist/beam-<version>.zip` and a separate source archive. Install the extension ZIP. Python is needed for packaging, not for running the installed add-on.
 
-The script reads the version from the extension manifest and creates `dist/beam-<version>.zip`. **Install that extension ZIP, not GitHub’s source ZIP or the `beam-source-<version>.zip` archive.**
+Run pure Python tests with:
 
-## Examples and further reading
+```sh
+python3 -m unittest discover -s tests -p 'test_*.py'
+```
 
-- [0.9 planning guide](docs/PLANNING-MILESTONE.md) — inverse solving, Auto Blend, Reverse Mapping, architecture and beta limits.
-- [0.9 Auto Blend example](examples/0.9/Beam-Auto-Blend.blend) and [contextual inspector](examples/0.9/blend-inspector.png).
-- [Reverse Mapping example](examples/0.9/Beam-Reverse-Mapping.blend) and [overlap diagnostic](examples/0.9/reverse-overlap.png).
+Run Blender integration scripts only in disposable sessions: some create scenes and quit Blender. Consult the guides and [test records](TEST_RESULTS.txt) before running them against files you care about.
 
-- [Three-projector showcase](examples/0.8.1/Beam-Projector-Showcase.blend) — the scene pictured above, with an editable saved study view.
-
-- [Screen Builder demonstration](examples/0.8/Beam-Screen-Builder.blend) — screen types, LED examples and a projector group. Download the file, then open it with Beam enabled.
-- [Clean screen demonstration](examples/0.8.1/Beam-Screen-Beauty.blend) and [sidebar screenshot](examples/0.8.1/sidebar.png).
-- [Screen Builder reference](docs/SCREEN-BUILDER.md) — geometry, UVs, conforming and export conventions.
-- [Screen appearance guide](docs/SCREEN-BEAUTY.md) — labels, chart styling and visual limitations.
-- [JSON schema reference](docs/BEAM-JSON-V1.md) and [test results](TEST_RESULTS.txt).
-
-For development, run `python3 -m unittest discover -s tests -p 'test_*.py'`. Blender integration scripts belong in disposable Blender sessions; some create scenes and quit the process. See the reference guides before running them against your own files.
+- [Workspace reference](docs/UI-WORKSPACE.md) and [UI/UX refinement reference](docs/UI-UX-REFINEMENT.md).
+- [Optional theme installation and rollback](docs/THEME-WORKSPACE.md) — application-wide and opt-in; opening Beam does not apply it automatically.
+- [Screen appearance and labels](docs/SCREEN-BEAUTY.md).
+- [Production validation, timings and PATCH fixture](docs/PRODUCTION-VALIDATION.md).
+- [Surface Intelligence comparison and limits](docs/surface-intelligence/MAPPING_MATTER_COMPARISON.md).
 
 Licensed under **GPL-3.0-or-later**.
-
-### Optional Beam theme
-
-The development build includes an original charcoal/blue Blender theme. See [theme installation, screenshots and rollback](docs/THEME-WORKSPACE.md). It is optional and application-wide; installing or opening Beam does not apply it automatically. Still a prerelease beta, in testing.
-
-### UI/UX refinement beta
-
-The latest local refinement adds a native left module rail, measured values with separate edit buttons, a compact Auto Blend preview, and Apply/Restore Theme. See the [refinement guide and screenshots](docs/UI-UX-REFINEMENT.md). Theme application remains optional and application-wide.
-
-## Surface Intelligence internal beta
-
-Beam 0.13 adds Estimated Illuminance, Projection Distance and Observer Acuity in **0.13.0 — controlled Internal Production Beta**. See the [workflow delta](docs/surface-intelligence/USER_DELTA.md), [maths and assumptions](docs/surface-intelligence/MATHS_AND_ASSUMPTIONS.md), and [reference comparison](docs/surface-intelligence/MAPPING_MATTER_COMPARISON.md). The frozen 0.12.0 user guide is unchanged. This is not a stable/public release.
