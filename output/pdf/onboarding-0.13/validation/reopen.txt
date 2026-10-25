@@ -1,0 +1,11 @@
+00:00.363  blend            | Read blend: "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/Beam_Training_Project.blend"
+Traceback (most recent call last):
+  File "/Users/petelynn/Documents/projection-study/work/onboarding-013/reopen.py", line 12, in <module>
+    assert bpy.data.images['Training UV Chart'].packed_file
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Error: script failed, file: 'work/onboarding-013/reopen.py', exiting.
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

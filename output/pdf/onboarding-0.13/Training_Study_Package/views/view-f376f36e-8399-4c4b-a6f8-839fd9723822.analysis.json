@@ -1,0 +1,73 @@
+{
+  "analysis_uuid": "313ccf1f-bc2a-4bba-a352-4475461603f1",
+  "mode": "STRETCH",
+  "analysis_type": "stretch",
+  "generated_at": "2026-10-25T02:24:44+00:00",
+  "receiver_uuid": "34ad0e4a-b416-4306-b280-90ef61ad0c7e",
+  "receiver_name": "SCR001",
+  "projector_uuids": [
+    "cbadf57f-df25-4717-babd-69d3360774e7",
+    "f440a4f7-2e91-496e-92d7-ab9107504261",
+    "ec7181b7-eec2-40f4-9c14-57155f29bf6d"
+  ],
+  "statistics": {
+    "surface_area_m2": 54.0,
+    "nominal_covered_area_m2": 54.0,
+    "visible_covered_area_m2": 42.4248046875,
+    "coverage_percent": 78.564453125,
+    "uncovered_percent": 21.435546875,
+    "overlap_area_m2": 6.802734375,
+    "overlap_percent": 12.59765625,
+    "overlap_percent_of_covered": 16.03480422622747,
+    "density_min_px_m": 299.99999168267476,
+    "density_max_px_m": 300.0000849365169,
+    "density_average_px_m": 300.00003845418206,
+    "density_variation_percent": 3.108461005685115e-05,
+    "min_anisotropy": 1.0000000002176472,
+    "average_anisotropy": 1.0000000094257468,
+    "max_anisotropy": 1.000000016949346,
+    "sample_count": 2048,
+    "occluded_sample_count": 439,
+    "occluded_sample_percent": 21.435546875,
+    "illuminance_min_lux": 0,
+    "illuminance_average_lux": 571.487578030285,
+    "illuminance_max_lux": 1562.5008866726353,
+    "illuminance_uniformity_min_average": 0.0,
+    "illuminance_uniformity_min_max": 0.0,
+    "distance_min_m": 6.40012841631838,
+    "distance_average_m": 6.670325585749679,
+    "distance_max_m": 7.141678680208028,
+    "distance_variation_m": 0.7415502638896481,
+    "acuity_min_arcmin": 0.6433185562347646,
+    "acuity_average_arcmin": 0.6889992547037175,
+    "acuity_max_arcmin": 0.714675498353747,
+    "acuity_below_threshold_percent": 100.0,
+    "acuity_at_or_above_threshold_percent": 0.0,
+    "acuity_evaluated_area_m2": 42.4248046875
+  },
+  "method": "Equal-area systematic triangle strata, deterministic barycentric samples; area-weighted estimates",
+  "visibility": "CPU evaluated-geometry first hit, opaque two-sided surfaces; not GPU depth; transparent materials treated opaque",
+  "untested": "Between-sample regions and invisible/excluded scene geometry; thin features may be missed",
+  "metric_selection": "Best visible projector by conservative worst-direction density at each sample",
+  "colour_scale": "Anisotropy 1:1 to 3:1; colours saturate above 3:1",
+  "scale_range": [
+    1,
+    3
+  ],
+  "display": {
+    "illuminance_scale": "AUTO",
+    "illuminance_max_lux": 1000.0,
+    "target_illuminance_lux": null,
+    "display_units": "m"
+  },
+  "assumptions": [
+    "Estimated incident illuminance, not calibrated photometry or luminance.",
+    "Uniform luminous flux per raster pixel; two-sided opaque receiver geometry.",
+    "Flux = nominal lumens \u00d7 stack quantity \u00d7 brightness / 100; visible sources add.",
+    "No measured brightness distribution, lens transmission, ageing, calibration losses, colour-mode losses or edge falloff.",
+    "No screen gain, reflectance, ambient illumination, black level or colourimetry."
+  ],
+  "observer": null,
+  "image_filename": "view-f376f36e-8399-4c4b-a6f8-839fd9723822.png",
+  "image_sha256": "ca4bd11076ee247440f5f51da55df34f7bd76dc226b317df4400471a752f0659"
+}

@@ -1,0 +1,1163 @@
+[
+  {
+    "title": "Beam User Guide",
+    "intro": "Twisted Pixel \u2022 Projection planning in Blender\nBeam 0.13.0 \u2014 Internal Production Beta",
+    "blocks": [
+      [
+        "p",
+        "Beam helps you place projectors, size images, plan blends and inspect coverage on scene geometry. Use it to build a technical study before installation, then export the study for review or downstream tools."
+      ],
+      [
+        "p",
+        "This guide starts with the workspace, then takes you from a new screen to analysis and handoff. Open the supplied training project when you reach the exercises. Basic Blender orbit, pan and object selection are assumed."
+      ],
+      [
+        "p",
+        "Workspace map: 1 Module rail \u2022 2 3D View \u2022 3 Outliner \u2022 4 Beam Inspector. The next pages enlarge the controls."
+      ],
+      [
+        "note",
+        "Tested with Blender 5.2.2 LTS on macOS 26.7. This is an internal beta in testing, not a stable public release."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/workspace.png",
+    "caption": "Actual Beam workspace with the supplied three-projector training study.",
+    "width": 6.8
+  },
+  {
+    "title": "Find the Beam tools",
+    "intro": "Beam lives inside Blender. The Beam workspace arranges the 3D View, Outliner and a contextual inspector for projection work.",
+    "blocks": [
+      [
+        "table",
+        [
+          [
+            "Module",
+            "Use it for"
+          ],
+          [
+            "Projector",
+            "Create PJ objects; resolution, lens, aim, calculations and solver."
+          ],
+          [
+            "Screen",
+            "Create SCR surfaces; dimensions, aspect and appearance."
+          ],
+          [
+            "Blend",
+            "Create and edit BG groups, overlap and member placement."
+          ],
+          [
+            "Views",
+            "Save, recall and export study framing."
+          ],
+          [
+            "Export",
+            "Projector data, study packages, images and screen geometry."
+          ]
+        ]
+      ],
+      [
+        "p",
+        "The module rail sits below Blender\u2019s native tools at the left of the 3D View. A narrow toolbar shows icons. Drag its right edge wider to reveal names. Press T with the pointer over the 3D View if the toolbar is hidden."
+      ],
+      [
+        "p",
+        "The same five module buttons are at the top of the Beam Inspector. Use those if the rail is hidden. Frame, Solo and Lock also remain available in the inspector."
+      ],
+      [
+        "p",
+        "Use the Outliner at upper right to select exact objects: BEAM \u2192 Projectors, Screens and blend controllers. Expand the triangles beside collections. Selection here is often easier than clicking overlapping geometry."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/modules.png",
+    "caption": "The inspector repeats the modules and shows the current Beam object.",
+    "width": 4.2
+  },
+  {
+    "title": "Know what you are editing",
+    "intro": "Read the context at the top of the inspector before changing a value. Blender selection and Beam\u2019s working context can differ.",
+    "blocks": [
+      [
+        "table",
+        [
+          [
+            "Context",
+            "Meaning"
+          ],
+          [
+            "Selected",
+            "The native Blender selection; G and R act on this object."
+          ],
+          [
+            "Active",
+            "The Beam object whose controls are currently displayed."
+          ],
+          [
+            "Pinned",
+            "The pin keeps Beam focused while you select another scene object."
+          ],
+          [
+            "Receiver",
+            "The mesh used by the relevant analysis or Reverse Mapping operation."
+          ]
+        ]
+      ],
+      [
+        "steps",
+        [
+          "Select PJ02 in the Outliner and open Projector. Confirm Active refers to PJ02.",
+          "Click the pin beside Active. Select a screen or ordinary mesh. Beam retains the pinned projector\u2019s controls.",
+          "Unpin when you want the inspector to follow your selection again."
+        ]
+      ],
+      [
+        "note",
+        "Surface Analysis has its own Receiver field. Recalling a study view does not automatically choose a different receiver or rerun analysis. Always check the receiver and source names."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/context.png",
+    "caption": "Pinned context keeps the projector available while another object is selected.",
+    "width": 4.2
+  },
+  {
+    "title": "Install and enable Beam",
+    "intro": "Start with the supplied Beam 0.13.0 install ZIP. Keep it zipped. A source-code archive and the add-on install archive are different files.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Open Blender Preferences from the application menu on macOS or Edit \u2192 Preferences where available. Choose Add-ons.",
+          "Open the small menu at the upper right and choose Install from Disk. Select beam-0.13.0.zip and confirm the installation.",
+          "Search for Beam in Add-ons. If its checkbox is off, enable it. Save Preferences if automatic preference saving is disabled.",
+          "Close Preferences. If you replaced an older Beam build, save your work and restart Blender before continuing. Check that Beam is still enabled."
+        ]
+      ],
+      [
+        "p",
+        "Checkpoint: Beam appears enabled in Add-ons. A failed installation or missing module is not solved by opening the training file; enable the add-on first."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/install.png",
+    "caption": "Enabled Beam in a disposable Blender configuration.",
+    "width": 6.2
+  },
+  {
+    "title": "Open the workspace and set the theme",
+    "intro": "Place the pointer in the 3D View. Press F3 and search for Open Beam Workspace, then select the matching command.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "On a Mac where F3 controls the desktop, use Blender\u2019s Edit \u2192 Menu Search instead. You can also use the 3D View\u2019s View \u2192 Open Beam Workspace.",
+          "In the Beam Inspector expand Project / Workspace. Enter project information such as venue and revision.",
+          "Click Apply Beam Theme and confirm the theme change. To return to your previous appearance, click Restore Previous Theme.",
+          "Use File \u2192 Save As and choose a project folder and .blend filename. Save a working copy of the training project before experimenting."
+        ]
+      ],
+      [
+        "p",
+        "The Beam workspace is a Blender workspace tab. It provides the working layout; the theme changes appearance. Applying the theme is optional. The original layout remains available as another workspace."
+      ],
+      [
+        "note",
+        "No search result? Confirm Beam is enabled, restart after replacing an older build, and verify you installed the guide\u2019s build. A sidebar Project / Workspace button is also available."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/search.png",
+    "caption": "Normal Menu Search finds the existing workspace command in the corrected baseline.",
+    "width": 6.2
+  },
+  {
+    "title": "Apply and restore the Beam theme",
+    "intro": "The theme is optional and affects every Blender workspace. Beam keeps the previous appearance available for restoration.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Expand Project / Workspace in the inspector. Click Apply Beam Theme.",
+          "Read the confirmation and choose Apply Theme. The workspace adopts Beam\u2019s restrained blue/charcoal appearance.",
+          "Choose Restore Previous Theme in the same section to restore the captured appearance.",
+          "Save the project with File \u2192 Save As; a workspace layout and scene belong to the .blend, while application preferences are separate."
+        ]
+      ],
+      [
+        "note",
+        "Use a disposable configuration for training if you do not want to alter your everyday Blender preferences."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/theme.png",
+    "caption": "Project / Workspace contains both theme actions; applying the theme asks for confirmation.",
+    "width": 5.6
+  },
+  {
+    "title": "Create your first screen",
+    "intro": "Begin in an empty working scene. The example below uses metres and places the centre of a 6 m screen eight metres in front of a projector at the origin.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Choose Screen \u2192 New Screen. In the draft set Width to 6, Height to 3.375 and Aspect to Free. Keep Origin at Bottom Centre. Click Create Screen.",
+          "Confirm the new screen is SCR001. In the 3D View use G, Y, 8, Enter; then G, Z, -1.6875, Enter. These offsets put its centre at projector height.",
+          "After editing an existing screen\u2019s Width, Height or Aspect, click Update Screen to rebuild it. Moving the object uses Blender\u2019s normal transform tools.",
+          "Under Appearance / This Screen choose Test Pattern or Neutral. Use Screen ID, Dimensions and Border to control its labels."
+        ]
+      ],
+      [
+        "p",
+        "Origin matters: Bottom Centre is the bottom-edge origin, not the image centre. Object Centre aiming uses the object\u2019s origin. Use Click Surface when you want to aim at a particular visible point."
+      ],
+      [
+        "note",
+        "The screen is receiver geometry. Its dimensions do not force the projected image to match it. Change the projector or use the solver to fit the image."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/screen.png",
+    "caption": "Screen creation settings in the clean-install walkthrough.",
+    "width": 3.0
+  },
+  {
+    "title": "Create your first projector",
+    "intro": "Choose Projector and click New Projector. Beam assigns PJ identifiers in sequence. Select the projector body or its PJ entry in the Outliner.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "For the first example, keep the new projector at the origin, facing the screen on +Y. Confirm the inspector says TARGET.",
+          "Set X to 1920 and Y to 1080 in Projection. Set Throw Ratio to 1.00. Leave H Shift % and V Shift % at zero.",
+          "Choose Calibration Grid in Output. Study Colour identifies this projector\u2019s helpers.",
+          "Move with G and an axis, or rotate with R and an axis in the 3D View. Press Escape to cancel a transform. Use Aim / Position for deliberate targeting."
+        ]
+      ],
+      [
+        "p",
+        "Brightness is under Advanced as lumens. Nominal illuminance is an estimate based on the nominal image area, not a measured venue brightness result. Surface reflectance, ambient light and optical losses still require on-site judgement."
+      ],
+      [
+        "note",
+        "Check Selected before using Blender transforms, and Active before editing Beam controls. A pinned inspector can intentionally show a different object."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/projector.png",
+    "caption": "Projection controls set raster, throw ratio, shift and test output.",
+    "width": 3.1
+  },
+  {
+    "title": "Aim at receiving geometry",
+    "intro": "The centre ray follows the projector\u2019s optical direction. Beam uses its first eligible scene-geometry hit for the target and nominal calculated values.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Select the projector, expand Aim / Position and choose Click Surface. Click the intended point on the screen.",
+          "Use Object Centre only when the receiver\u2019s object origin is the desired aiming point. 3D Cursor aims at Blender\u2019s cursor.",
+          "Use Look Through to inspect the projector\u2019s view. Recheck TARGET and the centre-ray hit after moving either projector or geometry."
+        ]
+      ],
+      [
+        "p",
+        "The target marker identifies the centre hit. A blocker can become that first hit and shorten the nominal throw, even while other rays continue to reach other surfaces. Beam\u2019s actual projection can cover multiple surfaces and respects occlusion."
+      ],
+      [
+        "p",
+        "NO TARGET means no eligible centre-ray hit was found. Aim at receiving geometry and check visibility. A displayed fallback helper length is not a measured target distance."
+      ],
+      [
+        "note",
+        "Frustum helpers are visual aids. Corner rays stop at their first scene hit or a fallback display distance. Their endpoints do not redefine target calculations or multi-surface projection."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/overview.png",
+    "caption": "Three projectors aimed at a receiving screen; helpers reveal their geometry.",
+    "width": 6.8
+  },
+  {
+    "title": "Read the calculated values",
+    "intro": "Calculated values describe the nominal centre-target image. Surface Analysis later measures local conditions on a chosen receiver.",
+    "blocks": [
+      [
+        "table",
+        [
+          [
+            "UI label",
+            "What it tells you"
+          ],
+          [
+            "Throw",
+            "Lens-to-target distance along the centre ray."
+          ],
+          [
+            "Width and Height",
+            "Nominal image dimensions at that target."
+          ],
+          [
+            "Ratio",
+            "Throw distance divided by image width."
+          ],
+          [
+            "Density",
+            "Nominal horizontal pixels per metre."
+          ],
+          [
+            "Pixel Size",
+            "Nominal millimetres per pixel; smaller means finer sampling."
+          ]
+        ]
+      ],
+      [
+        "p",
+        "Worked example: 1920 \u00d7 1080 at an 8 m throw with ratio 1.00 gives an 8 \u00d7 4.5 m image, 240 px/m and 4.17 mm/px. A 6 m width at the same throw needs ratio 1.333 and gives 320 px/m, 3.12 mm/px."
+      ],
+      [
+        "p",
+        "The m / mm control changes displayed length units. Pixel Size remains a pixel-related measurement. Advanced also exposes DPI and estimated illuminance where applicable."
+      ],
+      [
+        "note",
+        "An oblique or curved receiver has different local density and stretch across its surface. Do not treat the nominal panel as proof of uniform image quality."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/calculated.png",
+    "caption": "Verified six-metre result after applying the inverse solver.",
+    "width": 3.2
+  },
+  {
+    "title": "Solve for a six metre image",
+    "intro": "Use this tutorial on the first-projector scene: 1920 \u00d7 1080, an 8 m centre throw and a screen facing the projector.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "In Calculated, click the pencil beside Width and enter 6 m as the desired value. This opens a draft solver edit.",
+          "Choose Lens / Throw Ratio in Solve By. Keep Target locked so the intended target stays fixed; leave Lens unlocked.",
+          "Review the lock controls. Position controls projector movement, Lens controls throw-ratio changes, and Target protects the target.",
+          "Click the checkmark to Apply Target. Use the X to cancel the draft.",
+          "Inspect the result: Throw 8.00 m, Width 6.00 m, Height 3.38 m and Ratio 1.333."
+        ]
+      ],
+      [
+        "p",
+        "Projector Position changes placement; Lens / Throw Ratio changes the ratio; Both / Auto allows both within the available constraints. Choose deliberately according to what can move in the venue."
+      ],
+      [
+        "note",
+        "If constraints conflict, Beam refuses the solution. Check the target, locks, selected lens range and shift. Correct the constraint and try again; do not assume a failed Apply changed the study."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/solver.png",
+    "caption": "Draft solver controls. The training scene uses a different 6.4 m throw.",
+    "width": 3.0
+  },
+  {
+    "title": "Use real optics guidance",
+    "intro": "Generic / Manual lets you enter values directly. Presets provide known projector and lens data; they do not certify an entire installation.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Select a projector and expand Optics Guidance. Choose the projector preset and compatible Lens.",
+          "Click Use Preset Values to apply the preset raster and lumens. Confirm those values suit your study.",
+          "Read the displayed Throw range and status. Set a ratio inside the supported range.",
+          "Check the H and V shift information before asking the solver to use shifted optics."
+        ]
+      ],
+      [
+        "p",
+        "The training project\u2019s PJ01 uses Panasonic PT-RZ990 with ET-DLE105 from Beam\u2019s existing verified library. PJ02 and PJ03 are Generic / Manual examples. Their matched 1920 \u00d7 1200 raster keeps the blend consistent."
+      ],
+      [
+        "note",
+        "Shift limits unavailable means Beam does not know that lens envelope. It deliberately does not invent it. Non-zero unknown shift can prevent a constrained solve; manual editing remains available. Obtain manufacturer data before relying on that configuration."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/optics.png",
+    "caption": "The frozen baseline\u2019s real optics panel and known-limit feedback.",
+    "width": 3.0
+  },
+  {
+    "title": "Control helpers and output",
+    "intro": "Use annotations to keep a technical view legible. The projected name, body/measurement labels have separate visibility controls.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Open the projector\u2019s Annotations section. Toggle Body / Measurement Labels independently from Projected Name. The former controls the body ID and measurements together.",
+          "Use Show Frustum, Centre Ray and Target Marker when checking aim. Hide them when they obscure receiver content.",
+          "Use Show Grid and Projection Output according to the test output you need. Output selects the pattern; visibility controls determine what is drawn.",
+          "Use Global \u00b7 Viewport Display for study-wide presentation settings. Use Technical for inspection and Presentation for a cleaner review."
+        ]
+      ],
+      [
+        "p",
+        "Available outputs include Solid Colour, Calibration Grid, Identifier, Checkerboard, Blender UV Grid, Blender Color Grid and Custom Image. A custom projected image is distinct from Reverse Mapping, which uses the receiver\u2019s existing UV/material texture."
+      ],
+      [
+        "note",
+        "A helper being hidden does not remove the projector or change engineering calculations. For exported study views, check This View \u00b7 Export Annotations as well as the live viewport."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/overview.png",
+    "caption": "Keep the helpers that answer your current question; remove visual clutter for review.",
+    "width": 6.8
+  },
+  {
+    "title": "Build a blend group",
+    "intro": "A blend group holds editable projectors together. Use it for coordinated placement and overlap planning.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Select the projectors you want to group in Blender; make the intended anchor the active selection. Choose Blend \u2192 From Selection.",
+          "Confirm BG01 and its members. The anchor provides the layout reference. Select the group controller to transform the arrangement together.",
+          "Use the Members controls to inspect, add, remove or create members. Individual offsets allow local adjustments relative to the group.",
+          "Set the requested horizontal or vertical overlap. Compare the actual result in pixels, metres and percent. Expand Pair Details for individual joins."
+        ]
+      ],
+      [
+        "p",
+        "The training project has PJ01, PJ02 and PJ03 in BG01. Its initial horizontal overlap is 240 px, 0.800 m and 12.5%. Reflowing at 15% gives 288 px and 0.960 m for the matched 1920-pixel images."
+      ],
+      [
+        "note",
+        "Requested overlap is your intention; actual overlap is the resulting geometry. Check both, especially after member offsets or placement changes."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/blend.png",
+    "caption": "BG01 after the verified overlap change and Reflow Group.",
+    "width": 3.0
+  },
+  {
+    "title": "Create a new automatic layout",
+    "intro": "New Auto Blend creates new projector objects. It is the starting point for a new layout on a screen.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Select SCR001. For this example, first resize the screen as described below, then open Screen \u2192 New Auto Blend.",
+          "For the first-projector example, enlarge the screen to 18 m wide, keep height 3.375 m and click Update Screen.",
+          "Choose a horizontal layout with Count 3, Auto Count off, overlap 200 px, Use Active Projector Template on and Lock Throw off. Use the 1.333-ratio practice projector as the template.",
+          "Check Valid and coverage before Create Layout. The tested result uses about 8.597 m throw with 0.672 m physical overlap."
+        ]
+      ],
+      [
+        "p",
+        "The existing practice projector remains in the scene; this command creates additional projectors. Hide or remove that practice object when you want only the new layout, and check which projectors are included in analysis and exports."
+      ],
+      [
+        "note",
+        "Building a new layout? Use New Auto Blend. Already have BG01? Use Reflow Group. A 6 m screen with this three-projector/template setup was rejected; changing screen size is a deliberate design change, not an automatic fix."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/auto.png",
+    "caption": "The planner previews validity and coverage before creating objects.",
+    "width": 3.5
+  },
+  {
+    "title": "Reflow an existing blend",
+    "intro": "Reflow Group recalculates member placement in the selected group. It does not create a second independent layout.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Open the supplied training project and select BG01 through the Outliner or Blend context.",
+          "Change requested horizontal overlap from 12.5% to 15%.",
+          "Click Reflow Group. Inspect the new positions and the requested/actual readouts.",
+          "Confirm three members remain and the result shows 288 px, 0.960 m and 15%. Check the projected joins in the 3D View."
+        ]
+      ],
+      [
+        "p",
+        "Group transforms move the arrangement. Member offsets adjust individual projectors. Reflow changes placement according to the current group settings, so save a working copy before testing a different layout."
+      ],
+      [
+        "p",
+        "Overlap previews and feathering help review the plan. They do not replace calibration, warp or blend setup in the real playback system."
+      ],
+      [
+        "note",
+        "If coverage is incomplete or constraints are invalid, review count, throw and overlap. A layout that looks plausible still needs valid results and receiver coverage checks."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/blend.png",
+    "caption": "Requested and actual overlap should agree in this matched training example.",
+    "width": 3.1
+  },
+  {
+    "title": "Save and recall study views",
+    "intro": "Study Views make repeatable review angles. They store framing and export settings, not a new copy of the engineering scene.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Navigate the 3D View to a useful angle. Choose Views \u2192 New Study View, enter a descriptive name and confirm.",
+          "Use View beside an entry to recall it. Exit leaves camera view; Previous and Next step through entries.",
+          "Set Width and Height for the export image. Open This View \u00b7 Export Annotations and choose the helpers to include.",
+          "Click Export This View and choose the destination. Use Export \u2192 Export All Study Views for a set."
+        ]
+      ],
+      [
+        "p",
+        "The training file includes Overview, Front, Blend, Reverse Mapping, Density and Stretch. The names describe useful angles. The Density and Stretch entries also request those analysis overlays when exported."
+      ],
+      [
+        "note",
+        "Recalling a view does not reanalyse geometry or change your analysis receiver. Before exporting an analytical view, set the receiver and sources, then Analyse Surface. Technical and Presentation are display choices, not separate engineering studies."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/views.png",
+    "caption": "Named views provide repeatable framing and image export dimensions.",
+    "width": 3.1
+  },
+  {
+    "title": "Analyse a receiver surface",
+    "intro": "Surface Analysis samples points across a selected mesh and checks which projectors can actually reach each point.",
+    "blocks": [
+      [
+        "table",
+        [
+          [
+            "Mode",
+            "Use it to understand"
+          ],
+          [
+            "Density",
+            "Resolution and detail across a surface"
+          ],
+          [
+            "Stretch",
+            "Pixel deformation on angled geometry"
+          ],
+          [
+            "Illuminance",
+            "Estimated incident light level"
+          ],
+          [
+            "Distance",
+            "Projector-to-surface distance variation"
+          ],
+          [
+            "Acuity",
+            "Apparent pixel size from an audience position"
+          ]
+        ]
+      ],
+      [
+        "steps",
+        [
+          "Expand Surface Analysis. Set Receiver explicitly to SCR001.",
+          "Choose Projectors: Active Projector, Active Blend Group or All Projectors. For the training blend use Active Blend Group and confirm BG01 is the active group.",
+          "Choose Samples: Quick \u00b7 512, Standard \u00b7 2048 or Detailed \u00b7 8192. Start with Standard.",
+          "Click Analyse Surface. Confirm the receiver and source names listed below the button.",
+          "Enable Show Heatmap and select Density or Stretch. Read the statistics together with the spatial overlay."
+        ]
+      ],
+      [
+        "p",
+        "More samples give finer inspection but take more work. This is sampled coverage, not an exhaustive proof of every tiny gap. Thin obstacles and areas between samples can be missed."
+      ],
+      [
+        "note",
+        "After moving a projector, receiver or obstruction, the result can become stale. Scene changed \u00b7 Analyse again means the old result must be refreshed before you rely on it or export it."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/source/five-modes-crop.png",
+    "caption": "Actual Beam 0.13 Heatmap choices.",
+    "width": 3.0
+  },
+  {
+    "title": "Interpret density",
+    "intro": "Density describes how much projected raster detail reaches the receiver. Higher px/m means more pixels across the same physical distance.",
+    "blocks": [
+      [
+        "table",
+        [
+          [
+            "Readout",
+            "How to use it"
+          ],
+          [
+            "Min density",
+            "Inspect the weakest sampled area."
+          ],
+          [
+            "Avg density",
+            "Summarises visible sampled coverage; does not describe every point."
+          ],
+          [
+            "Max density",
+            "Shows the densest sampled area."
+          ],
+          [
+            "Visible coverage",
+            "Receiver area reached by at least one visible source."
+          ],
+          [
+            "Overlap",
+            "Receiver area with more than one visible source."
+          ]
+        ]
+      ],
+      [
+        "p",
+        "The default density colour scale is local to the current analysis: dark blue is its low end and pale teal its high end. Two analyses can show similar colours while having very different numerical densities. Compare the values, not colour alone."
+      ],
+      [
+        "p",
+        "On the front-facing training screen the visible samples are approximately 300 px/m. The curved receiver varies strongly with angle. Select it and analyse again to compare."
+      ],
+      [
+        "note",
+        "Beam selects the best visible projector by conservative worst-direction density at each sample. Overlap is not simply summed as extra image resolution."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/density-overlay.png",
+    "caption": "Actual Density export after the blocker move. The legend reports the numerical range.",
+    "width": 5.3
+  },
+  {
+    "title": "Inspect stretch on curved geometry",
+    "intro": "A pixel projected straight onto a surface is relatively even. At a steep angle it spreads unevenly. Stretch highlights that directional distortion.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Select TRAINING_Curved_Receiver as the Surface Analysis receiver. Keep the appropriate blend sources.",
+          "Click Analyse Surface and choose Stretch in Heatmap.",
+          "Recall the Stretch study view to examine the curved surface at a useful scale.",
+          "Look for changes from teal near 1:1 toward amber near 3:1. Compare the angle of the surface with the projector direction."
+        ]
+      ],
+      [
+        "p",
+        "Stretch is anisotropy: how unevenly the pixel footprint expands in different directions. It is not the same as low density. A surface can have many pixels per metre and still show directional stretching."
+      ],
+      [
+        "p",
+        "For the validated training sequence, the curved receiver showed 100% sampled coverage and density from about 214 to 384 px/m. Those numbers apply to that geometry and layout, not every curved screen."
+      ],
+      [
+        "note",
+        "The exported view uses the latest analysis receiver. Its name \u201cStretch\u201d does not automatically choose the curved mesh."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/stretch.png",
+    "caption": "Actual exported Stretch overlay on the training receiver.",
+    "width": 6.8
+  },
+  {
+    "title": "Find occlusion with the blocker",
+    "intro": "Use this controlled comparison after reflowing the training group to 15%. Keep receiver SCR001, Active Blend Group and Standard \u00b7 2048 samples.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "With TRAINING_Occluder at its starting X = -9 m, Analyse Surface. The tested visible coverage is 93.1%; the curved receiver already obstructs part of the screen.",
+          "Select TRAINING_Occluder in the Outliner. In the 3D View use G, X, 9, Enter to move it to world X = 0 m.",
+          "Observe Scene changed \u00b7 Analyse again. Click Analyse Surface again.",
+          "Compare: visible coverage falls to 78.6%, and occluded samples rise from 6.9% to 21.4%."
+        ]
+      ],
+      [
+        "p",
+        "Nominal coverage ignores blocking geometry. Visible coverage tests whether a ray reaches the receiver first. Here nominal screen coverage remains 100%, while the blocker removes visible coverage."
+      ],
+      [
+        "note",
+        "A blocker in an overlap zone may not reduce total visible coverage: another projector can still reach that area. Move this blocker to the centre beam for the clear comparison. Results are sampled and may vary with changed settings."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/occlusion-comparison.png",
+    "caption": "Same receiver and sample settings; the blocker moves into the centre beam.",
+    "width": 5.2
+  },
+  {
+    "title": "Estimate incident illuminance",
+    "intro": "Lux is incident luminous flux per square metre: one lumen over one square metre equals one lux.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Choose Receiver and source scope in Surface Analysis. Select Heatmap \u2192 Illuminance, then Analyse Surface.",
+          "Read minimum, average and maximum lux. The average includes the whole sampled receiver, including unlit samples at zero.",
+          "Move TRAINING_Occluder into the light path and reanalyse. A blocked source contributes zero; other visible sources still add light."
+        ]
+      ],
+      [
+        "p",
+        "Overlapping visible projectors add their estimated contributions. Uniformity min / average is explicitly the minimum divided by the average: 1 is equal sampled values; 0 means an unlit sample with a positive average. Exported min / max is separately named."
+      ],
+      [
+        "note",
+        "Estimated Illuminance is a planning estimate, not calibrated photometric simulation or measured luminance."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/Illuminance.png",
+    "caption": "Actual Beam 0.13 training scene analysis.",
+    "width": 6.6
+  },
+  {
+    "title": "Compare lux ranges and assumptions",
+    "intro": "Use a common scale to compare revisions without changing the underlying calculation.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Auto Scale uses the current sampled minimum and maximum.",
+          "Fixed Range uses zero to Maximum Lux. Use the same maximum for each revision. Values above it saturate; statistics retain their full values.",
+          "Enable Target Illuminance and enter Target Lux if useful. It adds a reference label only; it does not change output or certify a pass/fail result."
+        ]
+      ],
+      [
+        "p",
+        "Beam assumes uniform nominal flux per raster pixel. Lumens, stack quantity and brightness percentage determine that flux. Perspective and surface angle determine local illuminated area. Visible contributions add."
+      ],
+      [
+        "note",
+        "The estimate excludes measured brightness distribution, lens transmission, ageing, calibration and colour-mode losses, edge falloff, gain, reflectance, ambient light, black level and colourimetry. Illuminance is incident light; luminance is light leaving a surface toward a viewer."
+      ],
+      [
+        "p",
+        "Heatmaps are sampled points with gaps, not continuous measurements. Thin occluders may be missed. Zero lux uses the dark palette endpoint."
+      ]
+    ],
+    "img": null,
+    "caption": "",
+    "width": 3.2
+  },
+  {
+    "title": "Inspect projection distance",
+    "intro": "Projection Distance is the Euclidean distance from a projector lens origin to each lit receiver sample.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Select Heatmap \u2192 Distance and Analyse Surface.",
+          "Read minimum, average, maximum and Variation. Variation equals maximum minus minimum.",
+          "In a multi-projector study, the nearest visible source controls each sample. Its UUID is retained for diagnostics. Unlit samples are excluded."
+        ]
+      ],
+      [
+        "p",
+        "Display uses Beam\u2019s metres or millimetres preference; structured values use metres. Flat perpendicular walls still have radial distance variation toward their edges."
+      ],
+      [
+        "note",
+        "This is a planning aid. It is not lens-specific focus or optical depth-of-field certification."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/Distance.png",
+    "caption": "Actual training scene distance overlay; inspect the numerical range.",
+    "width": 6.6
+  },
+  {
+    "title": "Place an audience Observer",
+    "intro": "An Observer is a lightweight viewing-position object. The training scene includes OBS01 at the audience side of the screen.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "In Surface Analysis choose Acuity, then Add Observer. New objects use OBS names and start at the 3D Cursor.",
+          "Select OBS01 in the Outliner or viewport. Move it with Blender\u2019s move tool or Base Position controls.",
+          "Set Eye Height in metres above the base. The offset is world-up; the default is 1.6 m. The training example uses 1.65 m.",
+          "Choose the Observer in Surface Analysis. Set Acuity Threshold in arcminutes, then Analyse Surface."
+        ]
+      ],
+      [
+        "note",
+        "The default 1 arcminute threshold is adjustable planning guidance. It is not a universal prediction of eyesight, contrast perception, content readability or ambient-light effects."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/source/observer-setup-crop.png",
+    "caption": "Actual 0.13 Observer controls. One active Observer is analysed at a time.",
+    "width": 3.0
+  },
+  {
+    "title": "Interpret Observer Acuity",
+    "intro": "Angular Pixel Size describes the apparent projected pixel pitch seen from the Observer eye position.",
+    "blocks": [
+      [
+        "p",
+        "Larger angular values mean a coarser apparent pixel structure. Moving closer normally increases angular pitch; moving farther away reduces it. Surface foreshortening is included."
+      ],
+      [
+        "p",
+        "Overlap uses the coarsest apparent visible projector pixel structure. This differs from Density\u2019s highest-detail rule. Viewer-blocked and unlit samples are excluded; percentages refer only to observable lit area."
+      ],
+      [
+        "p",
+        "Read min / average / max arcminutes and below / at-or-above threshold percentages. The colour range is half to one-and-a-half times the threshold and saturates beyond it."
+      ],
+      [
+        "note",
+        "After moving OBS01 or changing its threshold, Analyse again. A saved Study View recalls framing; it does not restore an analysis receiver or rerun the calculation."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/Acuity.png",
+    "caption": "Actual 0.13 Acuity output with its threshold and source rule.",
+    "width": 6.6
+  },
+  {
+    "title": "Reveal mapped content with Reverse Mapping",
+    "intro": "Reverse Mapping uses the receiver\u2019s existing UV/material texture and reveals that texture according to actual projector coverage. It helps answer which parts of mapped content are reached.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Recall the Reverse Mapping study view. Select SCR001 in the Outliner. Use Material Preview shading in the 3D View so the texture is visible.",
+          "Expand Reverse Mapping and confirm Receiver is SCR001. The supplied screen already has valid UVs and a packed colour-grid texture.",
+          "Set Coverage From to Blend Group, then choose BG01. Other choices include Active Projector, Selected Projector and All Active Projectors.",
+          "Click Enable on Receiver. Inspect the receiver content and the shaded or missing regions around occlusion.",
+          "Click Restore Materials when finished to return the receiver\u2019s original material state."
+        ]
+      ],
+      [
+        "p",
+        "The projected Calibration Grid belongs to the projector. The coloured letter chart in this example belongs to the receiver. Changing Reverse Mapping coverage reveals that same receiver content; it does not move the texture into projector space."
+      ],
+      [
+        "note",
+        "Hide unnecessary projection helpers while judging mapped content. Keep the receiver and source names visible so a clean view is not mistaken for a different study."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/reverse-controls.png",
+    "caption": "Receiver, Coverage From, Mode and BG01 in the actual Reverse Mapping panel.",
+    "width": 4.1
+  },
+  {
+    "title": "Choose a Reverse Mapping mode",
+    "intro": "Choose the display that best answers your review question. The coverage sources stay the same while the treatment of covered and uncovered areas changes.",
+    "blocks": [
+      [
+        "table",
+        [
+          [
+            "Exact mode",
+            "Practical use"
+          ],
+          [
+            "Covered Only",
+            "Show covered texture against neutral uncovered regions."
+          ],
+          [
+            "Uncovered Dimmed",
+            "Keep missed content visible at Outside Brightness for comparison."
+          ],
+          [
+            "Uncovered Hidden",
+            "Make uncovered parts transparent to reveal missed geometry."
+          ],
+          [
+            "Overlap Diagnostic",
+            "Mark overlap in amber while reviewing content and coverage."
+          ]
+        ]
+      ],
+      [
+        "p",
+        "Try each mode with the blocker at X = 0 m. The missed centre region is easy to compare. In Overlap Diagnostic the vertical overlap bands identify where adjacent projectors both contribute."
+      ],
+      [
+        "note",
+        "Transparency in Uncovered Hidden is a review treatment. It does not physically remove the receiver or prove that transparent real-world materials will behave the same way."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/reverse-modes.png",
+    "caption": "Same receiver and sources: compare the central blocked region and the overlap bands.",
+    "width": 6.8
+  },
+  {
+    "title": "Use Reverse Mapping within its limits",
+    "intro": "Reverse Mapping is an interactive GPU viewport tool. Use it to review coverage, mapped content, missed geometry, overlap and alignment.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "Use a normal GPU-backed Blender viewport and Material Preview. Allow shaders to finish compiling after changing mode.",
+          "Supply a supported node material with a usable image texture and valid UVs. The training screen provides a known working starting point.",
+          "Choose a source set containing valid projectors. The viewport supports up to 32 coverage sources. Reduce a larger set to the group being reviewed.",
+          "After an error, read the receiver and coverage status before enabling again. Restore Materials returns the original material assignment."
+        ]
+      ],
+      [
+        "p",
+        "Coverage depth is a viewport approximation with material and UV assumptions. Transparent and unusual shader setups should not be assumed equivalent to opaque receiving surfaces. This is not an offline final-rendering system."
+      ],
+      [
+        "p",
+        "Use Surface Analysis for sampled quantitative statistics, Reverse Mapping for content-aware coverage review, and actual installation tests for final confidence."
+      ],
+      [
+        "note",
+        "These workflows were verified on macOS with Blender 5.2.2 LTS. This package does not claim Windows, Linux or a different GPU configuration has been tested."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/hidden.png",
+    "caption": "Uncovered Hidden reveals the geometry behind a missed portion of the receiver.",
+    "width": 6.8
+  },
+  {
+    "title": "Choose the correct export",
+    "intro": "Mapping Matter CSV and Designer CSV are separate formats. Pick the button for the receiving workflow; renaming one CSV does not convert it into the other.",
+    "blocks": [
+      [
+        "table",
+        [
+          [
+            "Export button",
+            "Destination and purpose"
+          ],
+          [
+            "Mapping Matter CSV",
+            "Mapping Matter-format projector data."
+          ],
+          [
+            "Designer CSV",
+            "Designer projector-study CSV workflow."
+          ],
+          [
+            "Beam JSON",
+            "Beam technical study data."
+          ],
+          [
+            "Study Package \u00b7 JSON + HTML + Views",
+            "Technical handoff bundle for PATCH integration and review."
+          ]
+        ]
+      ],
+      [
+        "steps",
+        [
+          "Open Export and choose the exact format. Set a distinct destination filename and confirm.",
+          "Keep the generated .metadata.json sidecar with each CSV. It records export context and conventions.",
+          "Check the file exists and contains the expected projector rows. For the training project, check PJ01, PJ02 and PJ03."
+        ]
+      ],
+      [
+        "p",
+        "Screen Geometry offers OBJ and FBX separately from projector data. Check the screen, production surface choice and coordinate mode before exporting geometry."
+      ],
+      [
+        "note",
+        "The two CSV outputs were written and checked in this walkthrough. Import into external Mapping Matter or Designer applications was not part of this validation."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/export.png",
+    "caption": "Separate buttons prevent accidental substitution of the two CSV formats.",
+    "width": 3.6
+  },
+  {
+    "title": "Export analytical images and hand off to PATCH",
+    "intro": "Use a named study view for repeatable framing and a Study Package for a complete technical handoff.",
+    "blocks": [
+      [
+        "steps",
+        [
+          "For a Density image, set Surface Analysis Receiver to SCR001, choose the sources and Analyse Surface.",
+          "Recall Density. Under This View \u00b7 Export Annotations confirm Analysis Overlay is Density. Choose labels and other study overlays deliberately.",
+          "Click Export This View, choose a folder and export. Keep the image and its .analysis.json sidecar together.",
+          "Open Export \u2192 Study Package \u00b7 JSON + HTML + Views. Enter a new folder name such as Training_Study_Package and leave Render Study Views on. Confirm the export.",
+          "Check beam-study.json, index.html and the views folder. Open index.html for a review of the handoff."
+        ]
+      ],
+      [
+        "p",
+        "Intended handoff: Beam \u2192 Study Package \u2192 PATCH \u2192 Documents / client-facing reporting. Beam owns technical study data. PATCH owns document composition."
+      ],
+      [
+        "note",
+        "PATCH import integration is still being tested. This guide validates Beam\u2019s package output, not a complete PATCH GUI import or final client document workflow. Beam is not a report-layout application."
+      ]
+    ],
+    "img": "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/screenshots/annotated/export-density.png",
+    "caption": "Density is an explicit export overlay choice; a view name alone is insufficient.",
+    "width": 3.4
+  },
+  {
+    "title": "Troubleshoot the current study",
+    "intro": "Start by checking the active object, receiver and source names. Save before changing a working layout.",
+    "blocks": [
+      [
+        "table",
+        [
+          [
+            "Message or symptom",
+            "Meaning and action"
+          ],
+          [
+            "NO TARGET",
+            "No eligible centre hit. Aim at receiving geometry; check visibility and target marker."
+          ],
+          [
+            "Scene changed \u00b7 Analyse again",
+            "Cached analysis no longer matches the scene. Re-run Analyse Surface."
+          ],
+          [
+            "Surface Analysis is absent or stale. Analyse again before exporting.",
+            "Refresh the intended receiver/source set before exporting an analysis view."
+          ],
+          [
+            "Selected lens supports \u2026 throw. Current: \u2026",
+            "The ratio is beyond known limits. Select a compatible lens or a valid ratio."
+          ],
+          [
+            "Shift limits unavailable",
+            "Beam has no verified shift envelope. Do not assume a constrained shifted solve is supported."
+          ],
+          [
+            "No visible coverage source",
+            "Choose a valid projector/group source set; check its members."
+          ],
+          [
+            "Reverse Mapping needs an interactive GPU viewport",
+            "Use an interactive GPU viewport. A background process cannot provide the same viewport path."
+          ],
+          [
+            "Unsupported receiver material",
+            "Use a supported UV/image node material; compare the training screen."
+          ],
+          [
+            "Export fails",
+            "Read the error, choose a writable destination, refresh analysis if needed and retry. Verify actual output files."
+          ],
+          [
+            "Wrong controls or object changes",
+            "Compare Selected and Active. Unpin if you want the inspector to follow selection."
+          ],
+          [
+            "Beam rail missing",
+            "Pointer over 3D View \u2192 T. Alternatively use the five inspector module buttons."
+          ],
+          [
+            "Acuity has no result",
+            "Choose an Observer, check lit receiver and line of sight, then Analyse Surface."
+          ],
+          [
+            "No analysis after reopening or Undo",
+            "Results are transient. Run Analyse Surface again before export."
+          ]
+        ]
+      ],
+      [
+        "note",
+        "If Open Beam Workspace is absent from search, verify the supplied corrected build and enabled add-on. Record the build, Blender version and exact message when reporting an issue."
+      ]
+    ],
+    "img": null,
+    "caption": "",
+    "width": 3.2
+  },
+  {
+    "title": "Where is it",
+    "intro": "Use this page as a working reference. Paths start in the Beam Inspector unless stated otherwise.",
+    "blocks": [
+      [
+        "table",
+        [
+          [
+            "Task",
+            "Location"
+          ],
+          [
+            "Add projector",
+            "Projector \u2192 New Projector"
+          ],
+          [
+            "Add screen",
+            "Screen \u2192 New Screen \u2192 Create Screen"
+          ],
+          [
+            "Resize screen",
+            "Screen \u2192 Width / Height \u2192 Update Screen"
+          ],
+          [
+            "Make a group from projectors",
+            "Blend \u2192 From Selection"
+          ],
+          [
+            "Create a new layout",
+            "Screen or Blend \u2192 New Auto Blend"
+          ],
+          [
+            "Adjust an existing layout",
+            "Blend \u2192 Reflow Group"
+          ],
+          [
+            "Change lens",
+            "Projector \u2192 Optics Guidance"
+          ],
+          [
+            "Solve image size",
+            "Projector \u2192 Calculated pencil \u2192 Solver"
+          ],
+          [
+            "Aim at a visible point",
+            "Projector \u2192 Aim / Position \u2192 Click Surface"
+          ],
+          [
+            "Hide projected name",
+            "Projector \u2192 Annotations \u2192 Projected Name"
+          ],
+          [
+            "Save or recall framing",
+            "Views \u2192 New Study View / View"
+          ],
+          [
+            "Density analysis",
+            "Surface Analysis \u2192 Analyse Surface \u2192 Heatmap: Density"
+          ],
+          [
+            "Stretch analysis",
+            "Surface Analysis \u2192 Heatmap: Stretch"
+          ],
+          [
+            "Reveal receiver texture",
+            "Reverse Mapping \u2192 Enable on Receiver"
+          ],
+          [
+            "Mapping Matter data",
+            "Export \u2192 Mapping Matter CSV"
+          ],
+          [
+            "Designer data",
+            "Export \u2192 Designer CSV"
+          ],
+          [
+            "PATCH handoff bundle",
+            "Export \u2192 Study Package \u00b7 JSON + HTML + Views"
+          ],
+          [
+            "Theme and workspace",
+            "Project / Workspace"
+          ],
+          [
+            "Save the Blender project",
+            "Blender File \u2192 Save As / Save"
+          ],
+          [
+            "Estimated light level",
+            "Surface Analysis \u2192 Heatmap \u2192 Illuminance"
+          ],
+          [
+            "Projector distance variation",
+            "Surface Analysis \u2192 Heatmap \u2192 Distance"
+          ],
+          [
+            "Add audience position",
+            "Surface Analysis \u2192 Acuity \u2192 Add Observer"
+          ],
+          [
+            "Audience pixel visibility",
+            "Surface Analysis \u2192 Heatmap \u2192 Acuity"
+          ]
+        ]
+      ],
+      [
+        "p",
+        "Next: open Beam_Training_Project.blend and follow the separate training companion. Work on a copy, and return to the original file to reset all exercises."
+      ]
+    ],
+    "img": null,
+    "caption": "",
+    "width": 3.2
+  }
+]
