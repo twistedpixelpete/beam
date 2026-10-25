@@ -20,7 +20,7 @@ The development UI now includes an optional native **Beam workspace**, contextua
 
 ## Current internal onboarding
 
-The **[Beam 0.13 onboarding package](output/pdf/onboarding-0.13/README.md)** includes the User Guide (PDF and editable DOCX), Quick Start, training project and 21-exercise companion. It covers all five Surface Analysis modes and includes the exact internal installation ZIP used for validation. The original 0.12 documentation baseline remains frozen.
+The **[Beam 0.13 onboarding folder](output/pdf/Beam_Onboarding)** starts with START_HERE.pdf and includes the User Guide, Quick Start, training project and 21-exercise companion. It covers all five Surface Analysis modes and includes the exact internal installation ZIP used for validation. The original 0.12 documentation baseline remains frozen. Editable sources and validation evidence stay in the internal build folder; they are excluded from the user download.
 
 The **[Beam Review v0.1 local prototype](review/README.md)** demonstrates a read-only browser viewer for exported Beam studies. See its setup, acceptance evidence and future hosting design; no hosted service is provided.
 
