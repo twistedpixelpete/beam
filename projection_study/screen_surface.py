@@ -1,6 +1,6 @@
 """Non-destructive source extraction, evaluated curve paths and conforming."""
 import bpy,bmesh
-from mathutils import Matrix,Vector
+from mathutils import Vector
 from . import screen_uv
 
 

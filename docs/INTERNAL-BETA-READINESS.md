@@ -1,5 +1,7 @@
 # Beam 0.12 — internal production beta readiness
 
+> Historical milestone / test report. Its screenshots and validation claims describe that milestone. Use [Documentation Baseline](manual/DOCUMENTATION_BASELINE.md) for the current documentation build and current UI evidence.
+
 Maintainer: **Twisted Pixel**. Assessment: **24 October 2026**. Candidate only: no tag, release publication or installation over the working Beam add-on. The recommendation applies to controlled internal use on the tested **Blender 5.2.2 LTS / Apple M5 Max / macOS Metal** configuration.
 
 ## Repository review and merge

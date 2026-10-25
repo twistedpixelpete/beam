@@ -1,5 +1,8 @@
 """Shared native Beam inspector: presentation only; operators own mutations."""
 import bpy
+import tomllib
+from pathlib import Path
+BEAM_VERSION = tomllib.loads((Path(__file__).parent / "blender_manifest.toml").read_text())["version"]
 from . import runtime,ui_context
 from .projector_object import selected
 from .study_views import selected_view
@@ -241,7 +244,7 @@ def draw(layout,context):
         box.separator()
         box.operator('beam.apply_theme',text='Apply Beam Theme',icon='PREFERENCES')
         box.operator('beam.restore_theme',text='Restore Previous Theme',icon='LOOP_BACK')
-        box.label(text='0.10 Beta · Twisted Pixel')
+        box.label(text=f'{BEAM_VERSION} Beta · Twisted Pixel')
 
 class BEAM_UL_members(bpy.types.UIList):
     def draw_item(self,context,layout,data,item,icon,active_data,active_propname,index):

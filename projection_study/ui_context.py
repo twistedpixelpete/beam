@@ -101,6 +101,10 @@ class BEAM_OT_apply_target(bpy.types.Operator):
 
 @bpy.app.handlers.persistent
 def clear(*args):
+    # RNA addresses can be reused across file loads and Undo/Redo. Never compare
+    # a newly restored scene against selection pointers from the previous state.
+    from . import study_data
+    study_data._seen_selection.clear()
     _summaries.clear()
     for wm in bpy.data.window_managers:
         if hasattr(wm,'beam_target'):wm.beam_target.field='';wm.beam_target.message=''

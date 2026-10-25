@@ -12,6 +12,8 @@ The development UI now includes an optional native **Beam workspace**, contextua
 
 ![Three Beam projectors casting overlapping calibration grids onto a wide screen](examples/0.8.1/projector-showcase.png)
 
+*Historical 0.8.1 viewport example. For the current UI/build, use the [documentation baseline](docs/manual/DOCUMENTATION_BASELINE.md).*
+
 *Actual Beam viewport capture: three projectors, visible throw frustums, projected IDs and overlapping coverage on a 16 m screen.*
 
 **[Internal-beta readiness assessment, PATCH integration and soak evidence](docs/INTERNAL-BETA-READINESS.md)**. The new hardening work is under review; no stable release has been published.
@@ -192,7 +194,7 @@ python3 tools/build_release.py
 
 Alternatively, choose **Code → Download ZIP** on GitHub, extract it, and run `python3 tools/build_release.py` from the extracted folder. Python is needed only for this packaging step, not to run the installed add-on.
 
-On this feature branch, the script creates `dist/beam-0.9.0.zip`. **Install this file, not GitHub’s source ZIP or `beam-source-0.9.0.zip`.**
+The script reads the version from the extension manifest and creates `dist/beam-<version>.zip`. **Install that extension ZIP, not GitHub’s source ZIP or the `beam-source-<version>.zip` archive.**
 
 ## Examples and further reading
 

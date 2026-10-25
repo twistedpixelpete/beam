@@ -1,5 +1,7 @@
 # Beam 0.11 production validation — development beta
 
+> Historical milestone / test report. Its screenshots and validation claims describe that milestone. Use [Documentation Baseline](manual/DOCUMENTATION_BASELINE.md) for the current documentation build and current UI evidence.
+
 Maintainer: **Twisted Pixel**. Tested 24 October 2026 on Blender 5.2.2 LTS, macOS/Metal. Still in testing; not a stable release. PATCH Documents owns client-facing document generation. This pass adds technical exports and evidence, not a document-layout engine.
 
 ## Branch and review

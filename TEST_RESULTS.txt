@@ -1,3 +1,8 @@
+Beam 0.12.0 - pre-documentation cleanup - 2026-10-25
+
+PASS: full relevant suite, actual ZIP install/use/fresh-process reopen, eight repeated five-generation migrations, UI context regression and 32-projector soak. Source freeze: 15e054ae7d7d7700549bbeb0dc4d54c18779d39c.
+See docs/manual/DOCUMENTATION_BASELINE.md and CLEANUP_AUDIT.md for exact scope, limits and test-harness recovery notes.
+
 Beam 0.12.0 — internal-beta candidate — 2026-10-24
 
 PASS: 55 pure tests, Blender milestones 1–15, 13 background suites, Apply/Restore, native workspace/GPU.

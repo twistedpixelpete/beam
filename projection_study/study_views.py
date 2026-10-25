@@ -5,7 +5,7 @@ import gpu
 import time
 from mathutils import Matrix
 from .utils import new_uuid
-from .interchange import image_filename, beam_filename, timestamp, write_png
+from .interchange import beam_filename, timestamp, write_png
 from . import runtime, viewport_display, typography
 
 _captures=[]

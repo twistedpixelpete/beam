@@ -2,7 +2,7 @@
 import math,textwrap
 import bpy
 from mathutils import Vector,Matrix
-from . import planning_math,screen_objects,projector_object,runtime,blend_groups
+from . import planning_math,projector_object,runtime,blend_groups
 from .projection_math import image_point
 from .layout_geometry import screen_frame
 from .display_units import dimension

@@ -1,5 +1,5 @@
 """Screen geometry in metres. Pure functions; no Blender state or side effects."""
-from math import sin, cos, asin, radians, degrees, pi, hypot, ceil, isfinite
+from math import sin, cos, asin, radians, degrees, pi, ceil, isfinite
 
 
 def positive(**values):

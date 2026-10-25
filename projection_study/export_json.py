@@ -106,7 +106,7 @@ def document(context):
 
 class PS_OT_export_json(bpy.types.Operator):
     bl_idname='ps.export_json'
-    bl_label='Export Study Data (JSON)'
+    bl_label='Export Beam JSON'
     filepath: bpy.props.StringProperty(subtype='FILE_PATH',default='Beam.json')
     filter_glob: bpy.props.StringProperty(default='*.json',options={'HIDDEN'})
     check_existing: bpy.props.BoolProperty(default=True,options={'HIDDEN'})

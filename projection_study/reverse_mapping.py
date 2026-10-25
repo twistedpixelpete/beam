@@ -256,7 +256,7 @@ def refresh_object(obj):
             for suffix,value in vals.items():
                 n=group.nodes.get(uuid+' '+suffix)
                 if n and abs(n.inputs[1].default_value-value)>1e-8:n.inputs[1].default_value=value
-    status='Too many coverage projectors (maximum 32)' if too_many else f'{len(projectors)} coverage projectors · {p.mode.title()}' if projectors else 'No visible coverage source'
+    status='Too many coverage projectors (maximum 32)' if too_many else f"{len(projectors)} coverage projectors · {dict(COVERED='Covered Only', DIM='Uncovered Dimmed', HIDDEN='Uncovered Hidden', OVERLAP='Overlap Diagnostic')[p.mode]}" if projectors else 'No visible coverage source'
     if p.status!=status:p.status=status
 
 
