@@ -1,11 +1,17 @@
 """Explicit area-stratified CPU analysis against evaluated scene geometry."""
 import math,time
 import bpy
+from mathutils import Vector
 from . import runtime,scene_geometry,target_raycast,surface_analysis
 CACHE={}
 
-def invalidate():
-    for result in CACHE.values():result['stale']=True
+def invalidate(mode=None):
+    for result in CACHE.values():
+        if mode:result.setdefault('_stale_modes',set()).add(mode)
+        else:result['stale']=True
+
+def stale(result,mode):
+    return result['stale'] or mode in result.get('_stale_modes',set())
 
 def analyse(context,receiver,projectors,budget=2048):
     if not isinstance(budget,int) or not 1<=budget<=100000:raise ValueError('Sample budget must be an integer from 1 to 100000')
@@ -15,6 +21,10 @@ def analyse(context,receiver,projectors,budget=2048):
     if not projectors:raise ValueError('Choose at least one projector')
     if any(not runtime.rigid(o) for o in projectors):raise ValueError('Restore projector transforms before analysis')
     unit=context.scene.unit_settings.scale_length
+    from . import observer
+    viewer=context.scene.ps_study.analysis_observer
+    if viewer and (viewer.name not in context.scene.objects or not viewer.beam_observer.is_observer):viewer=None
+    eye=observer.eye_position(viewer,unit) if viewer else None
     triangles=[]
     for ids in surface.triangles:
         a,b,c=(surface.vertices[i] for i in ids);cross=(b-a).cross(c-a);area=cross.length*.5*unit*unit
@@ -30,45 +40,69 @@ def analyse(context,receiver,projectors,budget=2048):
         f=math.sqrt((k*.7548776662466927+.5)%1);g=(k*.5698402909980532+.5)%1
         point=(1-f)*a+f*(1-g)*b+f*g*c
         facing=1 if n.dot(runtime.CACHE[projectors[0].as_pointer()]['origin']-point)>=0 else -1
-        sample=dict(area_m2=total/budget,point=list(point+n*(facing*.001/unit)),nominal=[],visible=[])
+        sample=dict(position_m=list(point*unit),area_m2=total/budget,point=list(point+n*(facing*.001/unit)),nominal=[],visible=[])
         for obj in projectors:
             r=runtime.CACHE[obj.as_pointer()];p=obj.ps;inv=r['rotation'].transposed()
             local=inv@(point-r['origin'])*unit;normal=inv@n
             metrics=surface_analysis.local_metrics(local,normal,p.throw_ratio,p.resolution_x,p.resolution_y,p.shift_h,p.shift_v,r['metrics'].pixels_per_metre if r['hit'] else None)
             if not metrics:continue
-            metrics['projector_uuid']=p.uuid;sample['nominal'].append(metrics)
+            metrics['projector_uuid']=p.uuid
+            metrics['illuminance_lux']=surface_analysis.illuminance_lux(metrics,p.lumens,p.resolution_x,p.resolution_y,p.stack,p.brightness)
+            metrics['distance_m']=local.length
+            if eye is not None:
+                angle=surface_analysis.angular_pixel_radians(r['rotation']@Vector(metrics['pixel_tangent_a_m']),r['rotation']@Vector(metrics['pixel_tangent_b_m']),(point-eye)*unit)
+                metrics['angular_pixel_arcmin']=math.degrees(angle)*60 if angle is not None else None
+            sample['nominal'].append(metrics)
             delta=point-r['origin'];hit=target_raycast.cast(r['origin'],delta.normalized())
             if hit and (hit[0]-point).length*unit<=max(1e-5,delta.length*unit*1e-6):sample['visible'].append(metrics)
+        sample['illuminance_lux']=sum(v['illuminance_lux'] for v in sample['visible'])
+        nearest=min(sample['visible'],key=lambda v:(v['distance_m'],v['projector_uuid']),default=None)
+        sample['distance_m']=nearest['distance_m'] if nearest else None
+        sample['distance_projector_uuid']=nearest['projector_uuid'] if nearest else None
+        sample['observer_visible']=False;sample['angular_pixel_arcmin']=None;sample['acuity_projector_uuid']=None
+        if eye is not None and sample['visible']:
+            delta=point-eye
+            hit=target_raycast.cast(eye,delta.normalized()) if delta.length>1e-9 else None
+            sample['observer_visible']=bool(hit and (hit[0]-point).length*unit<=max(1e-5,delta.length*unit*1e-6))
+            candidates=[v for v in sample['visible'] if v.get('angular_pixel_arcmin') is not None]
+            if sample['observer_visible'] and candidates:
+                controlling=max(candidates,key=lambda v:(v['angular_pixel_arcmin'],v['projector_uuid']))
+                sample['angular_pixel_arcmin']=controlling['angular_pixel_arcmin'];sample['acuity_projector_uuid']=controlling['projector_uuid']
         samples.append(sample)
     from .utils import new_uuid
     from .interchange import timestamp
     result=dict(analysis_uuid=new_uuid(),generated_at=timestamp(),schema='beam-surface-analysis',version=1,receiver_uuid=receiver.beam_screen.uuid if receiver.beam_screen.is_screen else receiver.get('beam_receiver_uuid'),receiver_name=receiver.name,
         projector_uuids=[o.ps.uuid for o in projectors],projector_names=[o.ps.identifier for o in projectors],nominal_centre_density_px_m={o.ps.uuid:runtime.CACHE[o.as_pointer()]['metrics'].pixels_per_metre if runtime.CACHE[o.as_pointer()]['hit'] else None for o in projectors},
-        statistics=surface_analysis.summarise(samples),samples=samples,stale=False,
+        observer=observer.record(viewer,unit) if viewer else None,
+        analysis_types=['density','stretch','illuminance','distance']+(['acuity'] if viewer else []),source_mode=context.scene.ps_study.analysis_scope,
+        assumptions=surface_analysis.PHOTOMETRIC_ASSUMPTIONS,
+        distance_rule='Nearest visible projector by Euclidean lens-to-sample distance; unlit samples excluded',
+        statistics={**surface_analysis.summarise(samples),**surface_analysis.intelligence_statistics(samples),**(surface_analysis.acuity_statistics(samples,viewer.beam_observer.threshold) if viewer else {})},samples=samples,stale=False,
         method='Equal-area systematic triangle strata, deterministic barycentric samples; area-weighted estimates',
         visibility='CPU evaluated-geometry first hit, opaque two-sided surfaces; not GPU depth; transparent materials treated opaque',
         untested='Between-sample regions and invisible/excluded scene geometry; thin features may be missed',elapsed_seconds=time.perf_counter()-started)
-    if not bpy.app.background:
-        import gpu
-        from gpu_extras.batch import batch_for_shader
-        interface=gpu.types.GPUStageInterfaceInfo('beam_analysis_colour');interface.smooth('VEC4','vColour')
-        info=gpu.types.GPUShaderCreateInfo();info.push_constant('MAT4','viewProjection');info.vertex_in(0,'VEC3','pos');info.vertex_in(1,'VEC4','color');info.vertex_out(interface);info.fragment_out(0,'VEC4','fragColor')
-        info.vertex_source('void main(){gl_Position=viewProjection*vec4(pos,1.0);gl_PointSize=7.0;vColour=color;}')
-        info.fragment_source('void main(){fragColor=vColour;}')
-        shader=gpu.shader.create_from_info(info);batches={}
-        for mode in ('DENSITY','STRETCH'):
-            points=[];colours=[]
-            values=[max(s['visible'],key=lambda m:m['density_px_m'])['density_px_m'] for s in samples if s['visible']]
-            low=min(values,default=0);high=max(values,default=1)
-            for sample in samples:
-                points.append(sample['point'])
-                if not sample['visible']:colours.append((.20,.20,.23,1));continue
-                m=max(sample['visible'],key=lambda m:m['density_px_m'])
-                t=((m['density_px_m']-low)/(high-low) if high-low>max(1e-5,high*1e-6) else .5) if mode=='DENSITY' else min(1,(m['anisotropy']-1)/2)
-                start=(.12,.24,.36) if mode=='DENSITY' else (.22,.55,.52)
-                end=(.55,.80,.72) if mode=='DENSITY' else (.76,.42,.22)
-                colours.append(tuple(a+(b-a)*t for a,b in zip(start,end))+(1,))
-            batches[mode]=(shader,batch_for_shader(shader,'POINTS',{'pos':points,'color':colours}))
-        result['_batches']=batches
+    update_display(context.scene.ps_study,result)
     CACHE[context.scene.as_pointer()]=result
     return result
+
+
+def update_display(settings,result=None):
+    """Refresh display batches without repeating samples or ray casts."""
+    from . import analysis_display
+    result=result or CACHE.get(settings.id_data.as_pointer())
+    if not result:return
+    result['display']=dict(illuminance_scale=settings.illuminance_scale,illuminance_max_lux=settings.illuminance_max,
+        target_illuminance_lux=settings.target_illuminance if settings.use_target_illuminance else None,display_units=settings.display_units)
+    if bpy.app.background:return
+    import gpu
+    from gpu_extras.batch import batch_for_shader
+    interface=gpu.types.GPUStageInterfaceInfo('beam_analysis_colour');interface.smooth('VEC4','vColour')
+    info=gpu.types.GPUShaderCreateInfo();info.push_constant('MAT4','viewProjection');info.vertex_in(0,'VEC3','pos');info.vertex_in(1,'VEC4','color');info.vertex_out(interface);info.fragment_out(0,'VEC4','fragColor')
+    info.vertex_source('void main(){gl_Position=viewProjection*vec4(pos,1.0);gl_PointSize=7.0;vColour=color;}')
+    info.fragment_source('void main(){fragColor=vColour;}')
+    shader=gpu.shader.create_from_info(info);batches={}
+    for mode,_,_ in analysis_display.MODES:
+        if mode=='ACUITY' and not result.get('observer'):continue
+        batches[mode]=(shader,batch_for_shader(shader,'POINTS',{'pos':[s['point'] for s in result['samples']],
+            'color':[analysis_display.colour(result,mode,s) for s in result['samples']]}))
+    result['_batches']=batches

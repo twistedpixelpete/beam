@@ -1553,7 +1553,10 @@
           "enum": [
             "NONE",
             "DENSITY",
-            "STRETCH"
+            "STRETCH",
+            "ILLUMINANCE",
+            "DISTANCE",
+            "ACUITY"
           ]
         },
         "analysis_image": {
@@ -1569,7 +1572,10 @@
             "mode": {
               "enum": [
                 "DENSITY",
-                "STRETCH"
+                "STRETCH",
+                "ILLUMINANCE",
+                "DISTANCE",
+                "ACUITY"
               ]
             },
             "generated_at": {

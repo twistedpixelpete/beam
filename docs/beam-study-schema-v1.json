@@ -372,6 +372,115 @@
               "occluded_sample_percent": {
                 "type": "number",
                 "minimum": 0
+              },
+              "illuminance_min_lux": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "illuminance_average_lux": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "illuminance_max_lux": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "illuminance_uniformity_min_average": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 1
+              },
+              "illuminance_uniformity_min_max": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 1
+              },
+              "distance_min_m": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "distance_average_m": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "distance_max_m": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "distance_variation_m": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "acuity_min_arcmin": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "acuity_average_arcmin": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "acuity_max_arcmin": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "acuity_below_threshold_percent": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 100
+              },
+              "acuity_at_or_above_threshold_percent": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "maximum": 100
+              },
+              "acuity_evaluated_area_m2": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
               }
             }
           },
@@ -394,6 +503,28 @@
           "generated_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "observer": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/$defs/observer"
+              }
+            ]
+          },
+          "analysis_types": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "density",
+                "stretch",
+                "illuminance",
+                "distance",
+                "acuity"
+              ]
+            }
           }
         }
       }
@@ -512,6 +643,12 @@
             }
           }
         }
+      }
+    },
+    "observers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/observer"
       }
     }
   },
@@ -1462,7 +1599,10 @@
           "enum": [
             "NONE",
             "DENSITY",
-            "STRETCH"
+            "STRETCH",
+            "ILLUMINANCE",
+            "DISTANCE",
+            "ACUITY"
           ]
         },
         "analysis_image": {
@@ -1478,7 +1618,10 @@
             "mode": {
               "enum": [
                 "DENSITY",
-                "STRETCH"
+                "STRETCH",
+                "ILLUMINANCE",
+                "DISTANCE",
+                "ACUITY"
               ]
             },
             "generated_at": {
@@ -1541,6 +1684,53 @@
         "package_image"
       ],
       "additionalProperties": true
+    },
+    "observer": {
+      "type": "object",
+      "required": [
+        "uuid",
+        "name",
+        "position_m",
+        "eye_position_m",
+        "eye_height_m",
+        "threshold_arcmin",
+        "visibility",
+        "source_rule",
+        "assumption"
+      ],
+      "properties": {
+        "uuid": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "position_m": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number"
+          }
+        },
+        "eye_position_m": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number"
+          }
+        },
+        "eye_height_m": {
+          "type": "number",
+          "minimum": 0
+        },
+        "threshold_arcmin": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
     }
   }
 }

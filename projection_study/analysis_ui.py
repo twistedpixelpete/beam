@@ -3,12 +3,14 @@ import bpy
 from bpy.app.handlers import persistent
 from . import analysis_runtime,optics_library,optics_validation
 _handle=None
+_legend_handle=None
 
 class BEAM_OT_analyse(bpy.types.Operator):
     bl_idname='beam.analyse';bl_label='Analyse Surface';bl_options={'REGISTER'}
     def execute(self,context):
         from .projector_object import projectors
         s=context.scene.ps_study;receiver=s.analysis_receiver
+        if s.analysis_mode=='ACUITY' and not s.analysis_observer:self.report({'ERROR'},'Choose or add an Observer');return {'CANCELLED'}
         if not receiver:self.report({'ERROR'},'Choose a receiver surface');return {'CANCELLED'}
         objects=list(projectors(context.scene))
         if s.analysis_scope=='PROJECTOR':objects=[s.active_projector] if s.active_projector else []
@@ -53,22 +55,30 @@ def draw(layout,context):
     header,body=layout.panel('beam_surface_analysis_result' if has_result else 'beam_surface_analysis',default_closed=not has_result);header.label(text='Surface Analysis')
     if body is None:return
     s=context.scene.ps_study
-    body.prop(s,'analysis_receiver');body.prop(s,'analysis_scope');body.prop(s,'analysis_detail');body.operator('beam.analyse')
+    body.prop(s,'analysis_mode')
+    body.prop(s,'analysis_receiver');body.prop(s,'analysis_scope');body.prop(s,'analysis_detail')
+    if s.analysis_mode=='ACUITY':
+        body.prop(s,'analysis_observer');body.operator('beam.add_observer',icon='EMPTY_AXIS')
+        obj=s.analysis_observer
+        if obj:
+            body.prop(obj,'location',text='Base Position');body.prop(obj.beam_observer,'eye_height');body.prop(obj.beam_observer,'threshold')
+        body.label(text='Nominal eyesight guidance · viewer visibility tested',icon='INFO')
+    elif s.analysis_mode=='ILLUMINANCE':
+        body.prop(s,'illuminance_scale')
+        if s.illuminance_scale=='FIXED':body.prop(s,'illuminance_max')
+        body.prop(s,'use_target_illuminance')
+        if s.use_target_illuminance:body.prop(s,'target_illuminance')
+    body.operator('beam.analyse')
     result=analysis_runtime.CACHE.get(context.scene.as_pointer())
     if not result:return
-    if result['stale']:body.label(text='Scene changed · Analyse again',icon='ERROR');return
-    from .ui import readout
-    body.label(text=result['receiver_name'])
-    body.label(text='Sources: '+', '.join(result['projector_names']))
-    stats=result['statistics'];body.prop(s,'analysis_show');body.prop(s,'analysis_mode')
-    readout(body,'Visible coverage',f"{stats['coverage_percent']:.1f}% sampled")
-    readout(body,'Overlap',f"{stats['overlap_percent']:.1f}%")
-    for key,label in [('density_min_px_m','Min density'),('density_average_px_m','Avg density'),('density_max_px_m','Max density')]:
-        value=stats[key];readout(body,label,'—' if value is None else f'{value:.0f} px/m')
-    readout(body,'Occluded samples',f"{stats['occluded_sample_percent']:.1f}%")
-    if s.analysis_mode=='DENSITY':body.label(text='Dark blue: low · pale teal: high')
-    else:body.label(text='Teal 1:1 → amber 3:1 stretch')
-    body.label(text='Opaque first-hit samples · gaps untested',icon='INFO')
+    if analysis_runtime.stale(result,s.analysis_mode):body.label(text='Scene changed · Analyse again',icon='ERROR');return
+    if s.analysis_mode=='ACUITY' and not result.get('observer'):body.label(text='Choose Observer · Analyse again',icon='INFO');return
+    body.label(text=result['receiver_name']);body.label(text='Sources: '+', '.join(result['projector_names']))
+    body.prop(s,'analysis_show')
+    from .analysis_display import lines
+    for line in lines(result,s.analysis_mode,s.display_units):body.label(text=line)
+    body.label(text='Sampled estimate · gaps untested',icon='INFO')
+
 
 def optics(layout,p):
     header,body=layout.panel('beam_optics',default_closed=True);header.label(text='Optics Guidance')
@@ -95,8 +105,19 @@ def overlay():
     if not context.scene or not hasattr(context.scene,'ps_study') or not context.region_data:return
     if not context.space_data.overlay.show_overlays:return
     s=context.scene.ps_study;r=analysis_runtime.CACHE.get(context.scene.as_pointer())
-    if not s.analysis_show or not r or r['stale']:return
+    if not s.analysis_show or not r or analysis_runtime.stale(r,s.analysis_mode):return
     draw_cached(r,s.analysis_mode,context.region_data.perspective_matrix)
+
+def overlay_legend():
+    from . import viewport_display,analysis_images
+    if viewport_display._suppress:return
+    c=bpy.context
+    if not c.scene or not hasattr(c.scene,'ps_study') or not c.region:return
+    if not c.space_data.overlay.show_overlays:return
+    s=c.scene.ps_study;r=analysis_runtime.CACHE.get(c.scene.as_pointer())
+    if s.analysis_show and r and not analysis_runtime.stale(r,s.analysis_mode) and s.analysis_mode in r.get('_batches',{}):
+        analysis_images.legend(r,s.analysis_mode,c.region.width,c.region.height)
+
 
 def draw_cached(r,mode,matrix):
     import gpu
@@ -115,6 +136,7 @@ def changed(scene,graph):
         obj=update.id
         if not (update.is_updated_geometry or update.is_updated_transform):continue
         if isinstance(obj,bpy.types.Object):
+            if obj.beam_observer.is_observer:analysis_runtime.invalidate('ACUITY');continue
             if obj.type not in analysis_runtime.scene_geometry.SURFACE_TYPES or obj.get('ps_helper') or obj.get('beam_screen_detail'):continue
             analysis_runtime.invalidate();return
         if isinstance(obj,bpy.types.Mesh):
@@ -122,12 +144,15 @@ def changed(scene,graph):
                 analysis_runtime.invalidate();return
 
 def register():
-    global _handle
-    if not bpy.app.background:_handle=bpy.types.SpaceView3D.draw_handler_add(overlay,(),'WINDOW','POST_VIEW')
+    global _handle,_legend_handle
+    if not bpy.app.background:
+        _handle=bpy.types.SpaceView3D.draw_handler_add(overlay,(),'WINDOW','POST_VIEW')
+        _legend_handle=bpy.types.SpaceView3D.draw_handler_add(overlay_legend,(),'WINDOW','POST_PIXEL')
     bpy.app.handlers.depsgraph_update_post.append(changed)
 def unregister():
-    global _handle
+    global _handle,_legend_handle
     if _handle:bpy.types.SpaceView3D.draw_handler_remove(_handle,'WINDOW');_handle=None
+    if _legend_handle:bpy.types.SpaceView3D.draw_handler_remove(_legend_handle,'WINDOW');_legend_handle=None
     if changed in bpy.app.handlers.depsgraph_update_post:bpy.app.handlers.depsgraph_update_post.remove(changed)
     analysis_runtime.CACHE.clear()
 CLASSES=(BEAM_OT_analyse,BEAM_OT_apply_optics,BEAM_OT_study_package)

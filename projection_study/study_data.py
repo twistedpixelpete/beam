@@ -1,6 +1,7 @@
 """Persistent per-scene workflow data, separate from projector engineering."""
 import bpy
 from .blend_groups import BeamBlendGroup
+from .analysis_display import MODES
 from bpy.props import PointerProperty, EnumProperty, CollectionProperty, IntProperty, StringProperty, BoolProperty, FloatProperty
 
 _seen_selection={}
@@ -31,7 +32,7 @@ class PS_StudyView(bpy.types.PropertyGroup):
     include_frustums: BoolProperty(name='Frustums',description='Include projector frustums in this saved view’s export',default=True)
     include_grids: BoolProperty(name='Grids / Output',description='Include projected grids and output in this saved view’s export',default=True)
     include_overlays: BoolProperty(name='Study Overlays',default=True)
-    analysis_overlay: EnumProperty(name='Analysis Overlay',items=[('NONE','None',''),('DENSITY','Density','Current surface analysis'),('STRETCH','Stretch','Current surface analysis')],default='NONE')
+    analysis_overlay: EnumProperty(name='Analysis Overlay',items=[('NONE','None','')]+MODES,default='NONE')
     image_filename: StringProperty()
     exported_at: StringProperty()
 
@@ -56,12 +57,33 @@ def analysis_changed(self,context):
     from .analysis_runtime import invalidate
     invalidate();redraw(self,context)
 
+def observer_changed(self,context):
+    from .analysis_runtime import invalidate
+    invalidate('ACUITY');redraw(self,context)
+
+
+def display_changed(self,context):
+    from .analysis_runtime import update_display
+    update_display(self);redraw(self,context)
+
+
+def source_changed(self,context):
+    if self.analysis_scope=='PROJECTOR':analysis_changed(self,context)
+    else:redraw(self,context)
+
+
 class PS_SceneSettings(bpy.types.PropertyGroup):
     analysis_receiver: PointerProperty(name='Receiver',type=bpy.types.Object,poll=lambda self,o:o.type=='MESH' and not o.ps.is_projector,update=analysis_changed)
     analysis_scope: EnumProperty(name='Projectors',items=[('ALL','All projectors',''),('PROJECTOR','Active projector',''),('GROUP','Active Blend Group','')],default='ALL',update=analysis_changed)
     analysis_detail: EnumProperty(name='Samples',items=[('512','Quick · 512',''),('2048','Standard · 2048',''),('8192','Detailed · 8192','')],default='2048',update=analysis_changed)
     analysis_show: BoolProperty(name='Show Heatmap',default=False,update=redraw)
-    analysis_mode: EnumProperty(name='Heatmap',items=[('DENSITY','Density','Conservative worst-direction pixels per metre'),('STRETCH','Stretch','Principal pixel anisotropy: teal 1:1 to amber 3:1')],update=redraw)
+    analysis_mode: EnumProperty(name='Heatmap',items=MODES,update=redraw)
+
+    analysis_observer: PointerProperty(name='Observer',type=bpy.types.Object,poll=lambda self,o:o.beam_observer.is_observer and o.name in self.id_data.objects,update=observer_changed)
+    illuminance_scale: EnumProperty(name='Lux Scale',items=[('AUTO','Auto Scale','Current analysis minimum to maximum'),('FIXED','Fixed Range','Zero to chosen maximum lux')],update=display_changed)
+    illuminance_max: FloatProperty(name='Maximum Lux',default=1000,min=.01,update=display_changed)
+    use_target_illuminance: BoolProperty(name='Target Illuminance',default=False,update=display_changed)
+    target_illuminance: FloatProperty(name='Target Lux',default=300,min=0,update=display_changed)
 
     inspector: EnumProperty(name='Inspector',items=[('PROJECTOR','Projector',''),('SCREEN','Screen',''),('GROUP','Blend',''),('VIEW','Views',''),('EXPORT','Export','')],default='PROJECTOR',update=redraw)
     pin_context: BoolProperty(name='Pin Beam Context',description='Keep the active Beam objects and module when Blender selection changes',default=False,update=redraw)
@@ -74,7 +96,7 @@ class PS_SceneSettings(bpy.types.PropertyGroup):
     client: StringProperty(name='Client')
     author: StringProperty(name='Author')
     blend_groups: CollectionProperty(type=BeamBlendGroup)
-    blend_group_index: IntProperty(default=0)
+    blend_group_index: IntProperty(default=0,update=analysis_changed)
     ui_member_index: IntProperty(default=0)
     label_detail: EnumProperty(name='Label Detail',description='Viewport annotations: Off keeps IDs; Minimal shows width/height; Full adds throw and blend measurements',items=[('OFF','Off','Keep projector IDs only'),('MINIMAL','Minimal','Discreet image width and height'),('FULL','Full','All technical viewport annotations')],default='MINIMAL',update=redraw)
     show_frustums: BoolProperty(name='Frustums',default=True,update=redraw)
@@ -84,8 +106,8 @@ class PS_SceneSettings(bpy.types.PropertyGroup):
     show_outputs: BoolProperty(name='Projected Output',default=True,update=redraw)
     show_study_cameras: BoolProperty(name='Study Cameras',default=True,update=camera_visibility)
     preview_distance_display: FloatProperty(name='Preview Distance',get=preview_get,set=preview_set,min=.01)
-    active_projector: PointerProperty(name='Active Study Projector',description='Study controls follow this projector; selecting a Beam object defaults transforms to Local axes and restores the previous orientation for other objects',type=bpy.types.Object,poll=projector_poll,update=redraw)
-    display_units: EnumProperty(name='Display Units',items=[('m','m','Metres'),('mm','mm','Millimetres')],default='mm',update=redraw)
+    active_projector: PointerProperty(name='Active Study Projector',description='Study controls follow this projector; selecting a Beam object defaults transforms to Local axes and restores the previous orientation for other objects',type=bpy.types.Object,poll=projector_poll,update=source_changed)
+    display_units: EnumProperty(name='Display Units',items=[('m','m','Metres'),('mm','mm','Millimetres')],default='mm',update=display_changed)
     views: CollectionProperty(type=PS_StudyView)
     view_index: IntProperty(default=0)
     shadow_resolution: EnumProperty(name='Projection Detail',items=[('512','Fast (512)',''),('1024','Balanced (1024)',''),('2048','Fine (2048)','')],default='1024',update=redraw)

@@ -87,6 +87,12 @@ def refresh(force=False):
         current = (scene.as_pointer(),bpy.context.view_layer.as_pointer())
         if current!=_context:
             reset(); _context=current
+        from . import analysis_runtime,observer
+        cached=analysis_runtime.CACHE.get(scene.as_pointer())
+        if cached and cached.get('observer'):
+            viewer=scene.ps_study.analysis_observer
+            if not viewer or viewer.name not in scene.objects or observer.record(viewer,scene.unit_settings.scale_length)!=cached['observer']:
+                analysis_runtime.invalidate('ACUITY')
         from .study_data import sync_selection
         did_change = sync_selection(bpy.context) or did_change
         membership=tuple((o.as_pointer(),o.data.as_pointer() if o.data else 0,o.visible_get())
@@ -101,6 +107,8 @@ def refresh(force=False):
         if group_lifecycle.defer_native_copy(bpy.context):return False
         group_lifecycle.reconcile(bpy.context)
         local_orientation.sync(bpy.context)
+        from . import observer
+        observer.repair_identities(scene)
         live = projectors(scene)
         repair_identities(live,scene)
         keys = {o.as_pointer() for o in live}
