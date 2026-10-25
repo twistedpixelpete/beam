@@ -1,0 +1,11 @@
+00:00.479  blend            | Read blend: "/Users/petelynn/Documents/projection-study/output/pdf/Beam_Onboarding/Beam_Training_Project.blend"
+Traceback (most recent call last):
+  File "/Users/petelynn/Documents/projection-study/tools/onboarding/verify_user_package.py", line 21, in <module>
+    assert bpy.data.images['Training UV Chart'].packed_file
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+Error: script failed, file: 'tools/onboarding/verify_user_package.py', exiting.
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
