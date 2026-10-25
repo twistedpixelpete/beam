@@ -1,0 +1,21 @@
+00:00.256  blend            | Read blend: "/Users/petelynn/Documents/projection-study/examples/0.4/projection-acceptance.blend"
+00:00.262  blend            | Read blend: "/Users/petelynn/Documents/projection-study/work/hardening/migration/copy-0.blend"
+00:00.265  blend            | Read blend: "/Users/petelynn/Documents/projection-study/examples/0.6/Beam_group_lifecycle.blend"
+00:00.272  blend            | Read blend: "/Users/petelynn/Documents/projection-study/work/hardening/migration/copy-1.blend"
+00:00.277  blend            | Read blend: "/Users/petelynn/Documents/projection-study/examples/0.8/Beam-Screen-Builder.blend"
+00:00.307  blend            | Read blend: "/Users/petelynn/Documents/projection-study/work/hardening/migration/copy-2.blend"
+00:00.314  blend            | Read blend: "/Users/petelynn/Documents/projection-study/examples/0.9/Beam-Auto-Blend.blend"
+00:00.321  blend            | Read blend: "/Users/petelynn/Documents/projection-study/work/hardening/migration/copy-3.blend"
+00:00.325  blend            | Read blend: "/Users/petelynn/Documents/projection-study/examples/production/Beam-PATCH-fixture.blend"
+00:00.332  blend            | Read blend: "/Users/petelynn/Documents/projection-study/work/hardening/migration/copy-4.blend"
+Warning: Library file, loading empty scene
+Info: Saved as "copy-0.blend"
+Warning: Library file, loading empty scene
+Info: Saved as "copy-1.blend"
+Info: Saved as "copy-2.blend"
+Info: Saved as "copy-3.blend"
+Info: Saved as "copy-4.blend"
+MIGRATION PASS: five generations, stable UUIDs/presets/views/configuration, transient analysis and safe defaults
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

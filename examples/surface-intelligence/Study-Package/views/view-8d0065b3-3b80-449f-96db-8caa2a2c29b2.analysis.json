@@ -1,14 +1,14 @@
 {
-  "analysis_uuid": "b36c6a07-c779-4587-95c3-937f57b120e2",
-  "mode": "ACUITY",
-  "analysis_type": "acuity",
-  "generated_at": "2026-10-25T01:56:33+00:00",
-  "receiver_uuid": "bc306a14-1949-4a90-aed6-fb6869633d1f",
+  "analysis_uuid": "d8aeffed-cfd6-4ae0-9dfd-6d2651ea3874",
+  "mode": "DISTANCE",
+  "analysis_type": "distance",
+  "generated_at": "2026-10-25T02:11:07+00:00",
+  "receiver_uuid": "026725d2-4aaf-4afa-857e-fbb632f4a509",
   "receiver_name": "Flat Receiver",
   "projector_uuids": [
-    "31320010-f53a-45e1-ad8b-fda1cea0da78",
-    "6c8ee9a9-dc7f-4846-b539-52e05ca333e5",
-    "66ebec1d-97ff-4cec-8cfd-97d03447a809"
+    "5a515829-e8ba-430f-b870-dcc4214d1d20",
+    "5d5bce05-c0e2-4fcd-a81a-d7f1dedb09c1",
+    "d514b454-7b4d-45a6-8f17-15caae6bf986"
   ],
   "statistics": {
     "surface_area_m2": 32.0,
@@ -48,11 +48,11 @@
   "method": "Equal-area systematic triangle strata, deterministic barycentric samples; area-weighted estimates",
   "visibility": "CPU evaluated-geometry first hit, opaque two-sided surfaces; not GPU depth; transparent materials treated opaque",
   "untested": "Between-sample regions and invisible/excluded scene geometry; thin features may be missed",
-  "metric_selection": "Largest apparent pixel angular pitch among visible projectors (conservative coarsest structure); foreshortened tangent Jacobian",
+  "metric_selection": "Nearest visible projector by Euclidean lens-to-sample distance; unlit samples excluded",
   "colour_scale": "See scale_range and display",
   "scale_range": [
-    0.5,
-    1.5
+    10.000042926817965,
+    10.626611306922987
   ],
   "display": {
     "illuminance_scale": "FIXED",
@@ -67,25 +67,7 @@
     "No measured brightness distribution, lens transmission, ageing, calibration losses, colour-mode losses or edge falloff.",
     "No screen gain, reflectance, ambient illumination, black level or colourimetry."
   ],
-  "observer": {
-    "uuid": "a9b9e19b-29fe-4ec8-afca-2b715d4ab8ff",
-    "name": "OBS01",
-    "position_m": [
-      0.0,
-      -5.0,
-      0.0
-    ],
-    "eye_position_m": [
-      0.0,
-      -5.0,
-      1.600000023841858
-    ],
-    "eye_height_m": 1.600000023841858,
-    "threshold_arcmin": 1.0,
-    "visibility": "CPU first opaque geometry hit from eye to receiver sample",
-    "assumption": "Nominal 1 arcminute guidance is adjustable; not universal human visual performance. Contrast, content, eyesight and ambient light are not modelled.",
-    "source_rule": "Largest apparent pixel angular pitch among visible projectors (conservative coarsest structure); foreshortened tangent Jacobian"
-  },
-  "image_filename": "view-efb2b6fe-179d-44df-8f75-8284187ee021.png",
-  "image_sha256": "7c5e70f815c2c990d077c22d51c4a5e814f8c8b554777f6ae13b2e9ebeae1e1b"
+  "observer": null,
+  "image_filename": "view-8d0065b3-3b80-449f-96db-8caa2a2c29b2.png",
+  "image_sha256": "e023ba559fd17cc217456cd2c4719668c7f502cb20a17a49bc717322ad30be23"
 }

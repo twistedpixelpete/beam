@@ -1,14 +1,14 @@
 {
-  "analysis_uuid": "b36c6a07-c779-4587-95c3-937f57b120e2",
-  "mode": "STRETCH",
-  "analysis_type": "stretch",
-  "generated_at": "2026-10-25T01:56:33+00:00",
-  "receiver_uuid": "bc306a14-1949-4a90-aed6-fb6869633d1f",
+  "analysis_uuid": "d8aeffed-cfd6-4ae0-9dfd-6d2651ea3874",
+  "mode": "ILLUMINANCE",
+  "analysis_type": "illuminance",
+  "generated_at": "2026-10-25T02:11:07+00:00",
+  "receiver_uuid": "026725d2-4aaf-4afa-857e-fbb632f4a509",
   "receiver_name": "Flat Receiver",
   "projector_uuids": [
-    "31320010-f53a-45e1-ad8b-fda1cea0da78",
-    "6c8ee9a9-dc7f-4846-b539-52e05ca333e5",
-    "66ebec1d-97ff-4cec-8cfd-97d03447a809"
+    "5a515829-e8ba-430f-b870-dcc4214d1d20",
+    "5d5bce05-c0e2-4fcd-a81a-d7f1dedb09c1",
+    "d514b454-7b4d-45a6-8f17-15caae6bf986"
   ],
   "statistics": {
     "surface_area_m2": 32.0,
@@ -48,11 +48,11 @@
   "method": "Equal-area systematic triangle strata, deterministic barycentric samples; area-weighted estimates",
   "visibility": "CPU evaluated-geometry first hit, opaque two-sided surfaces; not GPU depth; transparent materials treated opaque",
   "untested": "Between-sample regions and invisible/excluded scene geometry; thin features may be missed",
-  "metric_selection": "Best visible projector by conservative worst-direction density at each sample",
-  "colour_scale": "Anisotropy 1:1 to 3:1; colours saturate above 3:1",
+  "metric_selection": "Sum of visible source illuminance; unlit samples included as zero",
+  "colour_scale": "See scale_range and display",
   "scale_range": [
-    1,
-    3
+    0,
+    1000.0
   ],
   "display": {
     "illuminance_scale": "FIXED",
@@ -68,6 +68,6 @@
     "No screen gain, reflectance, ambient illumination, black level or colourimetry."
   ],
   "observer": null,
-  "image_filename": "view-d59bf10a-f361-4e71-9258-b327fe56c320.png",
-  "image_sha256": "fc230142e9f80d39873018cd4c0ccf21c75addf0fc065f984fcf2a488d79a9fc"
+  "image_filename": "view-e65013f6-6209-4b80-8bd2-85dd6eb6895f.png",
+  "image_sha256": "9b2e914839cfef0fea792e2b01b585fa3573d67c71e3f95bdd9329f3107eeaef"
 }

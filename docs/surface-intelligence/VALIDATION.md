@@ -1,5 +1,7 @@
 # Surface Intelligence validation · 0.13.0 Internal Beta
 
+Historical pre-review validation. See [PR #8 review and field acceptance](PR8-REVIEW.md) for the final corrected source, rerun results and refreshed example assets.
+
 Maintainer: Twisted Pixel. Tested 25 October 2026 in Blender 5.2.2 LTS (d13f752e3b9c), macOS 26.7, Apple silicon / Metal.
 
 Branch: `feature/beam-surface-intelligence`.

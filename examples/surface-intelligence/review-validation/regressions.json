@@ -1,0 +1,86 @@
+[
+  {
+    "test": "blender_surface_intelligence_ab",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_surface_production",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_hardening_lifecycle",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_hardening_migration",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_hardening_edges",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_ui_context",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_pre_doc_ui",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_json_contract",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_group_lifecycle",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_screen_builder",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_screen_edges",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_frustum_helpers",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_review_regressions",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_planning_milestone",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_theme",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_surface_review",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_surface_intelligence",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_surface_reference",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_production",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_parity",
+    "exit_code": 0
+  },
+  {
+    "test": "blender_screen_beauty",
+    "exit_code": 0
+  }
+]

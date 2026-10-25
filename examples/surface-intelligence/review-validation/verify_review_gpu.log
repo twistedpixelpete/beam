@@ -1,0 +1,43 @@
+/Users/petelynn/Documents/projection-study/tests/verify_review_gpu.py:61: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  mat=bpy.data.materials.new(name);mat.use_nodes=True;wall.data.materials.append(mat)
+00:08.177  blend            | Read blend: "/Users/petelynn/Documents/projection-study/work/review-gpu/review.blend"
+Beam coverage refresh failed for SCR001 · Screen
+Traceback (most recent call last):
+  File "/Users/petelynn/Documents/projection-study/projection_study/reverse_mapping.py", line 279, in refresh_gpu
+    refresh_object(obj);_object_errors.pop(obj.as_pointer(),None)
+    ~~~~~~~~~~~~~~^^^^^
+  File "/Users/petelynn/Documents/projection-study/projection_study/reverse_mapping.py", line 232, in refresh_object
+    for saved in records.values():surface_outputs(saved.material)
+                                  ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/Users/petelynn/Documents/projection-study/projection_study/reverse_mapping.py", line 94, in surface_outputs
+    raise ValueError('Each active material output needs a connected Surface shader')
+ValueError: Each active material output needs a connected Surface shader
+Info: Solved by position · throw 6.308 m · ratio 1.0000
+Info: Saved as "review.blend"
+{
+  "native_undo": "Position solve and group Reflow Undo/Redo passed",
+  "idle_30_refreshes_ms": {
+    "median": 1.7591255018487573,
+    "max": 1.9597919890657067,
+    "extra_uploads": 0
+  },
+  "movement_refresh_ms": {
+    "median": 4.151645494857803,
+    "max": 5.022040975745767
+  },
+  "overlap_recalculation_ms": {
+    "median": 0.3884375037159771,
+    "max": 0.4252090002410114
+  },
+  "lens_solve_ms": 1.5808329917490482,
+  "cleanup": "Reorder + mode rebuild, three GPU enable/disable cycles: zero wrapper, group or coverage-image orphans",
+  "viewport_export_ms": 139.3791250011418,
+  "persistence": "Projector/group UUIDs, identifiers, membership, settings, locks, layout screen, metadata, active screen and material restore references exact after reopen",
+  "failure_isolation": "One invalid source failed closed while the other receiver refreshed; repair recovered; overlays-off deleted GPU map pruned",
+  "registration": "Two repeated unregister/register cycles: no Beam handlers or screen timer survive unregister",
+  "scene": "8 projectors, 1 array Blend Group, 24 \u00d7 6 m Screen Builder screen, 23 venue meshes, Reverse Mapping, overlays; 512 depth detail",
+  "platform": "5.2.2 LTS macOS Metal"
+}
+00:13.445  blend            | Saved session recovery to "/var/folders/x3/qb1vzzfx6ndd_gvdhxy7ly3h0000gn/T/quit.blend"
+
+Blender quit

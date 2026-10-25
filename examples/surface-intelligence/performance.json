@@ -6,145 +6,145 @@
     {
       "projectors": 1,
       "samples": 512,
-      "shared_solve_seconds": 0.010326499992515892,
+      "shared_solve_seconds": 0.011896708980202675,
       "mode_seconds": {
-        "DENSITY": 0.010326499992515892,
-        "STRETCH": 0.010326499992515892,
-        "ILLUMINANCE": 0.010326499992515892,
-        "DISTANCE": 0.010326499992515892,
-        "ACUITY": 0.010326499992515892
+        "DENSITY": 0.011896708980202675,
+        "STRETCH": 0.011896708980202675,
+        "ILLUMINANCE": 0.011896708980202675,
+        "DISTANCE": 0.011896708980202675,
+        "ACUITY": 0.011896708980202675
       }
     },
     {
       "projectors": 1,
       "samples": 2048,
-      "shared_solve_seconds": 0.03970562500762753,
+      "shared_solve_seconds": 0.04414829099550843,
       "mode_seconds": {
-        "DENSITY": 0.03970562500762753,
-        "STRETCH": 0.03970562500762753,
-        "ILLUMINANCE": 0.03970562500762753,
-        "DISTANCE": 0.03970562500762753,
-        "ACUITY": 0.03970562500762753
+        "DENSITY": 0.04414829099550843,
+        "STRETCH": 0.04414829099550843,
+        "ILLUMINANCE": 0.04414829099550843,
+        "DISTANCE": 0.04414829099550843,
+        "ACUITY": 0.04414829099550843
       }
     },
     {
       "projectors": 1,
       "samples": 8192,
-      "shared_solve_seconds": 0.17555300000822172,
+      "shared_solve_seconds": 0.21591270898352377,
       "mode_seconds": {
-        "DENSITY": 0.17555300000822172,
-        "STRETCH": 0.17555300000822172,
-        "ILLUMINANCE": 0.17555300000822172,
-        "DISTANCE": 0.17555300000822172,
-        "ACUITY": 0.17555300000822172
+        "DENSITY": 0.21591270898352377,
+        "STRETCH": 0.21591270898352377,
+        "ILLUMINANCE": 0.21591270898352377,
+        "DISTANCE": 0.21591270898352377,
+        "ACUITY": 0.21591270898352377
       }
     },
     {
       "projectors": 3,
       "samples": 512,
-      "shared_solve_seconds": 0.02779654201003723,
+      "shared_solve_seconds": 0.03175116700003855,
       "mode_seconds": {
-        "DENSITY": 0.02779654201003723,
-        "STRETCH": 0.02779654201003723,
-        "ILLUMINANCE": 0.02779654201003723,
-        "DISTANCE": 0.02779654201003723,
-        "ACUITY": 0.02779654201003723
+        "DENSITY": 0.03175116700003855,
+        "STRETCH": 0.03175116700003855,
+        "ILLUMINANCE": 0.03175116700003855,
+        "DISTANCE": 0.03175116700003855,
+        "ACUITY": 0.03175116700003855
       }
     },
     {
       "projectors": 3,
       "samples": 2048,
-      "shared_solve_seconds": 0.10305170898209326,
+      "shared_solve_seconds": 0.12507979100337252,
       "mode_seconds": {
-        "DENSITY": 0.10305170898209326,
-        "STRETCH": 0.10305170898209326,
-        "ILLUMINANCE": 0.10305170898209326,
-        "DISTANCE": 0.10305170898209326,
-        "ACUITY": 0.10305170898209326
+        "DENSITY": 0.12507979100337252,
+        "STRETCH": 0.12507979100337252,
+        "ILLUMINANCE": 0.12507979100337252,
+        "DISTANCE": 0.12507979100337252,
+        "ACUITY": 0.12507979100337252
       }
     },
     {
       "projectors": 3,
       "samples": 8192,
-      "shared_solve_seconds": 0.43176524998852983,
+      "shared_solve_seconds": 0.5009637920011301,
       "mode_seconds": {
-        "DENSITY": 0.43176524998852983,
-        "STRETCH": 0.43176524998852983,
-        "ILLUMINANCE": 0.43176524998852983,
-        "DISTANCE": 0.43176524998852983,
-        "ACUITY": 0.43176524998852983
+        "DENSITY": 0.5009637920011301,
+        "STRETCH": 0.5009637920011301,
+        "ILLUMINANCE": 0.5009637920011301,
+        "DISTANCE": 0.5009637920011301,
+        "ACUITY": 0.5009637920011301
       }
     },
     {
       "projectors": 16,
       "samples": 512,
-      "shared_solve_seconds": 0.13572666700929403,
+      "shared_solve_seconds": 0.15785883300122805,
       "mode_seconds": {
-        "DENSITY": 0.13572666700929403,
-        "STRETCH": 0.13572666700929403,
-        "ILLUMINANCE": 0.13572666700929403,
-        "DISTANCE": 0.13572666700929403,
-        "ACUITY": 0.13572666700929403
+        "DENSITY": 0.15785883300122805,
+        "STRETCH": 0.15785883300122805,
+        "ILLUMINANCE": 0.15785883300122805,
+        "DISTANCE": 0.15785883300122805,
+        "ACUITY": 0.15785883300122805
       }
     },
     {
       "projectors": 16,
       "samples": 2048,
-      "shared_solve_seconds": 0.5299271249969024,
+      "shared_solve_seconds": 0.5957639589905739,
       "mode_seconds": {
-        "DENSITY": 0.5299271249969024,
-        "STRETCH": 0.5299271249969024,
-        "ILLUMINANCE": 0.5299271249969024,
-        "DISTANCE": 0.5299271249969024,
-        "ACUITY": 0.5299271249969024
+        "DENSITY": 0.5957639589905739,
+        "STRETCH": 0.5957639589905739,
+        "ILLUMINANCE": 0.5957639589905739,
+        "DISTANCE": 0.5957639589905739,
+        "ACUITY": 0.5957639589905739
       }
     },
     {
       "projectors": 16,
       "samples": 8192,
-      "shared_solve_seconds": 2.1331033750029746,
+      "shared_solve_seconds": 2.2571261660195887,
       "mode_seconds": {
-        "DENSITY": 2.1331033750029746,
-        "STRETCH": 2.1331033750029746,
-        "ILLUMINANCE": 2.1331033750029746,
-        "DISTANCE": 2.1331033750029746,
-        "ACUITY": 2.1331033750029746
+        "DENSITY": 2.2571261660195887,
+        "STRETCH": 2.2571261660195887,
+        "ILLUMINANCE": 2.2571261660195887,
+        "DISTANCE": 2.2571261660195887,
+        "ACUITY": 2.2571261660195887
       }
     },
     {
       "projectors": 32,
       "samples": 512,
-      "shared_solve_seconds": 0.2910515420080628,
+      "shared_solve_seconds": 0.28895220800768584,
       "mode_seconds": {
-        "DENSITY": 0.2910515420080628,
-        "STRETCH": 0.2910515420080628,
-        "ILLUMINANCE": 0.2910515420080628,
-        "DISTANCE": 0.2910515420080628,
-        "ACUITY": 0.2910515420080628
+        "DENSITY": 0.28895220800768584,
+        "STRETCH": 0.28895220800768584,
+        "ILLUMINANCE": 0.28895220800768584,
+        "DISTANCE": 0.28895220800768584,
+        "ACUITY": 0.28895220800768584
       }
     },
     {
       "projectors": 32,
       "samples": 2048,
-      "shared_solve_seconds": 1.0814246670051944,
+      "shared_solve_seconds": 1.102439707989106,
       "mode_seconds": {
-        "DENSITY": 1.0814246670051944,
-        "STRETCH": 1.0814246670051944,
-        "ILLUMINANCE": 1.0814246670051944,
-        "DISTANCE": 1.0814246670051944,
-        "ACUITY": 1.0814246670051944
+        "DENSITY": 1.102439707989106,
+        "STRETCH": 1.102439707989106,
+        "ILLUMINANCE": 1.102439707989106,
+        "DISTANCE": 1.102439707989106,
+        "ACUITY": 1.102439707989106
       }
     },
     {
       "projectors": 32,
       "samples": 8192,
-      "shared_solve_seconds": 4.273565374984173,
+      "shared_solve_seconds": 4.325309625011869,
       "mode_seconds": {
-        "DENSITY": 4.273565374984173,
-        "STRETCH": 4.273565374984173,
-        "ILLUMINANCE": 4.273565374984173,
-        "DISTANCE": 4.273565374984173,
-        "ACUITY": 4.273565374984173
+        "DENSITY": 4.325309625011869,
+        "STRETCH": 4.325309625011869,
+        "ILLUMINANCE": 4.325309625011869,
+        "DISTANCE": 4.325309625011869,
+        "ACUITY": 4.325309625011869
       }
     }
   ]

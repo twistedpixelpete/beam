@@ -1,0 +1,1 @@
+PASS fresh-process persistence, deterministic regeneration, Observer Undo/Redo identity and cache clearing

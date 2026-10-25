@@ -1,14 +1,14 @@
 {
-  "analysis_uuid": "b36c6a07-c779-4587-95c3-937f57b120e2",
-  "mode": "DENSITY",
-  "analysis_type": "density",
-  "generated_at": "2026-10-25T01:56:33+00:00",
-  "receiver_uuid": "bc306a14-1949-4a90-aed6-fb6869633d1f",
+  "analysis_uuid": "d8aeffed-cfd6-4ae0-9dfd-6d2651ea3874",
+  "mode": "STRETCH",
+  "analysis_type": "stretch",
+  "generated_at": "2026-10-25T02:11:07+00:00",
+  "receiver_uuid": "026725d2-4aaf-4afa-857e-fbb632f4a509",
   "receiver_name": "Flat Receiver",
   "projector_uuids": [
-    "31320010-f53a-45e1-ad8b-fda1cea0da78",
-    "6c8ee9a9-dc7f-4846-b539-52e05ca333e5",
-    "66ebec1d-97ff-4cec-8cfd-97d03447a809"
+    "5a515829-e8ba-430f-b870-dcc4214d1d20",
+    "5d5bce05-c0e2-4fcd-a81a-d7f1dedb09c1",
+    "d514b454-7b4d-45a6-8f17-15caae6bf986"
   ],
   "statistics": {
     "surface_area_m2": 32.0,
@@ -49,10 +49,10 @@
   "visibility": "CPU evaluated-geometry first hit, opaque two-sided surfaces; not GPU depth; transparent materials treated opaque",
   "untested": "Between-sample regions and invisible/excluded scene geometry; thin features may be missed",
   "metric_selection": "Best visible projector by conservative worst-direction density at each sample",
-  "colour_scale": "Sample minimum to maximum density",
+  "colour_scale": "Anisotropy 1:1 to 3:1; colours saturate above 3:1",
   "scale_range": [
-    134.3999967263778,
-    140.0000243141424
+    1,
+    3
   ],
   "display": {
     "illuminance_scale": "FIXED",
@@ -68,6 +68,6 @@
     "No screen gain, reflectance, ambient illumination, black level or colourimetry."
   ],
   "observer": null,
-  "image_filename": "view-278f3b46-7bc8-4e4d-bde3-b9475f2dfc72.png",
-  "image_sha256": "ef77c9f62843aae8eabf77e99ecb5226a43173da68ddd794dd869cdf5583286b"
+  "image_filename": "view-dd2dc1ef-4645-4e25-a6e8-07dd828e19a6.png",
+  "image_sha256": "7af9d55b99c496ad1d7e4dfafba21c4d12fe163487b30bb89c8a73cc41305681"
 }

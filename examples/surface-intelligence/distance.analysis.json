@@ -1,14 +1,14 @@
 {
-  "analysis_uuid": "b36c6a07-c779-4587-95c3-937f57b120e2",
+  "analysis_uuid": "d8aeffed-cfd6-4ae0-9dfd-6d2651ea3874",
   "mode": "DISTANCE",
   "analysis_type": "distance",
-  "generated_at": "2026-10-25T01:56:33+00:00",
-  "receiver_uuid": "bc306a14-1949-4a90-aed6-fb6869633d1f",
+  "generated_at": "2026-10-25T02:11:07+00:00",
+  "receiver_uuid": "026725d2-4aaf-4afa-857e-fbb632f4a509",
   "receiver_name": "Flat Receiver",
   "projector_uuids": [
-    "31320010-f53a-45e1-ad8b-fda1cea0da78",
-    "6c8ee9a9-dc7f-4846-b539-52e05ca333e5",
-    "66ebec1d-97ff-4cec-8cfd-97d03447a809"
+    "5a515829-e8ba-430f-b870-dcc4214d1d20",
+    "5d5bce05-c0e2-4fcd-a81a-d7f1dedb09c1",
+    "d514b454-7b4d-45a6-8f17-15caae6bf986"
   ],
   "statistics": {
     "surface_area_m2": 32.0,
