@@ -19,6 +19,16 @@ class IlluminanceTests(unittest.TestCase):
   s=m.intelligence_statistics(samples)
   self.assertEqual(s['illuminance_max_lux'],750);self.assertEqual(s['illuminance_average_lux'],375)
   self.assertEqual(s['illuminance_min_lux'],0);self.assertEqual(s['illuminance_uniformity_min_average'],0)
+ def test_shift_moves_footprint_without_extra_falloff(self):
+  # A 50% horizontal shift moves a 10 m image centre by 5 m.
+  shifted=m.local_metrics((5,0,-10),(0,0,1),1,2000,1000,50,0)
+  self.assertAlmostEqual(m.illuminance_lux(shifted,20000,2000,1000),400)
+  self.assertIsNone(m.local_metrics((-1,0,-10),(0,0,1),1,2000,1000,50,0))
+ def test_raster_resolution_does_not_change_flux(self):
+  # Doubling both axes quarters per-pixel flux and area, leaving lux unchanged.
+  for rx,ry in ((2000,1000),(4000,2000)):
+   metrics=m.local_metrics((0,0,-10),(0,0,1),1,rx,ry)
+   self.assertAlmostEqual(m.illuminance_lux(metrics,20000,rx,ry),400)
  def test_dark_uniformity(self):
   self.assertIsNone(m.intelligence_statistics([dict(area_m2=1,visible=[])])['illuminance_uniformity_min_average'])
 

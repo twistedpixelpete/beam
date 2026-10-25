@@ -159,7 +159,10 @@ def depsgraph_changed(scene, depsgraph):
             if item.get('ps_helper') or item.type in {'CAMERA','LIGHT'}: continue
             if not (update.is_updated_transform or update.is_updated_geometry): continue
             if item.type in {'MESH','CURVE','SURFACE','FONT','META'}: changed_keys.add(item.as_pointer())
-            elif item.instance_type!='NONE': broad=True
+            elif item.instance_type!='NONE':
+                # Instance transforms move evaluated occluders without mesh edits.
+                from .analysis_runtime import invalidate as invalidate_analysis
+                invalidate_analysis(); broad=True
         elif isinstance(item,(bpy.types.Mesh,bpy.types.Curve,bpy.types.MetaBall)) and update.is_updated_geometry:
             changed_keys.update(o.as_pointer() for o in scene.objects
                                 if o.type in {'MESH','CURVE','SURFACE','FONT','META'} and o.data==item and not o.ps.is_projector)

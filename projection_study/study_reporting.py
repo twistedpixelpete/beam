@@ -48,7 +48,7 @@ def document(context):
         study_guidance=dict(thresholds=THRESHOLDS,basis=BASIS),export_formats=source['export_formats'],
         projectors=source['projectors'],blend_groups=source['blend_groups'],screens=screens,receivers=receivers,views=source['study_views'],optics=optics,
         observers=[observer.record(o,context.scene.unit_settings.scale_length) for o in context.scene.objects if o.beam_observer.is_observer],
-        surface_analysis=analysis,warnings=warnings,assumptions=['Nominal projector measurements do not guarantee visible coverage.','Surface analysis is sampled, two-sided opaque evaluated geometry; thin occluders and between-sample regions remain untested.','Illuminance is nominal, not photometrically calibrated.'],
+        surface_analysis=analysis,warnings=warnings,assumptions=['Nominal projector measurements do not guarantee visible coverage.','Surface analysis is sampled, two-sided opaque evaluated geometry; thin occluders and between-sample regions remain untested.','Estimated incident illuminance is not photometrically calibrated.'],
         transform_validation={k:source['disguise'][k] for k in ('convention_id','transform_convention','validated','mapping_matter_reference_validated')})
 
 def validate(data):

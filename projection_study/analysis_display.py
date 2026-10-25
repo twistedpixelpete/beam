@@ -56,7 +56,9 @@ def lines(result,mode,units='m'):
         t=result['observer']['threshold_arcmin'];below=s['acuity_below_threshold_percent'];above=s['acuity_at_or_above_threshold_percent']
         output.append(f'Threshold {t:g} arcmin · '+result['observer']['name'])
         output.append('Below / at-or-above: '+('—' if below is None else f'{below:.1f}% / {above:.1f}%'))
+        output.append(f'Colour range {0.5*t:g}–{1.5*t:g} arcmin · saturated outside')
         output.append('Coarsest apparent pixel · viewer visibility tested')
     else:output.append(f"Coverage {s['coverage_percent']:.1f}% · overlap {s['overlap_percent']:.1f}%")
+    if mode=='STRETCH':output.append('Colour range 1:1–3:1 · saturated above 3:1')
     output.append(f"{s['sample_count']:,} samples · opaque first-hit")
     return output
