@@ -1,0 +1,17 @@
+INFO Draco is available, use library at /Applications/Blender.app/Contents/Resources/5.2/scripts/addons_core/io_scene_gltf2/libbf_intern_draco_bridge.dylib
+INFO MeshOptimizer is available, use library at /Applications/Blender.app/Contents/Resources/5.2/scripts/addons_core/io_scene_gltf2/libbf_intern_meshopt_bridge.dylib
+13:38:48 | INFO: Starting glTF 2.0 export
+13:38:48 | INFO: Extracting primitive: Plane.001
+13:38:48 | INFO: Primitives created: 1
+13:38:48 | INFO: Finished glTF 2.0 export in 0.0036160945892333984 s
+
+13:38:48 | INFO: Starting glTF 2.0 export
+13:38:48 | INFO: Extracting primitive: Plane.001
+13:38:48 | INFO: Primitives created: 1
+13:38:48 | INFO: Finished glTF 2.0 export in 0.0008788108825683594 s
+
+Info: Local Review Package created; open with the Beam Review prototype
+PASS Review Package: centimetre scene to metre GLB/JSON; shifted orthographic projection; identity; context restoration; immutable revision and failed-export cleanup
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

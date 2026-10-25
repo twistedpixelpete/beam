@@ -1,0 +1,13 @@
+✔ package checksums and existing Beam identity contracts (2.392ms)
+✔ GLB includes venue, screen UUID, UVs and embedded chart (0.139125ms)
+✔ metre coordinate conversion preserves lengths and rotates basis correctly (0.384625ms)
+✔ all saved cameras retain their exact matrix and proper handedness (0.233416ms)
+✔ reject broken member links and unsupported package contracts (2.587ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 57.506667

@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Overview",
+    "status": "Overview · saved camera · scene"
+  },
+  {
+    "name": "Front",
+    "status": "Front · saved camera · scene"
+  },
+  {
+    "name": "Blend",
+    "status": "Blend · saved camera · scene"
+  },
+  {
+    "name": "Reverse Mapping",
+    "status": "Reverse Mapping · saved camera · scene"
+  },
+  {
+    "name": "Density",
+    "status": "Density · saved camera · density statistics available"
+  },
+  {
+    "name": "Stretch",
+    "status": "Stretch · saved camera · stretch statistics available"
+  },
+  {
+    "name": "Illuminance",
+    "status": "Illuminance · saved camera · illuminance statistics available"
+  },
+  {
+    "name": "Distance",
+    "status": "Distance · saved camera · distance statistics available"
+  },
+  {
+    "name": "Acuity",
+    "status": "Acuity · saved camera · acuity statistics available"
+  }
+]
