@@ -47,3 +47,11 @@ class AcuityTests(unittest.TestCase):
   s=m.acuity_statistics([dict(area_m2=1,angular_pixel_arcmin=.5),dict(area_m2=3,angular_pixel_arcmin=1),dict(area_m2=7,angular_pixel_arcmin=None)],1)
   self.assertEqual(s['acuity_below_threshold_percent'],25);self.assertEqual(s['acuity_at_or_above_threshold_percent'],75)
  def test_eye_on_sample(self):self.assertIsNone(m.angular_pixel_radians((1,0,0),(0,1,0),(0,0,0)))
+
+class PaletteTests(unittest.TestCase):
+ def test_zero_illuminance_is_dark_even_for_constant_scale(self):
+  import importlib.util
+  from pathlib import Path
+  spec=importlib.util.spec_from_file_location('display',Path(__file__).resolve().parents[1]/'projection_study/analysis_display.py');display=importlib.util.module_from_spec(spec);spec.loader.exec_module(display)
+  r={'statistics':{'illuminance_min_lux':0,'illuminance_max_lux':0}}
+  self.assertEqual(display.colour(r,'ILLUMINANCE',{'illuminance_lux':0}),display.PALETTES['ILLUMINANCE'][0]+(1,))

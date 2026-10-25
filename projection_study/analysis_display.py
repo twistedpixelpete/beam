@@ -31,6 +31,7 @@ def scale(result,mode):
 def colour(result,mode,sample):
     v=value(sample,mode)
     if v is None:return (.20,.20,.23,1)
+    if mode=='ILLUMINANCE' and v==0:return PALETTES[mode][0]+(1,)
     low,high=scale(result,mode)
     t=min(1,max(0,(v-low)/(high-low))) if high-low>max(1e-5,high*1e-6) else .5
     start,end=PALETTES[mode]
