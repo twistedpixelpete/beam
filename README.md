@@ -10,7 +10,7 @@ Beam is a professional projection-planning and study tool built inside Blender. 
 
 > Still in testing, not stable production software. Work on copies and independently verify geometry, measurements and exported data before production use. Windows/Linux are not yet validated.
 
-**[Download 0.13.0](https://github.com/twistedpixelpete/beam/releases/tag/v0.13.0-beta)** · **[Start Here](#start-here)** · [User Guide](output/pdf/Beam_Onboarding/Beam_User_Guide.pdf) · [Quick Start](output/pdf/Beam_Onboarding/Beam_Quick_Start.pdf)
+**[Download 0.13.0](https://github.com/twistedpixelpete/beam/releases/tag/v0.13.0-beta)** · **[Start Here](#start-here)** · [Enable Beam Workspace](#beam-workspace) · [User Guide](output/pdf/Beam_Onboarding/Beam_User_Guide.pdf) · [Quick Start](output/pdf/Beam_Onboarding/Beam_Quick_Start.pdf)
 
 ## Download
 
@@ -31,6 +31,23 @@ The [0.13.0 release](https://github.com/twistedpixelpete/beam/releases/tag/v0.13
 6. With the pointer over the 3D View, press **F3**, search for **Open Beam Workspace**, and run it. If your keyboard configuration uses F3 differently, use **Edit → Menu Search**. Alternatively, press **N**, open the **Beam** tab, expand **Project / Workspace**, and click **Open Beam Workspace**.
 
 The manifest requires Blender **4.5+**; validation is on the tested environment above. No separate Python installation is needed to use Beam. Install the extension ZIP, not GitHub's source-code archive.
+
+## Beam Workspace
+
+The optional **Beam** workspace brings projection planning into one Blender layout: a native 3D View, the Outliner for scene selection, and a Beam inspector in **Properties → Scene**. Its five modules are **Projector**, **Screen**, **Blend**, **Views** and **Export**. Use the left viewport toolbar or the inspector's module buttons to move between them. Blender's normal modelling, navigation and editor controls remain available.
+
+### Enable and open the workspace
+
+1. Install and enable the Beam extension first, then restart Blender after an upgrade.
+2. Select Blender's **Layout** workspace. It must contain a **3D View**, **Outliner** and **Properties** editor.
+3. In the 3D View, choose **View → Open Beam Workspace**. Alternatively, press **F3** and search for **Open Beam Workspace**, or use **Edit → Menu Search**.
+4. Beam creates a **Beam** workspace tab from your current layout. Click that tab to return to it later; running **Open Beam Workspace** again opens the existing Beam workspace.
+
+You can also open it from the regular sidebar: place the pointer over the 3D View, press **N**, choose **Beam**, expand **Project / Workspace**, and click **Open Beam Workspace**.
+
+The original Layout workspace and scene are retained. Resize the editor borders to suit your screen. If the Beam inspector disappears after choosing another Properties tab, select **Scene Properties**, or run **Open Beam Workspace** again. If the left toolbar is hidden, press **T** over the 3D View or use the inspector's module buttons. If Beam reports missing editors, return to a Layout containing all three editors listed above and retry.
+
+**The workspace and colour theme are separate.** Under **Project / Workspace**, **Apply Beam Theme** optionally changes Blender's application-wide theme; **Restore Previous Theme** restores the saved backup. Opening the workspace does not apply the theme. You can also use Beam through **N → Beam** without creating its workspace.
 
 ## Start Here
 
