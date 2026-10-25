@@ -154,13 +154,20 @@ def tick():
                     if area.type in {'VIEW_3D','PROPERTIES'}:area.tag_redraw()
     return .25
 
+def workspace_menu(self,context):
+    # Normal Blender Menu Search indexes menu entries, not every registered operator.
+    self.layout.separator()
+    self.layout.operator('beam.workspace')
+
 def register():
+    bpy.types.VIEW3D_MT_view.append(workspace_menu)
     bpy.types.WindowManager.beam_target=bpy.props.PointerProperty(type=ui_context.BeamTargetDraft)
     for handlers in (bpy.app.handlers.load_post,bpy.app.handlers.undo_post,bpy.app.handlers.redo_post):
         if ui_context.clear not in handlers:handlers.append(ui_context.clear)
     if not bpy.app.timers.is_registered(tick):bpy.app.timers.register(tick,persistent=True)
 
 def unregister():
+    bpy.types.VIEW3D_MT_view.remove(workspace_menu)
     if bpy.app.timers.is_registered(tick):bpy.app.timers.unregister(tick)
     for handlers in (bpy.app.handlers.load_post,bpy.app.handlers.undo_post,bpy.app.handlers.redo_post):
         if ui_context.clear in handlers:handlers.remove(ui_context.clear)
