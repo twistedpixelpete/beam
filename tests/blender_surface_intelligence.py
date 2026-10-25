@@ -31,12 +31,12 @@ assert all(x['acuity_projector_uuid']==q.ps.uuid for x in r['samples'] if x['obs
 bpy.data.objects.remove(q,do_unlink=True);r=run()
 copy=eye.copy();c.scene.collection.objects.link(copy);runtime.refresh(True);assert copy.beam_observer.uuid!=eye.beam_observer.uuid
 bpy.data.objects.remove(copy,do_unlink=True)
-p.ps.lumens*=2;assert analysis_runtime.stale(r,'ILLUMINANCE') and not analysis_runtime.stale(r,'DISTANCE')
+p.ps.lumens*=2;c.view_layer.update();runtime.refresh();assert analysis_runtime.stale(r,'ILLUMINANCE') and not analysis_runtime.stale(r,'DISTANCE')
 r=run();eye.beam_observer.threshold=2;assert analysis_runtime.stale(r,'ACUITY') and not analysis_runtime.stale(r,'ILLUMINANCE')
 r=run();eye.location.x=1;c.view_layer.update();assert analysis_runtime.stale(r,'ACUITY')
 r=run();s.illuminance_scale='FIXED';s.illuminance_max=1000;s.use_target_illuminance=True;s.target_illuminance=300
 assert not analysis_runtime.stale(r,'ILLUMINANCE');assert r['display']['target_illuminance_lux']==300
-p.ps.show_frustum=False;assert not analysis_runtime.stale(r,'DENSITY')
+p.ps.show_frustum=False;c.view_layer.update();runtime.refresh();assert not analysis_runtime.stale(r,'DENSITY')
 # A blocker behind projector but ahead of observer blocks viewing, not light.
 bpy.ops.mesh.primitive_cube_add(size=2,location=(0,-2,2));block=c.object;block.scale=(10,.1,10)
 r=run();assert r['statistics']['illuminance_min_lux']>0;assert r['statistics']['acuity_evaluated_area_m2']==0
@@ -71,6 +71,9 @@ mesh('Curved Receiver',verts,faces)
 mesh('Stepped Receiver',[(-3,12,4),(-1,12,4),(-1,12,5),(-3,12,5),(0,13,4),(2,13,4),(2,13,5),(0,13,5)],[(0,1,2,3),(4,5,6,7)])
 bpy.ops.mesh.primitive_cube_add(size=2,location=(0,6,1.5));c.object.name='Movable Occluder';c.object.scale=(.4,.15,1.5)
 eye.location=(0,-5,0);eye.beam_observer.threshold=1;eye.beam_observer.eye_height=1.6
+for selected in c.selected_objects:selected.select_set(False)
+objects[1].select_set(True);c.view_layer.objects.active=objects[1];s.active_projector=objects[1]
+s.analysis_detail='2048';s.reverse_receiver=wall
 s.analysis_mode='ILLUMINANCE';s.display_units='m';s.project_name='Beam Surface Intelligence';s.author='Twisted Pixel'
 c.view_layer.update();r=analysis_runtime.analyse(c,wall,objects[:3],2048)
 data=study_reporting.document(c);study_reporting.validate(data);(out/'fixture-analysis.json').write_text(json.dumps(data,indent=2))

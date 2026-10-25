@@ -137,10 +137,13 @@ def changed(scene,graph):
         if not (update.is_updated_geometry or update.is_updated_transform):continue
         if isinstance(obj,bpy.types.Object):
             if obj.beam_observer.is_observer:analysis_runtime.invalidate('ACUITY');continue
+            # Projector bodies are not receivers; their transforms are tracked by runtime.
+            # Blender also tags them geometrically when photometric properties change.
+            if obj.ps.is_projector:continue
             if obj.type not in analysis_runtime.scene_geometry.SURFACE_TYPES or obj.get('ps_helper') or obj.get('beam_screen_detail'):continue
             analysis_runtime.invalidate();return
         if isinstance(obj,bpy.types.Mesh):
-            if any(o.data==obj and not o.get('ps_helper') and not o.get('beam_screen_detail') for o in scene.objects):
+            if any(o.data==obj and not o.ps.is_projector and not o.get('ps_helper') and not o.get('beam_screen_detail') for o in scene.objects):
                 analysis_runtime.invalidate();return
 
 def register():
