@@ -1,0 +1,12 @@
+PASS inverse: all six values, locks, parent, angled target, shifted position rejection
+PASS horizontal: identity, equal spacing, live px/m/%, gaps, resolution, screen movement, duplicate recipe, persistent screen
+PASS vertical, array, auto count and rotated screens
+PASS template and obstructed creation rollback
+PASS physical scene-unit scale and Auto Blend JSON relationships
+PASS non-destructive materials, shared mesh isolation, UV preservation, user replacements
+PASS PLANNING MILESTONE
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
+/Users/petelynn/Documents/projection-study/tests/blender_planning_milestone.py:90: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  original=bpy.data.materials.new('Original UV');original.use_nodes=True

@@ -1,0 +1,24 @@
+{
+  "native_undo": "Position solve and group Reflow Undo/Redo passed",
+  "idle_30_refreshes_ms": {
+    "median": 1.8433749937685207,
+    "max": 2.2114999883342534,
+    "extra_uploads": 0
+  },
+  "movement_refresh_ms": {
+    "median": 4.212250001728535,
+    "max": 4.489790997467935
+  },
+  "overlap_recalculation_ms": {
+    "median": 0.4102295060874894,
+    "max": 0.4777080030180514
+  },
+  "lens_solve_ms": 1.5382079873234034,
+  "cleanup": "Reorder + mode rebuild, three GPU enable/disable cycles: zero wrapper, group or coverage-image orphans",
+  "viewport_export_ms": 392.94499999959953,
+  "persistence": "Projector/group UUIDs, identifiers, membership, settings, locks, layout screen, metadata, active screen and material restore references exact after reopen",
+  "failure_isolation": "One invalid source failed closed while the other receiver refreshed; repair recovered; overlays-off deleted GPU map pruned",
+  "registration": "Two repeated unregister/register cycles: no Beam handlers or screen timer survive unregister",
+  "scene": "8 projectors, 1 array Blend Group, 24 \u00d7 6 m Screen Builder screen, 23 venue meshes, Reverse Mapping, overlays; 512 depth detail",
+  "platform": "5.2.2 LTS macOS Metal"
+}

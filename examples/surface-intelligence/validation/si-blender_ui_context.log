@@ -1,0 +1,18 @@
+Warning: Target context changed; edit the active projector value again
+Warning: Required throw ratio is outside 0.05–100
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
+test_collection_identity_survives_rename (__main__.UIContext.test_collection_identity_survives_rename) ... ok
+test_creation_preset_does_not_edit_active_screen (__main__.UIContext.test_creation_preset_does_not_edit_active_screen) ... ok
+test_draft_cannot_apply_to_new_context (__main__.UIContext.test_draft_cannot_apply_to_new_context) ... ok
+test_inline_target_cancel_and_failed_apply_are_non_destructive (__main__.UIContext.test_inline_target_cancel_and_failed_apply_are_non_destructive) ... ok
+test_organize_preserves_unrelated_geometry_and_user_links (__main__.UIContext.test_organize_preserves_unrelated_geometry_and_user_links) ... ok
+test_pin_and_receiver_are_independent (__main__.UIContext.test_pin_and_receiver_are_independent) ... ok
+test_pixel_size_uses_mm_and_preserves_resolution (__main__.UIContext.test_pixel_size_uses_mm_and_preserves_resolution) ... ok
+test_restored_scene_does_not_inherit_previous_selection_pointer (__main__.UIContext.test_restored_scene_does_not_inherit_previous_selection_pointer) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.010s
+
+OK

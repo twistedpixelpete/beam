@@ -221,3 +221,7 @@ The development build includes an original charcoal/blue Blender theme. See [the
 ### UI/UX refinement beta
 
 The latest local refinement adds a native left module rail, measured values with separate edit buttons, a compact Auto Blend preview, and Apply/Restore Theme. See the [refinement guide and screenshots](docs/UI-UX-REFINEMENT.md). Theme application remains optional and application-wide.
+
+## Surface Intelligence development beta
+
+The `feature/beam-surface-intelligence` branch adds Estimated Illuminance, Projection Distance and Observer Acuity in **0.13.0 internal beta**. See the [workflow delta](docs/surface-intelligence/USER_DELTA.md), [maths and assumptions](docs/surface-intelligence/MATHS_AND_ASSUMPTIONS.md), and [reference comparison](docs/surface-intelligence/MAPPING_MATTER_COMPARISON.md). The frozen 0.12.0 user guide is unchanged. This is not a stable/public release.

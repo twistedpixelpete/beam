@@ -1,0 +1,91 @@
+{
+  "analysis_uuid": "b36c6a07-c779-4587-95c3-937f57b120e2",
+  "mode": "ACUITY",
+  "analysis_type": "acuity",
+  "generated_at": "2026-10-25T01:56:33+00:00",
+  "receiver_uuid": "bc306a14-1949-4a90-aed6-fb6869633d1f",
+  "receiver_name": "Flat Receiver",
+  "projector_uuids": [
+    "31320010-f53a-45e1-ad8b-fda1cea0da78",
+    "6c8ee9a9-dc7f-4846-b539-52e05ca333e5",
+    "66ebec1d-97ff-4cec-8cfd-97d03447a809"
+  ],
+  "statistics": {
+    "surface_area_m2": 32.0,
+    "nominal_covered_area_m2": 32.0,
+    "visible_covered_area_m2": 32.0,
+    "coverage_percent": 100.0,
+    "uncovered_percent": 0.0,
+    "overlap_area_m2": 32.0,
+    "overlap_percent": 100.0,
+    "overlap_percent_of_covered": 100.0,
+    "density_min_px_m": 134.3999967263778,
+    "density_max_px_m": 140.0000243141424,
+    "density_average_px_m": 138.97393604079264,
+    "density_variation_percent": 4.029552409108453,
+    "min_anisotropy": 1.0000000001011802,
+    "average_anisotropy": 1.0000000094435575,
+    "max_anisotropy": 1.000000024753671,
+    "sample_count": 8192,
+    "occluded_sample_count": 0,
+    "occluded_sample_percent": 0.0,
+    "illuminance_min_lux": 348.44443025446543,
+    "illuminance_average_lux": 449.04710830339985,
+    "illuminance_max_lux": 544.4446373099368,
+    "illuminance_uniformity_min_average": 0.7759640888702439,
+    "illuminance_uniformity_min_max": 0.6399997472215085,
+    "distance_min_m": 10.000042926817965,
+    "distance_average_m": 10.151954669836963,
+    "distance_max_m": 10.626611306922987,
+    "distance_variation_m": 0.6265683801050219,
+    "acuity_min_arcmin": 1.629335373235389,
+    "acuity_average_arcmin": 1.6773606359789635,
+    "acuity_max_arcmin": 1.7040150296611203,
+    "acuity_below_threshold_percent": 0.0,
+    "acuity_at_or_above_threshold_percent": 100.0,
+    "acuity_evaluated_area_m2": 28.08984375
+  },
+  "method": "Equal-area systematic triangle strata, deterministic barycentric samples; area-weighted estimates",
+  "visibility": "CPU evaluated-geometry first hit, opaque two-sided surfaces; not GPU depth; transparent materials treated opaque",
+  "untested": "Between-sample regions and invisible/excluded scene geometry; thin features may be missed",
+  "metric_selection": "Largest apparent pixel angular pitch among visible projectors (conservative coarsest structure); foreshortened tangent Jacobian",
+  "colour_scale": "See scale_range and display",
+  "scale_range": [
+    0.5,
+    1.5
+  ],
+  "display": {
+    "illuminance_scale": "FIXED",
+    "illuminance_max_lux": 1000.0,
+    "target_illuminance_lux": 300.0,
+    "display_units": "m"
+  },
+  "assumptions": [
+    "Estimated incident illuminance, not calibrated photometry or luminance.",
+    "Uniform luminous flux per raster pixel; two-sided opaque receiver geometry.",
+    "Flux = nominal lumens \u00d7 stack quantity \u00d7 brightness / 100; visible sources add.",
+    "No measured brightness distribution, lens transmission, ageing, calibration losses, colour-mode losses or edge falloff.",
+    "No screen gain, reflectance, ambient illumination, black level or colourimetry."
+  ],
+  "observer": {
+    "uuid": "a9b9e19b-29fe-4ec8-afca-2b715d4ab8ff",
+    "name": "OBS01",
+    "position_m": [
+      0.0,
+      -5.0,
+      0.0
+    ],
+    "eye_position_m": [
+      0.0,
+      -5.0,
+      1.600000023841858
+    ],
+    "eye_height_m": 1.600000023841858,
+    "threshold_arcmin": 1.0,
+    "visibility": "CPU first opaque geometry hit from eye to receiver sample",
+    "assumption": "Nominal 1 arcminute guidance is adjustable; not universal human visual performance. Contrast, content, eyesight and ambient light are not modelled.",
+    "source_rule": "Largest apparent pixel angular pitch among visible projectors (conservative coarsest structure); foreshortened tangent Jacobian"
+  },
+  "image_filename": "acuity.png",
+  "image_sha256": "7c5e70f815c2c990d077c22d51c4a5e814f8c8b554777f6ae13b2e9ebeae1e1b"
+}

@@ -1,0 +1,63 @@
+Info: File exported successfully
+
+FBX export starting... '/Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-9x32wqln.fbx'
+export finished in 0.0015 sec.
+FBX version: 7400
+Info: File exported successfully
+
+FBX export starting... '/Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-ah5stpsn.fbx'
+export finished in 0.0012 sec.
+FBX version: 7400
+Info: File exported successfully
+
+FBX export starting... '/Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-d2uw03xg.fbx'
+export finished in 0.0012 sec.
+FBX version: 7400
+Info: File exported successfully
+
+FBX export starting... '/Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-4gb85cev.fbx'
+export finished in 0.0012 sec.
+FBX version: 7400
+Info: File exported successfully
+
+FBX export starting... '/Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-phwm56ho.fbx'
+export finished in 0.0011 sec.
+FBX version: 7400
+Info: File exported successfully
+
+FBX export starting... '/Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-tl_bj1ak.fbx'
+export finished in 0.0011 sec.
+FBX version: 7400
+Info: File exported successfully
+
+FBX export starting... '/Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-ebu7zlol.fbx'
+export finished in 0.0011 sec.
+FBX version: 7400
+Info: File exported successfully
+{'scene': 'Beam Screen Builder Validation', 'screens': 8, 'roundtrips': 14, 'blend': '/Users/petelynn/Documents/projection-study/work/screen-tests/Beam-Screen-Builder.blend'}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+Writing to /Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-p6lqi7lg.obj
+OBJ export of '.beam-export-p6lqi7lg.obj' took 0.12 ms
+OBJ import of 'SCR001.obj' took 0.12 ms
+Writing to /Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-en1d2i3d.obj
+OBJ export of '.beam-export-en1d2i3d.obj' took 0.15 ms
+OBJ import of 'SCR002.obj' took 0.15 ms
+Writing to /Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-r9sdc2kc.obj
+OBJ export of '.beam-export-r9sdc2kc.obj' took 0.19 ms
+OBJ import of 'SCR003.obj' took 0.25 ms
+Writing to /Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-li17fyib.obj
+OBJ export of '.beam-export-li17fyib.obj' took 0.16 ms
+OBJ import of 'SCR004.obj' took 0.14 ms
+Writing to /Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-jf60d63g.obj
+OBJ export of '.beam-export-jf60d63g.obj' took 70583 ns
+OBJ import of 'SCR005.obj' took 76375 ns
+Writing to /Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-3lyootpa.obj
+OBJ export of '.beam-export-3lyootpa.obj' took 0.18 ms
+OBJ import of 'SCR006.obj' took 0.21 ms
+Writing to /Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-nn1as2on.obj
+OBJ export of '.beam-export-nn1as2on.obj' took 0.19 ms
+OBJ import of 'SCR007.obj' took 0.21 ms
+Writing to /Users/petelynn/Documents/projection-study/work/screen-tests/.beam-export-r5r9ctoy.obj
+OBJ export of '.beam-export-r5r9ctoy.obj' took 0.16 ms
+
+Blender quit

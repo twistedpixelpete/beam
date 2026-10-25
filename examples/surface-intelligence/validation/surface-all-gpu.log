@@ -1,0 +1,44 @@
+00:01.747  blend            | Saved session recovery to "/var/folders/x3/qb1vzzfx6ndd_gvdhxy7ly3h0000gn/T/quit.blend"
+MILESTONE 1 PASS
+MILESTONE 2 PASS
+MILESTONE 3 PASS
+MILESTONE 3 PASS
+MILESTONE 4 PASS
+MILESTONE 3 PASS
+Warning: Unlock the projector transform first
+MILESTONE 5 PASS
+MILESTONE 3 PASS
+Warning: Unlock the projector transform first
+MILESTONE 5 PASS
+MILESTONE 6 PASS
+MILESTONE 3 PASS
+32-projector CPU update mean ms: 1.7989853513427079
+MILESTONE 7 persistence / units / portrait / performance PASS
+MILESTONE 8 camera-view restoration PASS
+MILESTONE 3 PASS
+MILESTONE 9 workflow / targeted invalidation / JSON PASS
+MILESTONE 3 PASS
+Info: Exported 2 view(s) to /Users/petelynn/Documents/projection-study/work/tmpyhhbfki1
+Error: An image already exists. Enable Overwrite Existing Images or choose another folder.
+MILESTONE 10 camera framing / batch PNG / toggles / view persistence PASS
+MILESTONE 11 GPU first-depth / automatic target / no-target receivers / UV mode PASS
+MILESTONE 3 PASS
+Info: Copied 2 selected object(s)
+Info: 2 object(s) pasted
+Warning: Unlock the projector transform first
+Info: Exported 5 projector(s) to /Users/petelynn/Documents/projection-study/work/contract04.csv
+MILESTONE 12 native Shift-D / Alt-D / copy-paste / colour / independence / rename / CSV PASS
+Info: Copied 2 selected object(s)
+Info: 2 object(s) pasted
+Cross-scene paste identity PASS
+Warning: Study view camera is missing from this scene
+MILESTONE 13 view/next/previous/exit + hidden cameras + restoration PASS
+MILESTONE 14 Beam groups / horizontal / vertical / array / offsets / actual overlap / persistence PASS
+No-target group preview is explicitly marked PASS
+Info: Exported 1 view(s) to /Users/petelynn/Documents/projection-study/work
+MILESTONE 15 Presentation restore / metadata names / exact edited export path PASS
+Info: Exported 1 view(s) to /Users/petelynn/Documents/projection-study/work/tmpllccl3ek
+Editable batch filename PASS
+ALL BLENDER INTEGRATION TESTS PASSED
+
+Blender quit
