@@ -1,5 +1,7 @@
 # Beam UI/UX refinement — development beta
 
+> Historical milestone / test report. Its screenshots and validation claims describe that milestone. Use [Documentation Baseline](manual/DOCUMENTATION_BASELINE.md) for the current documentation build and current UI evidence.
+
 Maintainer: Twisted Pixel. Branch: `feature/beam-ui-ux-refinement`, created from clean stable main `846d63a`. The prior tested UI/theme foundation is carried forward because it is not yet on main. This is an unreleased beta, still in testing.
 
 ## What changed

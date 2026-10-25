@@ -1,0 +1,174 @@
+{
+  "beam_version": "0.12.0",
+  "source_commit": "15e054ae7d7d7700549bbeb0dc4d54c18779d39c",
+  "blender": "5.2.2 LTS d13f752e3b9c",
+  "macos": "26.7 (25G229)",
+  "date": "2026-10-25",
+  "pure_tests": 55,
+  "full_suite": [
+    "blender_review_regressions 0",
+    "blender_planning_milestone 0",
+    "blender_group_lifecycle 0",
+    "blender_frustum_helpers 0",
+    "blender_json_contract 0",
+    "blender_screen_builder 0",
+    "blender_screen_edges 0",
+    "blender_screen_beauty 0",
+    "blender_ui_context 0",
+    "blender_theme 0",
+    "blender_parity 0",
+    "blender_production 0",
+    "blender_surface_production 0",
+    "refinement apply 0",
+    "refinement restore 0",
+    "all 0",
+    "workspace 0",
+    "gpu 0"
+  ],
+  "checks": {
+    "work/beam-all-result.txt": "PASS: milestones 1\u201315",
+    "work/review-gpu/result.txt": "PASS engineering GPU, performance sanity, Undo/Redo, persistence and cleanup",
+    "work/refinement-workspace/result.txt": "PASS\nOptional workspace preserves existing layouts and native editors\nInline target draft/apply/cancel and native Undo/Redo\nVisible lock restriction\nPinned context and normal venue selection preserve active projector\nNative Outliner selection followed all four Beam object types\nSwitch away/back preserves native workspace\nprojector inspector / actions\ninline-target inspector / actions\nscreen inspector / actions\nblend inspector / actions\nviews inspector / actions\nvenue inspector / actions\nreverse inspector / actions\nexport inspector / actions\nScreen edit/update, Auto Blend Undo/Redo, member selection/add/remove and Reflow from Properties inspector\nWorkspace and receiver restoration survive save/reload\nFrame, Lock, Presentation and PNG export from Properties inspector\nPanel drawing passed with runtime/coverage/pair computations forbidden",
+    "work/pre-doc-install/install-result.txt": "PASS installed ZIP through Install from Disk, enabled extension, unchanged theme, saved isolated preferences",
+    "work/pre-doc-install/use-result.txt": "PASS installed extension: blank-scene workflow, workspace reuse, screen/projectors/manual group/Auto Blend/Reflow, selected-active-pinned-receiver, Study View, 3 sample counts/2 modes/stale cache, 3 Reverse Mapping sources x 4 modes/material restoration, 2 CSVs/JSON/package, Apply twice, save",
+    "work/pre-doc-install/reopen-result.txt": "PASS fresh-process restart: extension enabled, one Beam workspace reused, active context/receivers/views/groups persisted, analysis transient, Restore Previous Theme available"
+  },
+  "migration_repeats": 8,
+  "soak": {
+    "edits": 360,
+    "group_moves": 120,
+    "overlap_changes": 60,
+    "lens_changes": 30,
+    "analyses": 12,
+    "analysis_exports": 12,
+    "before": {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    "after": {
+      "objects": 114,
+      "meshes": 51,
+      "materials": 119,
+      "images": 2,
+      "node_groups": 1,
+      "cameras": 42
+    },
+    "checkpoints": [
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      },
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      },
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      },
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      },
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      },
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      },
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      },
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      },
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      },
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      },
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      },
+      {
+        "objects": 114,
+        "meshes": 51,
+        "materials": 119,
+        "images": 2,
+        "node_groups": 1,
+        "cameras": 42
+      }
+    ],
+    "first60_median": 0.0024566665015299805,
+    "last60_median": 0.002431291497487109,
+    "max_update_seconds": 0.008608999996795319,
+    "max_rss_bytes": 852869120,
+    "status": "PASS",
+    "save_reopen": true,
+    "undo_redo": true,
+    "uuid_unique": true,
+    "handlers_stable": true
+  },
+  "zip_sha256": "9ceb7746ccfeffc299ca7be5c2f40c2e7755c2431521a63c6d62f693bc66c2e2",
+  "limits": [
+    "Scripted native-operator acceptance and visual inspection, not an unassisted user study",
+    "Direct Designer/Windows/Linux not validated; PATCH manual GUI acceptance outstanding",
+    "Small Blender shutdown allocation diagnostic remains"
+  ]
+}

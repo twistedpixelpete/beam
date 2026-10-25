@@ -1,5 +1,7 @@
 # Beam theme and workspace — development beta
 
+> Historical milestone / test report. Its screenshots and validation claims describe that milestone. Use [Documentation Baseline](manual/DOCUMENTATION_BASELINE.md) for the current documentation build and current UI evidence.
+
 Maintainer: Twisted Pixel. Branch: `feature/beam-theme-workspace`, created from stable main `846d63a`. The prior tested native UI foundation is included because it has not yet merged into main. Still a prerelease, in testing.
 
 Current refinement: [UI/UX refinement](UI-UX-REFINEMENT.md).

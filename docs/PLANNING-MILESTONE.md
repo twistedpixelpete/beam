@@ -1,5 +1,7 @@
 # Beam 0.9 planning milestone — feature beta
 
+> Historical milestone / test report. Its screenshots and validation claims describe that milestone. Use [Documentation Baseline](manual/DOCUMENTATION_BASELINE.md) for the current documentation build and current UI evidence.
+
 Maintainer: **Twisted Pixel**. This milestone is an unreleased, experimental beta and remains in testing. The published 0.8.1 beta is unchanged. Use copies of studies while evaluating 0.9.
 
 ![Beam contextual inspector with three projectors and measured overlap](../examples/0.9/blend-inspector.png)

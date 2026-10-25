@@ -1,0 +1,1 @@
+PASS native analysis, optics disclosure and hidden-toolbar captures; saved real-optics baseline scene

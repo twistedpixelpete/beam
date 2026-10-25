@@ -1,5 +1,7 @@
 # Beam workspace and navigation — development beta
 
+> Historical milestone / test report. Its screenshots and validation claims describe that milestone. Use [Documentation Baseline](manual/DOCUMENTATION_BASELINE.md) for the current documentation build and current UI evidence.
+
 Maintainer: Twisted Pixel. Original UI foundation: `feature/beam-ui-workspace`, based on reviewed PR #2 merge `846d63a429824f75a127e0c4346dbd76d5f7a6f1`. This UI pass is still in testing; it does not publish a new release.
 
 Current refinement and screenshots: [UI/UX refinement](UI-UX-REFINEMENT.md).
