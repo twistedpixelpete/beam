@@ -6,7 +6,7 @@ from . import analysis_runtime
 def current(context,mode):
     if mode=='NONE':return None
     result=analysis_runtime.CACHE.get(context.scene.as_pointer())
-    if not result or result['stale']:raise ValueError('Analysis overlay needs a current analysis; Analyse Surface again')
+    if not result or result['stale']:raise ValueError('Surface Analysis is absent or stale. Analyse again before exporting.')
     if mode not in result.get('_batches',{}):raise ValueError('Analysis image export requires a GPU viewport analysis')
     return result
 
@@ -29,7 +29,7 @@ def legend(result,mode,width,height):
     stats=result['statistics'];density=mode=='DENSITY'
     keys=('density_min_px_m','density_average_px_m','density_max_px_m') if density else ('min_anisotropy','average_anisotropy','max_anisotropy')
     values=['—' if stats[k] is None else f'{stats[k]:.1f}' for k in keys]
-    lines=[('Density · px/m' if density else 'Stretch · anisotropy :1'),
+    lines=[('Density · px/m · local auto scale' if density else 'Stretch · anisotropy :1'),
         'Min / avg / max   '+' / '.join(values),
         f"Coverage {stats['coverage_percent']:.1f}%   ·   Overlap {stats['overlap_percent']:.1f}%",
         f"{stats['sample_count']:,} samples · visible first-hit"]

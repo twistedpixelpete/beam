@@ -14,6 +14,7 @@ class Lens:
     source_revision: str=''
     checked_on: str='2026-10-24'
     shift_source_convention: str='Unknown; not converted'
+    shift_source: str=''
 
 @dataclass(frozen=True)
 class Projector:
@@ -53,6 +54,22 @@ PROJECTORS.update({
  'panasonic_rz990':Projector('panasonic_rz990','Panasonic','PT-RZ990',(1920,1200),9400,('panasonic_dle150','panasonic_dle170'),PANASONIC,'RZ990series_G2, pp1–2',light_output_basis='Normal mode, ISO/IEC 21118:2020; not centre lumens'),
  'epson_pu2010':Projector('epson_pu2010','Epson','EB-PU2010B',(1920,1200),10000,('epson_m15','epson_w08'),EPSON,'r1.02, pp5,10,26',light_output_basis='Normal mode; manufacturer specification'),
  'barco_g100w22':Projector('barco_g100w22','Barco','G100-W22',(1920,1200),18500,('barco_gc120','barco_gc150'),BARCO,'G100-W22 specification sheet',light_output_basis='ANSI lumens; not 22000 ISO lumen rating')})
+
+# Additional conventional lenses, verified against the same official tables.
+LENSES.update({
+ 'panasonic_dle105':Lens('panasonic_dle105','ET-DLE105',.978,1.32,None,None,UNKNOWN,PANASONIC,'RZ990series_G2 April 2022, p2',shift_source_convention='Manual pp77–78: full-image dimensions relative to lens-mounter/home origin, coupled polygon; not an independent rectangle'),
+ 'panasonic_dle250':Lens('panasonic_dle250','ET-DLE250',2.27,3.62,None,None,UNKNOWN,PANASONIC,'RZ990series_G2 April 2022, p2',shift_source_convention='Manual pp77–78: full-image dimensions relative to lens-mounter/home origin, coupled polygon; not an independent rectangle'),
+ 'barco_gc200':Lens('barco_gc200','GC 2.0–4.0',2,4,None,None,UNKNOWN,BARCO,'18 September 2026, p2',shift_source_convention='Lens-dependent maxima; coupled envelope and centre convention unverified')})
+from dataclasses import replace
+PROJECTORS['panasonic_rz990']=replace(PROJECTORS['panasonic_rz990'],lenses=PROJECTORS['panasonic_rz990'].lenses+('panasonic_dle105','panasonic_dle250'))
+PROJECTORS['panasonic_rz890']=Projector('panasonic_rz890','Panasonic','PT-RZ890',(1920,1200),8500,PROJECTORS['panasonic_rz990'].lenses,PANASONIC,'RZ990series_G2 April 2022, pp1–2',light_output_basis='Normal mode, ISO/IEC 21118:2020; not centre lumens')
+PROJECTORS['barco_g100w22']=replace(PROJECTORS['barco_g100w22'],lenses=PROJECTORS['barco_g100w22'].lenses+('barco_gc200',),source_revision='18 September 2026, p2')
+for key in ('panasonic_dle105','panasonic_dle150','panasonic_dle170','panasonic_dle250'):
+    LENSES[key]=replace(LENSES[key],shift_source='https://eu.connect.panasonic.com/sites/default/files/media/document/2025-01/rz990_manual_en.pdf',shift_source_convention='Manual p77: full-image H/V dimensions, lens-mounter/home origin and coupled polygon; not converted to independent limits')
+UNSUPPORTED_OPTICS={
+ 'panasonic_dle020':dict(model='ET-DLE020',source=PANASONIC,reason='UST optical geometry/offset is not validated in Beam’s central pinhole model'),
+ 'panasonic_dle035':dict(model='ET-DLE035',source=PANASONIC,reason='UST offset and lens-mounter origin are not represented by the current model'),
+ 'barco_fldx038':dict(model='FLDX 0.38 UST 90°',source=BARCO,reason='Folded 90-degree UST optics are not represented by the current model')}
 
 def projector_items():return [('MANUAL','Generic / Manual','No manufacturer constraints')]+[(k,p.manufacturer+' · '+p.model,p.source) for k,p in PROJECTORS.items()]
 def lens_items(self,context):

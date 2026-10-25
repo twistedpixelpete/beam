@@ -152,7 +152,7 @@ def matrix_units(rows,unit):
     return m
 
 
-def instantiate(recipe,context,source_controller,controller=None,offset=True):
+def _instantiate(recipe,context,source_controller,controller=None,offset=True):
     settings=context.scene.ps_study;unit=context.scene.unit_settings.scale_length
     name=groups.next_group_name(context.scene)
     group=settings.blend_groups.add();group.uuid=new_uuid();group.name=name
@@ -170,7 +170,10 @@ def instantiate(recipe,context,source_controller,controller=None,offset=True):
         if screen_uuid:group.layout_screen=next((o for o in context.scene.objects if o.beam_screen.is_screen and o.beam_screen.uuid==screen_uuid),None)
         for i,item in enumerate(recipe['members']):
             obj=create_projector(context)
-            for key,value in item['settings'].items():setattr(obj.ps,key,value)
+            # Lens enum choices depend on model; JSON key order is not dependency order.
+            if 'optics_model' in item['settings']:obj.ps.optics_model=item['settings']['optics_model']
+            for key,value in item['settings'].items():
+                if key!='optics_model':setattr(obj.ps,key,value)
             image=source_controller.get(f'beam_member_image_{i}')
             if image:obj.ps.image=image.copy()
             slot=bpy.data.objects.new(f'{name} · {obj.ps.identifier} Layout',None);ui_collection(context.scene,'GROUPS').objects.link(slot)
@@ -186,6 +189,35 @@ def instantiate(recipe,context,source_controller,controller=None,offset=True):
     controller.select_set(True);context.view_layer.objects.active=controller
     snapshot(group,context)
     return group
+
+
+def instantiate(recipe,context,source_controller,controller=None,offset=True):
+    """Restore a recipe atomically, including dependent preset enums."""
+    before={name:set(getattr(bpy.data,name)) for name in ('objects','meshes','cameras','materials','images')}
+    settings=context.scene.ps_study;identities={g.uuid for g in settings.blend_groups}
+    selected=list(context.selected_objects);active=context.view_layer.objects.active
+    active_projector=settings.active_projector;index=settings.blend_group_index
+    original=(controller.name,controller.matrix_world.copy(),controller.get('beam_group_uuid')) if controller else None
+    try:return _instantiate(recipe,context,source_controller,controller,offset)
+    except Exception:
+        for i in reversed(range(len(settings.blend_groups))):
+            if settings.blend_groups[i].uuid not in identities:settings.blend_groups.remove(i)
+        for obj in set(bpy.data.objects)-before['objects']:bpy.data.objects.remove(obj,do_unlink=True)
+        for name in ('meshes','cameras','materials','images'):
+            data=getattr(bpy.data,name)
+            for item in set(data)-before[name]:
+                if item.users==0:data.remove(item)
+        if original:
+            controller.name,controller.matrix_world=original[:2]
+            if original[2] is None:
+                if 'beam_group_uuid' in controller:del controller['beam_group_uuid']
+            else:controller['beam_group_uuid']=original[2]
+        settings.active_projector=active_projector;settings.blend_group_index=index
+        for obj in selected:obj.select_set(True)
+        context.view_layer.objects.active=active
+        from . import runtime
+        runtime.reset()
+        raise
 
 
 def duplicate(group,context):

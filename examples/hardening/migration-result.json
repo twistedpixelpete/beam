@@ -1,0 +1,27 @@
+[
+  {
+    "fixture": "examples/0.4/projection-acceptance.blend",
+    "projector_count": 1,
+    "status": "PASS"
+  },
+  {
+    "fixture": "examples/0.6/Beam_group_lifecycle.blend",
+    "projector_count": 6,
+    "status": "PASS"
+  },
+  {
+    "fixture": "examples/0.8/Beam-Screen-Builder.blend",
+    "projector_count": 2,
+    "status": "PASS"
+  },
+  {
+    "fixture": "examples/0.9/Beam-Auto-Blend.blend",
+    "projector_count": 3,
+    "status": "PASS"
+  },
+  {
+    "fixture": "examples/production/Beam-PATCH-fixture.blend",
+    "projector_count": 4,
+    "status": "PASS"
+  }
+]
