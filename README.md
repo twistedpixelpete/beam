@@ -22,6 +22,8 @@ The development UI now includes an optional native **Beam workspace**, contextua
 
 The **[Beam 0.13 onboarding package](output/pdf/onboarding-0.13/README.md)** includes the User Guide (PDF and editable DOCX), Quick Start, training project and 21-exercise companion. It covers all five Surface Analysis modes and includes the exact internal installation ZIP used for validation. The original 0.12 documentation baseline remains frozen.
 
+The **[Beam Review v0.1 local prototype](review/README.md)** demonstrates a read-only browser viewer for exported Beam studies. See its setup, acceptance evidence and future hosting design; no hosted service is provided.
+
 ## Install the beta
 
 **[Download Beam 0.8.1 Beta](https://github.com/twistedpixelpete/beam/releases/download/v0.8.1-beta/beam-0.8.1.zip)** · [Release notes](https://github.com/twistedpixelpete/beam/releases/tag/v0.8.1-beta)
