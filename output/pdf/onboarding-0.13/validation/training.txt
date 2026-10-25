@@ -1,0 +1,12 @@
+00:01.432  blend            | Read blend: "/Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.12/Beam_Training_Project.blend"
+Info: Saved as "Beam_Training_Project.blend"
+Info: Exported 3 projector(s) to /Users/petelynn/Documents/projection-study/output/pdf/onboarding-0.13/Beam_projectors.csv
+Warning: 2 × Draw window and swap: 11.3977 ms, average: 5.69885400 ms
+Warning: 2 × Draw window and swap: 15.3620 ms, average: 7.68102100 ms
+Warning: 2 × Draw window and swap: 16.3415 ms, average: 8.17074999 ms
+Warning: 2 × Draw window and swap: 15.2783 ms, average: 7.63916700 ms
+Warning: 2 × Draw window and swap: 16.2329 ms, average: 8.11645850 ms
+ONBOARDING 0.13 TRAINING PASS
+00:11.060  blend            | Saved session recovery to "/var/folders/x3/qb1vzzfx6ndd_gvdhxy7ly3h0000gn/T/quit.blend"
+
+Blender quit

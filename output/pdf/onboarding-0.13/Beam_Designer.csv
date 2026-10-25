@@ -1,0 +1,4 @@
+Name,Resolution X,Resolution Y,Brightness (lum),Throw Ratio,Lens Shift Horizontal,Lens Shift Vertical,Position X (m),Position Y (m),Position Z (m),Rotation X (deg),Rotation Y (deg),Rotation Z (deg)
+PJ01,1920,1200,9400,1,0,0,-5.599999905,2.300000429,3.600000381,-4.465629455e-06,0,0
+PJ02,1920,1200,20000,1,0,0,-0.1600008011,2.300000429,3.600000381,-4.465629455e-06,0,0
+PJ03,1920,1200,20000,1,0,0,5.279998302,2.300000429,3.600000381,-4.465629455e-06,0,0

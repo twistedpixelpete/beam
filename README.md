@@ -18,6 +18,10 @@ The development UI now includes an optional native **Beam workspace**, contextua
 
 **[Internal-beta readiness assessment, PATCH integration and soak evidence](docs/INTERNAL-BETA-READINESS.md)**. The 0.12 onboarding baseline remains frozen. See the [0.13 Surface Intelligence delta](docs/manual/0.13-SURFACE-INTELLIGENCE-DELTA.md) and [engineering review / field validation](docs/surface-intelligence/PR8-REVIEW.md). No stable release has been published.
 
+## Current internal onboarding
+
+The **[Beam 0.13 onboarding folder](output/pdf/Beam_Onboarding)** starts with START_HERE.pdf and includes the User Guide, Quick Start, training project and 21-exercise companion. It covers all five Surface Analysis modes and includes the exact internal installation ZIP used for validation. The original 0.12 documentation baseline remains frozen. Editable sources and validation evidence stay in the internal build folder; they are excluded from the user download.
+
 ## Install the beta
 
 **[Download Beam 0.8.1 Beta](https://github.com/twistedpixelpete/beam/releases/download/v0.8.1-beta/beam-0.8.1.zip)** · [Release notes](https://github.com/twistedpixelpete/beam/releases/tag/v0.8.1-beta)

@@ -1,0 +1,23 @@
+{
+  "exporter": "Beam",
+  "exporter_version": "1.2.0",
+  "transform_convention": "beam_mapping_matter_transform_v1",
+  "exported_at": "2026-10-25T02:24:46+00:00",
+  "csv_sha256": "06e89bb24a6d78d5e2cc922d7a6184a97c0f8a0d6c80050aa89cbae9682fa527",
+  "projectors": [
+    {
+      "name": "PJ01",
+      "uuid": "cbadf57f-df25-4717-babd-69d3360774e7"
+    },
+    {
+      "name": "PJ02",
+      "uuid": "f440a4f7-2e91-496e-92d7-ab9107504261"
+    },
+    {
+      "name": "PJ03",
+      "uuid": "ec7181b7-eec2-40f4-9c14-57155f29bf6d"
+    }
+  ],
+  "validation_scope": "Mapping Matter export fixtures",
+  "designer_application_tested": false
+}

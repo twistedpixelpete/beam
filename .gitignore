@@ -5,3 +5,6 @@ work/
 dist/
 *.blend1
 *.blend2
+
+# Historical onboarding remains on docs/beam-onboarding-package.
+output/pdf/onboarding-0.12/

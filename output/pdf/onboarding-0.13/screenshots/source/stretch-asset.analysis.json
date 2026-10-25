@@ -1,0 +1,39 @@
+{
+  "analysis_uuid": "4574af0e-709d-4614-9771-8d93214ce7a3",
+  "mode": "STRETCH",
+  "generated_at": "2026-10-25T00:31:58+00:00",
+  "receiver_uuid": "d68e4be0-f403-49e4-baee-2a3ff7c2c234",
+  "receiver_name": "TRAINING_Curved_Receiver",
+  "projector_uuids": [
+    "cbadf57f-df25-4717-babd-69d3360774e7",
+    "f440a4f7-2e91-496e-92d7-ab9107504261",
+    "ec7181b7-eec2-40f4-9c14-57155f29bf6d"
+  ],
+  "statistics": {
+    "surface_area_m2": 4.031579647508099,
+    "nominal_covered_area_m2": 4.031579647508099,
+    "visible_covered_area_m2": 4.031579647508099,
+    "coverage_percent": 100.0,
+    "uncovered_percent": 0.0,
+    "overlap_area_m2": 0,
+    "overlap_percent": 0.0,
+    "overlap_percent_of_covered": 0.0,
+    "density_min_px_m": 224.85494213790273,
+    "density_max_px_m": 383.99087966663285,
+    "density_average_px_m": 340.8955359289997,
+    "density_variation_percent": 46.68173113357351,
+    "min_anisotropy": 1.0002729280375782,
+    "average_anisotropy": 1.140606104693921,
+    "max_anisotropy": 1.6522171034055604,
+    "sample_count": 8192,
+    "occluded_sample_count": 0,
+    "occluded_sample_percent": 0.0
+  },
+  "method": "Equal-area systematic triangle strata, deterministic barycentric samples; area-weighted estimates",
+  "visibility": "CPU evaluated-geometry first hit, opaque two-sided surfaces; not GPU depth; transparent materials treated opaque",
+  "untested": "Between-sample regions and invisible/excluded scene geometry; thin features may be missed",
+  "metric_selection": "Best visible projector by conservative worst-direction density at each sample",
+  "colour_scale": "Anisotropy 1:1 to 3:1; colours saturate above 3:1",
+  "image_filename": "stretch-asset.png",
+  "image_sha256": "26098f97fa6045a1afd5b7307f774d56ac2438bc29d66739b47abf5b8f5ea419"
+}
