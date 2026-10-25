@@ -21,6 +21,8 @@ try:
             area=next((a for a in bpy.context.screen.areas if a.type=='VIEW_3D'),None)
             if area is None: raise RuntimeError('Keep a 3D View open for GPU integration tests')
             region=next(r for r in area.regions if r.type=='WINDOW')
+            # Scene switches need a current view matrix before camera-frame assertions.
+            area.spaces.active.region_3d.update()
             with bpy.context.temp_override(area=area,region=region):
                 exec(compile(path.read_text(),str(path),'exec'),{'__file__':str(path),'root':root})
         finally:

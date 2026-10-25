@@ -1,0 +1,26 @@
+00:00.312  blend.writefile  | WARNING Found an ID 'OBSCR009 · Screen' flagged as copy/paste clipboard data while writing a regular blendfile, clearing the flag
+00:00.336  blend            | Read blend: "/Users/petelynn/Documents/projection-study/work/screen-edges/reload.blend"
+Info: File exported successfully
+
+FBX export starting... '/Users/petelynn/Documents/projection-study/work/screen-edges/.beam-export-e16phhcb.fbx'
+export finished in 0.0021 sec.
+FBX version: 7400
+Info: File exported successfully
+
+FBX export starting... '/Users/petelynn/Documents/projection-study/work/screen-edges/.beam-export-5m8r76xa.fbx'
+export finished in 0.0010 sec.
+FBX version: 7400
+Info: Copied 1 selected object(s)
+Info: 1 object(s) pasted
+Info: Found IDs flagged as copy/paste clipboard data while writing a regular blendfile, the flag has been cleared in these IDs
+Info: Saved as "reload.blend"
+SCREEN EDGE ACCEPTANCE PASS
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+Writing to /Users/petelynn/Documents/projection-study/work/screen-edges/.beam-export-c7yrq5nl.obj
+OBJ export of '.beam-export-c7yrq5nl.obj' took 0.41 ms
+OBJ import of 'detailed.obj' took 0.78 ms
+Writing to /Users/petelynn/Documents/projection-study/work/screen-edges/.beam-export-qh8jz0bg.obj
+OBJ export of '.beam-export-qh8jz0bg.obj' took 0.16 ms
+OBJ import of 'centimetres.obj' took 0.13 ms
+
+Blender quit

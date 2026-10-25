@@ -26,5 +26,6 @@ for visible,expected in ((True,0),(False,3)):
  with patch.object(ui,'rail_visible',return_value=visible):ui.actions(layout,bpy.context)
  assert len(layout.calls)==expected
 assert bpy.ops.ps.export_json.get_rna_type().name=='Export Beam JSON'
-assert ui.BEAM_VERSION=='0.12.0'
+import tomllib
+assert ui.BEAM_VERSION==tomllib.loads((root/'projection_study/blender_manifest.toml').read_text())['version']
 addon.unregister();print('PRE-DOC UI PASS: five modules, narrow icons, wide labels, each active state/tooltips, hidden rail action fallback, current JSON search name/version')

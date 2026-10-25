@@ -1,0 +1,20 @@
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit
+test_all_active_material_outputs_wrapped (__main__.Review.test_all_active_material_outputs_wrapped) ... /Users/petelynn/Documents/projection-study/tests/blender_review_regressions.py:22: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  mat=bpy.data.materials.new(name);mat.use_nodes=True;self.mats.append(mat);self.wall.data.materials.append(mat)
+ok
+test_anchor_cache_invalidation (__main__.Review.test_anchor_cache_invalidation) ... ok
+test_explicit_screen_context_wins (__main__.Review.test_explicit_screen_context_wins) ... ok
+test_fake_user_does_not_leak_wrappers (__main__.Review.test_fake_user_does_not_leak_wrappers) ... ok
+test_geometry_edit_invalidates_cached_coverage (__main__.Review.test_geometry_edit_invalidates_cached_coverage) ... ok
+test_overlap_unit_switch_uses_live_anchor (__main__.Review.test_overlap_unit_switch_uses_live_anchor) ... ok
+test_restore_after_slot_reorder (__main__.Review.test_restore_after_slot_reorder) ... ok
+test_scaled_projector_not_reported_as_valid_coverage (__main__.Review.test_scaled_projector_not_reported_as_valid_coverage) ... ok
+test_screen_hole_rejected (__main__.Review.test_screen_hole_rejected) ... ok
+test_user_material_replacement_preserved (__main__.Review.test_user_material_replacement_preserved) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.028s
+
+OK

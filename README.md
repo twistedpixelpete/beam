@@ -1,6 +1,6 @@
 # Beam
 
-**Projection planning and screen building in Blender.** Maintained by **Twisted Pixel** · **0.12.0 — internal-beta candidate, unreleased, unreleased**
+**Projection planning and screen building in Blender.** Maintained by **Twisted Pixel** · **0.13.0 — controlled Internal Production Beta, unreleased**
 
 > **Still in testing.** Beam is a pre-release beta, not a stable production release. Expect bugs, incomplete workflows and changes between versions. Keep backups of your Blender files and independently verify geometry, measurements and exported data before production use.
 
@@ -16,7 +16,7 @@ The development UI now includes an optional native **Beam workspace**, contextua
 
 *Actual Beam viewport capture: three projectors, visible throw frustums, projected IDs and overlapping coverage on a 16 m screen.*
 
-**[Internal-beta readiness assessment, PATCH integration and soak evidence](docs/INTERNAL-BETA-READINESS.md)**. The new hardening work is under review; no stable release has been published.
+**[Internal-beta readiness assessment, PATCH integration and soak evidence](docs/INTERNAL-BETA-READINESS.md)**. The 0.12 onboarding baseline remains frozen. See the [0.13 Surface Intelligence delta](docs/manual/0.13-SURFACE-INTELLIGENCE-DELTA.md) and [engineering review / field validation](docs/surface-intelligence/PR8-REVIEW.md). No stable release has been published.
 
 ## Install the beta
 
@@ -221,3 +221,7 @@ The development build includes an original charcoal/blue Blender theme. See [the
 ### UI/UX refinement beta
 
 The latest local refinement adds a native left module rail, measured values with separate edit buttons, a compact Auto Blend preview, and Apply/Restore Theme. See the [refinement guide and screenshots](docs/UI-UX-REFINEMENT.md). Theme application remains optional and application-wide.
+
+## Surface Intelligence internal beta
+
+Beam 0.13 adds Estimated Illuminance, Projection Distance and Observer Acuity in **0.13.0 — controlled Internal Production Beta**. See the [workflow delta](docs/surface-intelligence/USER_DELTA.md), [maths and assumptions](docs/surface-intelligence/MATHS_AND_ASSUMPTIONS.md), and [reference comparison](docs/surface-intelligence/MAPPING_MATTER_COMPARISON.md). The frozen 0.12.0 user guide is unchanged. This is not a stable/public release.

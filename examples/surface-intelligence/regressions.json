@@ -1,0 +1,77 @@
+[
+  {
+    "test": "blender_surface_intelligence_ab",
+    "exit_code": 0,
+    "log": "work/si-blender_surface_intelligence_ab.log"
+  },
+  {
+    "test": "blender_surface_production",
+    "exit_code": 0,
+    "log": "work/si-blender_surface_production.log"
+  },
+  {
+    "test": "blender_hardening_lifecycle",
+    "exit_code": 0,
+    "log": "work/si-blender_hardening_lifecycle.log"
+  },
+  {
+    "test": "blender_hardening_migration",
+    "exit_code": 0,
+    "log": "work/si-blender_hardening_migration.log"
+  },
+  {
+    "test": "blender_hardening_edges",
+    "exit_code": 0,
+    "log": "work/si-blender_hardening_edges.log"
+  },
+  {
+    "test": "blender_ui_context",
+    "exit_code": 0,
+    "log": "work/si-blender_ui_context.log"
+  },
+  {
+    "test": "blender_pre_doc_ui",
+    "exit_code": 0,
+    "log": "work/si-blender_pre_doc_ui.log"
+  },
+  {
+    "test": "blender_json_contract",
+    "exit_code": 0,
+    "log": "work/si-blender_json_contract.log"
+  },
+  {
+    "test": "blender_group_lifecycle",
+    "exit_code": 0,
+    "log": "work/si-blender_group_lifecycle.log"
+  },
+  {
+    "test": "blender_screen_builder",
+    "exit_code": 0,
+    "log": "work/si-blender_screen_builder.log"
+  },
+  {
+    "test": "blender_screen_edges",
+    "exit_code": 0,
+    "log": "work/si-blender_screen_edges.log"
+  },
+  {
+    "test": "blender_frustum_helpers",
+    "exit_code": 0,
+    "log": "work/si-blender_frustum_helpers.log"
+  },
+  {
+    "test": "blender_review_regressions",
+    "exit_code": 0,
+    "log": "work/si-blender_review_regressions.log"
+  },
+  {
+    "test": "blender_planning_milestone",
+    "exit_code": 0,
+    "log": "work/si-blender_planning_milestone.log"
+  },
+  {
+    "test": "blender_theme",
+    "exit_code": 0,
+    "log": "work/si-blender_theme.log"
+  }
+]

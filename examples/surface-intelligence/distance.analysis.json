@@ -1,0 +1,73 @@
+{
+  "analysis_uuid": "d8aeffed-cfd6-4ae0-9dfd-6d2651ea3874",
+  "mode": "DISTANCE",
+  "analysis_type": "distance",
+  "generated_at": "2026-10-25T02:11:07+00:00",
+  "receiver_uuid": "026725d2-4aaf-4afa-857e-fbb632f4a509",
+  "receiver_name": "Flat Receiver",
+  "projector_uuids": [
+    "5a515829-e8ba-430f-b870-dcc4214d1d20",
+    "5d5bce05-c0e2-4fcd-a81a-d7f1dedb09c1",
+    "d514b454-7b4d-45a6-8f17-15caae6bf986"
+  ],
+  "statistics": {
+    "surface_area_m2": 32.0,
+    "nominal_covered_area_m2": 32.0,
+    "visible_covered_area_m2": 32.0,
+    "coverage_percent": 100.0,
+    "uncovered_percent": 0.0,
+    "overlap_area_m2": 32.0,
+    "overlap_percent": 100.0,
+    "overlap_percent_of_covered": 100.0,
+    "density_min_px_m": 134.3999967263778,
+    "density_max_px_m": 140.0000243141424,
+    "density_average_px_m": 138.97393604079264,
+    "density_variation_percent": 4.029552409108453,
+    "min_anisotropy": 1.0000000001011802,
+    "average_anisotropy": 1.0000000094435575,
+    "max_anisotropy": 1.000000024753671,
+    "sample_count": 8192,
+    "occluded_sample_count": 0,
+    "occluded_sample_percent": 0.0,
+    "illuminance_min_lux": 348.44443025446543,
+    "illuminance_average_lux": 449.04710830339985,
+    "illuminance_max_lux": 544.4446373099368,
+    "illuminance_uniformity_min_average": 0.7759640888702439,
+    "illuminance_uniformity_min_max": 0.6399997472215085,
+    "distance_min_m": 10.000042926817965,
+    "distance_average_m": 10.151954669836963,
+    "distance_max_m": 10.626611306922987,
+    "distance_variation_m": 0.6265683801050219,
+    "acuity_min_arcmin": 1.629335373235389,
+    "acuity_average_arcmin": 1.6773606359789635,
+    "acuity_max_arcmin": 1.7040150296611203,
+    "acuity_below_threshold_percent": 0.0,
+    "acuity_at_or_above_threshold_percent": 100.0,
+    "acuity_evaluated_area_m2": 28.08984375
+  },
+  "method": "Equal-area systematic triangle strata, deterministic barycentric samples; area-weighted estimates",
+  "visibility": "CPU evaluated-geometry first hit, opaque two-sided surfaces; not GPU depth; transparent materials treated opaque",
+  "untested": "Between-sample regions and invisible/excluded scene geometry; thin features may be missed",
+  "metric_selection": "Nearest visible projector by Euclidean lens-to-sample distance; unlit samples excluded",
+  "colour_scale": "See scale_range and display",
+  "scale_range": [
+    10.000042926817965,
+    10.626611306922987
+  ],
+  "display": {
+    "illuminance_scale": "FIXED",
+    "illuminance_max_lux": 1000.0,
+    "target_illuminance_lux": 300.0,
+    "display_units": "m"
+  },
+  "assumptions": [
+    "Estimated incident illuminance, not calibrated photometry or luminance.",
+    "Uniform luminous flux per raster pixel; two-sided opaque receiver geometry.",
+    "Flux = nominal lumens \u00d7 stack quantity \u00d7 brightness / 100; visible sources add.",
+    "No measured brightness distribution, lens transmission, ageing, calibration losses, colour-mode losses or edge falloff.",
+    "No screen gain, reflectance, ambient illumination, black level or colourimetry."
+  ],
+  "observer": null,
+  "image_filename": "distance.png",
+  "image_sha256": "e023ba559fd17cc217456cd2c4719668c7f502cb20a17a49bc717322ad30be23"
+}
