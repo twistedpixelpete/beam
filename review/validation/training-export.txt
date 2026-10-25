@@ -1,0 +1,1 @@
+PASS: training package with fresh Acuity/illuminance/distance results; authoring context restored; existing package refused

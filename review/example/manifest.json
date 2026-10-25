@@ -1,0 +1,31 @@
+{
+  "schema": "beam-review",
+  "schema_version": "0.1.0",
+  "product": "Beam Review",
+  "maintainer": "Twisted Pixel",
+  "project_uuid": "b9faf6c3-dff3-46a1-9ed5-4a6e598334c9",
+  "revision_uuid": "22dc96bf-7aec-4d85-82f1-8329d5f7cde8",
+  "revision_label": "0.13 training",
+  "created_at": "2026-10-25T02:32:30+00:00",
+  "beam": "beam.json",
+  "scene": "scene.glb",
+  "coordinates": {
+    "beam": "right-handed Z-up metres",
+    "scene": "right-handed Y-up metres",
+    "beam_to_scene": "[x, z, -y]"
+  },
+  "analysis": "Exported Authoring results only; no browser recomputation",
+  "warnings": [
+    "Prototype review geometry is not a calibrated projection render. Procedural Blender shaders may not translate to glTF."
+  ],
+  "files": {
+    "beam.json": {
+      "sha256": "867068b793ff9c241a4b14eafa6e185099672fd3bf5bf5c8c78546cd2512a76f",
+      "bytes": 1068474
+    },
+    "scene.glb": {
+      "sha256": "62c4fbba26c1c9c0397ea6ade8a5b640b75832a1189625c4a43d5e6b05bcf639",
+      "bytes": 75936
+    }
+  }
+}

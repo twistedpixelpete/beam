@@ -133,6 +133,7 @@ def exports(layout,context):
     layout.operator('ps.export',text='Mapping Matter CSV',icon='EXPORT')
     layout.operator('beam.export_designer',text='Designer CSV',icon='EXPORT')
     layout.operator('ps.export_json',text='Beam JSON',icon='FILE_TEXT')
+    layout.operator('beam.export_review',text='Export for Beam Review · Prototype',icon='WORLD')
     status(layout,'Two explicit CSV formats · see export notes')
     layout.operator('beam.study_package',text='Study Package · JSON + HTML + Views',icon='EXPORT')
     box=section(layout,'image_exports','Images')

@@ -1,11 +1,11 @@
 """Beam: Blender 4.5+ extension. GPL-3.0-or-later."""
 import bpy
-from . import analysis_ui,export_designer,observer
+from . import analysis_ui,export_designer,observer,review_export
 from . import screens, inverse_solver, auto_layout, reverse_mapping, ui_workspace, ui_icons, ui_theme, ui_planning
 from . import blend_groups, presentation, local_orientation, group_lifecycle
 from . import projector_data, operators, ui, runtime, viewport_display, export_disguise, study_data, study_views, export_json
 
-CLASSES = (*observer.CLASSES,export_designer.BEAM_OT_export_designer,*analysis_ui.CLASSES,*inverse_solver.CLASSES,*auto_layout.CLASSES,*reverse_mapping.CLASSES,*screens.CLASSES,*group_lifecycle.CLASSES,*blend_groups.CLASSES,*presentation.CLASSES,*study_data.CLASSES, projector_data.PS_Settings, *operators.CLASSES, export_disguise.PS_OT_export, *study_views.CLASSES, export_json.PS_OT_export_json, *ui_workspace.CLASSES,*ui_theme.CLASSES,*ui_planning.CLASSES,*ui.CLASSES)
+CLASSES = (review_export.BEAM_OT_export_review,*observer.CLASSES,export_designer.BEAM_OT_export_designer,*analysis_ui.CLASSES,*inverse_solver.CLASSES,*auto_layout.CLASSES,*reverse_mapping.CLASSES,*screens.CLASSES,*group_lifecycle.CLASSES,*blend_groups.CLASSES,*presentation.CLASSES,*study_data.CLASSES, projector_data.PS_Settings, *operators.CLASSES, export_disguise.PS_OT_export, *study_views.CLASSES, export_json.PS_OT_export_json, *ui_workspace.CLASSES,*ui_theme.CLASSES,*ui_planning.CLASSES,*ui.CLASSES)
 
 def register():
     for cls in CLASSES:
