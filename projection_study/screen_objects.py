@@ -1,6 +1,6 @@
 """Transactional screen creation, explicit updates and independent identities."""
 import json,re
-import bpy,bmesh
+import bpy
 from mathutils import Matrix,Vector
 from . import screen_math,screen_uv,screen_surface,screen_data
 from .utils import new_uuid

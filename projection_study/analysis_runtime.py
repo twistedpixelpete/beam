@@ -1,7 +1,6 @@
 """Explicit area-stratified CPU analysis against evaluated scene geometry."""
 import math,time
 import bpy
-from mathutils import Vector
 from . import runtime,scene_geometry,target_raycast,surface_analysis
 CACHE={}
 

@@ -251,7 +251,7 @@ class BEAM_OT_create_group(bpy.types.Operator):
             if not self.from_selection: box.prop(self,'rows')
         elif not self.from_selection: box.prop(self,'count')
         box.prop(self,'input_mode'); box.prop(self,'overlap')
-        if self.from_selection: box.label(text='Keep existing transforms; use Apply to align later')
+        if self.from_selection: box.label(text='Keep existing transforms; use Reflow Group to align later')
     def execute(self,context):
         from .projector_object import selected,create as create_projector
         anchor=selected(context)

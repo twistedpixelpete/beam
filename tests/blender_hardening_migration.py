@@ -12,7 +12,7 @@ for index,name in enumerate(('examples/0.4/projection-acceptance.blend','example
  bpy.ops.wm.open_mainfile(filepath=str(root/name));runtime.refresh(True);before=snapshot();assert not analysis_runtime.CACHE
  assert all(v.analysis_overlay=='NONE' for v in bpy.context.scene.ps_study.views) if index<4 else True
  if index<4:assert all(o.ps.optics_model=='MANUAL' and o.ps.optics_lens=='MANUAL' for o in projector_object.projectors(bpy.context.scene))
- bpy.ops.wm.save_as_mainfile(filepath=str(out/f'copy-{index}.blend'));bpy.ops.wm.open_mainfile(filepath=str(out/f'copy-{index}.blend'));runtime.refresh(True);assert snapshot()==before;assert not analysis_runtime.CACHE
+ bpy.ops.wm.save_as_mainfile(filepath=str(out/f'copy-{index}.blend'));bpy.ops.wm.open_mainfile(filepath=str(out/f'copy-{index}.blend'));runtime.refresh(True);assert snapshot()==before, {key:(before[key],snapshot()[key]) for key in before if before[key]!=snapshot()[key]};assert not analysis_runtime.CACHE
  results.append(dict(fixture=name,projector_count=len(before['projectors']),status='PASS'))
 assert transform_conversion.CONVENTION_ID=='beam_mapping_matter_transform_v1' and transform_conversion.DESIGNER_CONVENTION_ID=='beam_designer_transform_v1'
 (out/'result.json').write_text(json.dumps(results,indent=2));print('MIGRATION PASS: five generations, stable UUIDs/presets/views/configuration, transient analysis and safe defaults')

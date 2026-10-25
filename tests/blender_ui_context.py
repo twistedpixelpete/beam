@@ -16,6 +16,13 @@ class UIContext(unittest.TestCase):
  def select(self,obj):
   for old in bpy.context.selected_objects:old.select_set(False)
   obj.select_set(True);bpy.context.view_layer.objects.active=obj;study_data.sync_selection(bpy.context)
+ def test_restored_scene_does_not_inherit_previous_selection_pointer(self):
+  s=bpy.context.scene.ps_study;s.active_projector=self.pj;s.inspector='PROJECTOR'
+  self.select(self.screen);s.inspector='PROJECTOR'
+  study_data._seen_selection[bpy.context.scene.as_pointer()]=self.pj.as_pointer()
+  ui_context.clear()  # Same handler used by file-load and Undo/Redo.
+  self.assertFalse(study_data.sync_selection(bpy.context))
+  self.assertEqual(s.inspector,'PROJECTOR');self.assertEqual(s.active_projector,self.pj)
  def test_pin_and_receiver_are_independent(self):
   s=bpy.context.scene.ps_study;self.select(self.pj);s.pin_context=True;self.select(self.screen)
   self.assertEqual(study_data.active(bpy.context),self.pj);self.assertEqual(s.inspector,'PROJECTOR');self.assertEqual(ui_context.receiver(bpy.context),self.screen)

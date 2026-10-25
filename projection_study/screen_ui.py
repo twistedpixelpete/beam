@@ -1,6 +1,5 @@
 """Context-sensitive creation/edit panels using Beam's native layout language."""
 import textwrap
-import bpy
 from . import screen_data,screen_math,screen_objects
 from .ui import section,readout
 
