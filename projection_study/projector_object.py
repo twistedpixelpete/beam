@@ -34,17 +34,75 @@ def body_mesh(name, unit):
     return mesh
 
 
+def is_projector_model(obj):
+    """Projector descendants are visual models, never receiving geometry."""
+    parent = obj.parent
+    while parent:
+        if parent.ps.is_projector:
+            return True
+        parent = parent.parent
+    return False
+
+
+def set_body_visibility(obj, visible):
+    """Swap mesh datablocks, preserving edited geometry and material slots."""
+    if obj.type != 'MESH':
+        return
+    p = obj.ps
+    if visible:
+        if p.hidden_body_mesh is None and not obj.data.get('beam_empty_body'):
+            return
+        if p.hidden_body_mesh is None:
+            mesh = body_mesh(obj.name, bpy.context.scene.unit_settings.scale_length)
+            assign_body_materials(mesh)
+        else:
+            mesh = p.hidden_body_mesh
+        old = obj.data
+        obj.data = mesh
+        p.hidden_body_mesh = None
+        if old.users == 0 and old.get('beam_empty_body'):
+            bpy.data.meshes.remove(old)
+    else:
+        if obj.data.get('beam_empty_body'):
+            return
+        p.hidden_body_mesh = obj.data
+        empty = bpy.data.meshes.new(obj.name + ' Hidden Body')
+        empty['beam_empty_body'] = True
+        obj.data = empty
+
+
+def assign_body_materials(mesh):
+    for suffix, colour in [('Chassis',(.085,.10,.12,1)),('Lens',(.025,.06,.075,1))]:
+        material = bpy.data.materials.get('Beam '+suffix)
+        if material is None:
+            material = bpy.data.materials.new('Beam '+suffix)
+            material.diffuse_color = colour
+        mesh.materials.append(material.copy())
+    if mesh.polygons:
+        mesh.polygons[-1].material_index = 1
+
+
 def create(context, source=None):
     scene = context.scene
     unit = scene.unit_settings.scale_length
     name = next_identifier([o.ps.identifier for o in projectors(scene)] + list(bpy.data.objects.keys()))
-    obj = bpy.data.objects.new(name, body_mesh(name, unit))
+    show_body = source.ps.show_body if source else scene.ps_study.create_projector_body
+    mesh = source.data.copy() if source else body_mesh(name, unit) if show_body else bpy.data.meshes.new(name+' Hidden Body')
+    if source:
+        for i, material in enumerate(mesh.materials):
+            if material: mesh.materials[i] = material.copy()
+    if not source:
+        if show_body:
+            assign_body_materials(mesh)
+        else:
+            mesh['beam_empty_body'] = True
+    obj = bpy.data.objects.new(name, mesh)
     from .ui_collections import collection
     destination=collection(scene,'PROJECTORS');destination.objects.link(obj)
     p = obj.ps
     if source:
         for prop in p.bl_rna.properties:
-            if prop.identifier not in {'rna_type','is_projector','uuid','identifier'} and not prop.is_readonly:
+            if prop.identifier not in {'rna_type','is_projector','uuid','identifier','show_body','hidden_body_mesh'} and not prop.is_readonly:
                 setattr(p, prop.identifier, getattr(source.ps, prop.identifier))
         obj.matrix_world = source.matrix_world.copy()
         if p.image:p.image=p.image.copy()
@@ -54,13 +112,10 @@ def create(context, source=None):
         p.colour = PALETTE[(int(name[2:])-1)%len(PALETTE)]
     p.colour = PALETTE[(int(name[2:])-1)%len(PALETTE)]
     p.identifier, p.uuid, p.is_projector = name, new_uuid(), True
-    for suffix,colour in [('Chassis',(.085,.10,.12,1)),('Lens',(.025,.06,.075,1))]:
-        material = bpy.data.materials.get('Beam '+suffix)
-        if material is None:
-            material = bpy.data.materials.new('Beam '+suffix)
-            material.diffuse_color = colour
-        obj.data.materials.append(material.copy())
-    obj.data.polygons[-1].material_index = 1
+    # Set without the visibility callback: the mesh above already matches.
+    p['show_body'] = show_body
+    if source and source.ps.hidden_body_mesh:
+        p.hidden_body_mesh = source.ps.hidden_body_mesh.copy()
     obj.lock_scale = (True,True,True)
     obj.color = (*p.colour,1)
     obj.show_name = False

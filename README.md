@@ -175,3 +175,32 @@ Run Blender integration scripts only in disposable sessions: some create scenes 
 - [Surface Intelligence comparison and limits](docs/surface-intelligence/MAPPING_MATTER_COMPARISON.md).
 
 Licensed under **GPL-3.0-or-later**.
+
+### Projector bodies and custom models
+
+In the **Projector** inspector, **Body for New Projectors** controls whether new
+projectors receive the built-in chassis. Duplicates inherit the source projector's
+body setting. Existing files keep their bodies visible by default.
+
+Expand **Projector Body** and turn **Show Body** off to hide only the body in both
+the viewport and renders. Projection, frustums, labels and optics remain enabled.
+Toggle it in Object Mode. The original mesh, including edits and materials, is
+preserved and restored when you turn it on again. A projector created without a
+body gets the standard chassis the first time you enable it. Use the Outliner to
+select a projector with no visible body.
+
+To use your own model:
+
+1. Turn off **Show Body** on the Beam projector.
+2. Position your model with its lens at the projector origin. The projector's local
+   **−Z** axis points forward and **+Y** points up.
+3. Select the custom model, then Shift-select the Beam projector as the active
+   object. Use Blender's **Object → Parent → Object (Keep Transform)**.
+
+All descendants of a Beam projector are treated as visual model parts and excluded
+from Beam receiver/occlusion sampling. Keep venue surfaces outside that hierarchy.
+Detaching a model makes it ordinary scene geometry again. Custom models retain
+Blender's own viewport/render visibility controls; **Show Body** controls only the
+projector object's mesh. Beam's **Duplicate** copies that mesh and its visibility
+setting, not separately parented model objects; duplicate the hierarchy in Blender
+when you also need those parts.
