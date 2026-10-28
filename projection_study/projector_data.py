@@ -26,7 +26,21 @@ def optics_changed(self,context):
     self.optics_lens='MANUAL'
     changed(self,context)
 
+def body_changed(self, context):
+    obj = self.id_data
+    if not self.is_projector:
+        return
+    if obj.mode != 'OBJECT':
+        self['show_body'] = not self.show_body
+        return
+    from .projector_object import set_body_visibility
+    set_body_visibility(obj, self.show_body)
+    appearance_changed(self, context)
+
+
 class PS_Settings(bpy.types.PropertyGroup):
+    show_body: BoolProperty(name='Show Body', description='Show the projector mesh in viewport and renders without hiding projection or labels', default=True, update=body_changed)
+    hidden_body_mesh: PointerProperty(type=bpy.types.Mesh, options={'HIDDEN'})
     optics_model: EnumProperty(name='Projector Preset',items=optics_library.projector_items(),default='MANUAL',update=optics_changed)
     optics_lens: EnumProperty(name='Lens',items=optics_library.lens_items,update=changed)
     data_version: IntProperty(default=0,options={'HIDDEN'})

@@ -49,6 +49,7 @@ def projector(layout,context):
     s=context.scene.ps_study;obj=selected(context);units=s.display_units
     row=layout.row(align=True);row.operator('ps.add',text='New Projector',icon='ADD')
     if obj:row.operator('ps.duplicate',text='Duplicate',icon='DUPLICATE')
+    layout.prop(s,'create_projector_body')
     if not obj:status(layout,'No projector selected');return
     p=obj.ps;record=runtime.CACHE.get(obj.as_pointer());status(layout,'TARGET' if record and record['hit'] else 'No Target',bool(record and record['hit']))
     actions(layout,context)
@@ -88,6 +89,12 @@ def projector(layout,context):
             apply=row.row(align=True);apply.enabled=not reason;apply.operator('beam.apply_target',text='',icon='CHECKMARK')
             row.operator('beam.apply_target',text='',icon='X').cancel=True
             if draft.message:status(box,draft.message,error=True)
+    box=section(layout,'projector_body','Projector Body',True)
+    if box:
+        row=box.row();row.enabled=obj.mode=='OBJECT';row.prop(p,'show_body')
+        box.label(text='Parent custom models to this projector.')
+        box.label(text='Lens origin · −Z forward · +Y up')
+        box.label(text='Child models do not block projection.')
     box=section(layout,'per_projector_display','This Projector · Annotations',True)
     if box:
         for a,b in [('show_identifier','show_projected_identifier'),('show_frustum','show_centre_ray'),('show_target_marker','show_grid')]:

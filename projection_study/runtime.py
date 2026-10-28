@@ -3,7 +3,7 @@ import bpy
 import math
 from bpy.app.handlers import persistent
 from mathutils import Vector
-from .projector_object import projectors
+from .projector_object import projectors, is_projector_model
 from .projection_math import calculate, image_point, camera_parameters
 
 CACHE = {}
@@ -96,7 +96,7 @@ def refresh(force=False):
         from .study_data import sync_selection
         did_change = sync_selection(bpy.context) or did_change
         membership=tuple((o.as_pointer(),o.data.as_pointer() if o.data else 0,o.visible_get())
-                         for o in scene.objects if o.type in {'MESH','CURVE','SURFACE','FONT','META'} and not o.ps.is_projector and not o.get('ps_helper'))
+                         for o in scene.objects if o.type in {'MESH','CURVE','SURFACE','FONT','META'} and not o.ps.is_projector and not o.get('ps_helper') and not is_projector_model(o))
         if membership!=_venue_membership:
             from .analysis_runtime import invalidate as invalidate_analysis
             invalidate_analysis()
@@ -235,6 +235,7 @@ def repair_identities(live,scene):
             if obj.parent and obj.parent.get('beam_layout_slot') and obj.as_pointer() not in grouped:
                 world=obj.matrix_world.copy(); obj.parent=None; obj.matrix_world=world
             if obj.data: obj.data=obj.data.copy()
+            if p.hidden_body_mesh: p.hidden_body_mesh=p.hidden_body_mesh.copy()
             if p.image:p.image=p.image.copy()
             for slot in obj.material_slots:
                 if slot.material: slot.material=slot.material.copy()

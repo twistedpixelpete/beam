@@ -73,6 +73,7 @@ def source_changed(self,context):
 
 
 class PS_SceneSettings(bpy.types.PropertyGroup):
+    create_projector_body: BoolProperty(name='Body for New Projectors', description='Create new projectors with a built-in body; duplicates inherit their source', default=True)
     analysis_receiver: PointerProperty(name='Receiver',type=bpy.types.Object,poll=lambda self,o:o.type=='MESH' and not o.ps.is_projector,update=analysis_changed)
     analysis_scope: EnumProperty(name='Projectors',items=[('ALL','All projectors',''),('PROJECTOR','Active projector',''),('GROUP','Active Blend Group','')],default='ALL',update=analysis_changed)
     analysis_detail: EnumProperty(name='Samples',items=[('512','Quick · 512',''),('2048','Standard · 2048',''),('8192','Detailed · 8192','')],default='2048',update=analysis_changed)
