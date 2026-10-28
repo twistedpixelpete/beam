@@ -72,7 +72,12 @@ def source_changed(self,context):
     else:redraw(self,context)
 
 
+from .cycles_projection import changed as render_changed
+
 class PS_SceneSettings(bpy.types.PropertyGroup):
+    projection_mode: EnumProperty(name='Projection Mode', items=[('PLANNING','Planning','Fast geometry-based viewport projection'),('CYCLES','Cycles Render','Material-aware projection in Cycles rendered views and F12; analysis remains geometry-based')], default='PLANNING',update=render_changed)
+    render_multiplier: FloatProperty(name='Render Intensity',description='Look-development multiplier; does not change engineering lux',default=1,min=0,max=1000,update=render_changed)
+    render_efficacy: FloatProperty(name='Assumed lm/W',description='Approximate luminous efficacy for converting nominal lumens to radiant watts; not calibrated photometry',default=300,min=1,max=683,update=render_changed)
     create_projector_body: BoolProperty(name='Body for New Projectors', description='Create new projectors with a built-in body; duplicates inherit their source', default=True)
     analysis_receiver: PointerProperty(name='Receiver',type=bpy.types.Object,poll=lambda self,o:o.type=='MESH' and not o.ps.is_projector,update=analysis_changed)
     analysis_scope: EnumProperty(name='Projectors',items=[('ALL','All projectors',''),('PROJECTOR','Active projector',''),('GROUP','Active Blend Group','')],default='ALL',update=analysis_changed)

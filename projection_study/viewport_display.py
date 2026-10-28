@@ -58,6 +58,10 @@ def draw_3d(options=None,projection=None):
     reverse_mapping.refresh_gpu()
     projection_renderer.prune_maps(runtime.CACHE)
     if options is None and not bpy.context.space_data.overlay.show_overlays and not presentation.active(bpy.context.area):return
+    # Explicit options mean a study export: retain the planning raster there.
+    render_output=(options is None and bpy.context.scene.ps_study.projection_mode=='CYCLES'
+                   and bpy.context.scene.render.engine=='CYCLES'
+                   and bpy.context.space_data.shading.type=='RENDERED')
     options=options or dict(labels=True,frustums=True,grids=True,overlays=True)
     if not options['overlays']: return
     projection=projection if projection is not None else bpy.context.region_data.perspective_matrix
@@ -76,7 +80,7 @@ def draw_3d(options=None,projection=None):
             if not record: continue
             p=obj.ps
             settings=bpy.context.scene.ps_study
-            if p.show_output and options['grids'] and settings.show_outputs:
+            if p.show_output and options['grids'] and settings.show_outputs and not render_output:
                 projection_renderer.draw(obj,record,projection,options.get('projected_identifiers',True) and settings.show_projected_identifiers,receiver_exclusions=reverse_keys)
             cached=_batches.get(key)
             if not cached or cached[0] is not record:
@@ -105,6 +109,10 @@ def draw_3d(options=None,projection=None):
 def draw_labels(projection,width,height,options=None):
     from . import typography
     from .display_units import dimension
+    # Explicit options mean a study export: retain the planning raster there.
+    render_output=(options is None and bpy.context.scene.ps_study.projection_mode=='CYCLES'
+                   and bpy.context.scene.render.engine=='CYCLES'
+                   and bpy.context.space_data.shading.type=='RENDERED')
     options=options or dict(labels=True,frustums=True,grids=True,overlays=True)
     from . import screen_display
     screen_display.labels(projection,width,height,options)

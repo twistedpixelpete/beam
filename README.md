@@ -4,7 +4,9 @@ Beam is a professional projection-planning and study tool built inside Blender. 
 
 **Maintainer:** Twisted Pixel
 
-**Current:** Beam 0.13.0 — Internal Production Beta
+**Development branch:** Beam 0.14.0 — Cycles Render internal beta candidate
+
+**Published baseline:** Beam 0.13.0 — Internal Production Beta
 
 **Tested:** Blender 5.2.2 LTS · macOS 26.7 · Apple silicon / Metal
 
@@ -204,3 +206,42 @@ Blender's own viewport/render visibility controls; **Show Body** controls only t
 projector object's mesh. Beam's **Duplicate** copies that mesh and its visibility
 setting, not separately parented model objects; duplicate the hierarchy in Blender
 when you also need those parts.
+
+### Cycles Render (0.14.0 development candidate)
+
+In the Beam inspector, expand **Projection Mode** and select **Cycles Render**.
+Choose **Cycles** in Blender's Render Properties, then use **Rendered** viewport
+shading or **F12**. Beam does not switch the render engine automatically. This
+feature is not included in the published 0.13.0 download above.
+
+Beam creates managed projector lights using the same throw, raster and shift settings.
+Receiver materials control transparency: an alpha image must actually be connected
+to the material's alpha/transparency shader. Transparent parts let light reach the
+surfaces behind. Cycles' transparent-bounce limit still applies to layered cloths.
+All existing output modes are available, including Identifier, and Blend Groups
+supply edge feathering and combined-canvas content from their actual anchor.
+
+**Render Intensity** adjusts the look without changing engineering lux.
+**Assumed lm/W** defaults to 300 and provides an approximate lumens-to-radiant-watts
+conversion, not calibrated photometry. Materials, exposure and indirect light affect
+the result. Rendered image brightness is not a measurement of installed projector
+performance. Generated calibration/identifier patterns are capped at 2048 pixels
+per dimension; custom image sources retain their original image datablocks.
+
+Planning remains the default. Solid/Material Preview continues to show the planning
+raster; the raster overlay is suppressed in Cycles Rendered shading to avoid drawing
+it twice. Study image exports remain planning exports (a rendered viewport is
+briefly switched to Solid and restored). Use F12 for the material-aware render.
+Analysis, targets, coverage and JSON/CSV export calculations remain geometry-based,
+so a visually transparent cloth still counts as solid in those engineering results.
+
+**Show Projected Output**, global **Projected Output**, render visibility and source
+collection exclusions control the generated lights. Custom projector models remain
+real Cycles geometry and can shadow the lens even though Beam ignores them during
+engineering sampling. Place their lens opening at the optical origin.
+
+Switching back to Planning or disabling Beam removes its generated lights and unused
+render-only assets. User lights and source images are preserved. Save with the mode
+enabled to retain a self-contained render rig in the blend file. This candidate has
+been tested on macOS with Blender 4.5.0 and 5.2.2, CPU rendering; other render devices
+and platforms still need validation.
