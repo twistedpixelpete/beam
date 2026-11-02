@@ -42,6 +42,7 @@ def check_projector_header(settings):
 
 def check_project_dropdown(settings):
     log = draw_project_settings(ui)
+    assert not [entry for entry in log if entry[0] == 'panel'], "Blender doesn't allow layout panels in a dropdown"
     for name in ('project_name', 'revision', 'venue', 'client', 'author', 'display_units', 'projection_mode', 'label_detail'):
         assert ('prop', name) in log, f'{name} should be in the project dropdown'
     assert ('operator', 'beam.workspace') in log and ('operator', 'beam.apply_theme') in log
