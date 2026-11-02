@@ -9,7 +9,7 @@ Run it in a new Blender, never one with work open:
 blender --factory-startup --python tests/feature_scene.py -- ~/Desktop/Beam-Test-Scene.blend --keep
 ```
 
-The script builds and checks the scene, saves it, reopens it and checks it again, then measures idle redraws with Reverse Mapping on. It writes the outcome to `Beam-Test-Scene.blend.result.json` next to the scene. With `--keep`, Blender stays open for hands-on testing. Without it, Blender quits, which suits automated runs. It needs a GPU viewport, so it can't run in background mode.
+The script builds and checks the scene, opens the Beam workspace, saves it, reopens it and checks it again, then measures idle redraws with Reverse Mapping on. It writes the outcome to `Beam-Test-Scene.blend.result.json` next to the scene. With `--keep`, Blender stays open for hands-on testing. Without it, Blender quits, which suits automated runs. It needs a GPU viewport, so it can't run in background mode.
 
 ## The rule for new features
 A feature isn't finished until it's in the scene. Each one adds:

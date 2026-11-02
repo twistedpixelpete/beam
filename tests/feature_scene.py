@@ -435,7 +435,17 @@ def build():
             view.view_rotation = (Vector((12, 6, 3)) - Vector((12, -90, 60))).to_track_quat('-Z', 'Y')
             view.view_distance, view.view_perspective = 135, 'PERSP'
             check_all('checks')
-            OUT.parent.mkdir(parents=True, exist_ok=True)
+            bpy.ops.beam.workspace()
+        # The window changes workspace on its next update, so save after that.
+        bpy.app.timers.register(save, first_interval=.5)
+    except Exception:
+        finish(traceback.format_exc())
+
+
+def save():
+    try:
+        OUT.parent.mkdir(parents=True, exist_ok=True)
+        with in_viewport():
             bpy.ops.wm.save_as_mainfile(filepath=str(OUT))
         bpy.app.timers.register(reopen, first_interval=.5)
     except Exception:
@@ -459,6 +469,8 @@ def after_reopen():
         if now != identities:
             report['failures'].append(f'Projector identities changed on reopen: {identities} became {now}')
         check_all('reopened')
+        if not bpy.context.window_manager.windows[0].workspace.get('beam_workspace'):
+            report['failures'].append('The scene should open on the Beam workspace')
         bpy.ops.wm.revert_mainfile()
         bpy.app.timers.register(idle_start, first_interval=4)
     except Exception:
