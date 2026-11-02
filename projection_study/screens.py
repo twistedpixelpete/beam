@@ -1,7 +1,10 @@
 """Screen subsystem lifecycle; existing projector data/export contracts stay separate."""
+import time
 import bpy
 from bpy.app.handlers import persistent
-from . import screen_data,screen_operators,screen_ui,screen_objects,screen_display
+from . import faults,screen_data,screen_operators,screen_ui,screen_objects,screen_display
+_seen_changes=-1
+_next_heartbeat=0.0
 CLASSES=(*screen_data.CLASSES,*screen_operators.CLASSES,*screen_ui.CLASSES)
 
 @persistent
@@ -17,9 +20,17 @@ def reset(*args):
     from . import layout_coverage
     layout_coverage._cache.clear()
 
+@faults.guarded('Screen updates')
 def tick():
+    global _seen_changes,_next_heartbeat
     from .group_lifecycle import defer_native_copy
-    if bpy.context.scene and not defer_native_copy(bpy.context):screen_objects.reconcile()
+    from . import runtime
+    now=time.monotonic()
+    if bpy.context.scene and (runtime.changes!=_seen_changes or now>=_next_heartbeat):
+        seen=runtime.changes
+        if not defer_native_copy(bpy.context):
+            screen_objects.reconcile()
+            _seen_changes=seen;_next_heartbeat=now+1
     return .25
 
 def register():

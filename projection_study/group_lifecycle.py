@@ -3,7 +3,7 @@ import json
 import bpy
 from .ui_collections import collection as ui_collection
 from mathutils import Matrix,Vector
-from . import blend_groups as groups
+from . import blend_groups as groups,faults
 from .projector_object import create as create_projector
 from .utils import new_uuid
 
@@ -11,6 +11,7 @@ _FIELDS=('layout','columns','rows','input_mode','previous_mode','overlap_h','ove
 _SKIP={'rna_type','is_projector','uuid','identifier','colour','target','has_target','target_point_m','target_distance_m'}
 _reconciling=False
 _snapshot_state={}
+_rejected={}
 
 
 def resize(group):
@@ -234,6 +235,12 @@ def defer_native_copy(context):
                for window in context.window_manager.windows for op in getattr(window,'modal_operators',()))
 
 
+def reject(controller,encoded,exc):
+    """Leave a copied group as ordinary objects, say why, and don't retry every tick."""
+    _rejected[controller.as_pointer()]=encoded
+    faults.report(f'Copied Blend Group {controller.name}',exc)
+
+
 def reconcile(context):
     """Convert native Shift-D/Alt-D/pasted controllers into complete new groups.
 
@@ -247,27 +254,35 @@ def reconcile(context):
         registered={g.controller.as_pointer() for scene in bpy.data.scenes for g in scene.ps_study.blend_groups if g.controller}
         for controller in [o for o in context.scene.objects if o.get('beam_group_uuid') and o.get('beam_group_recipe')]:
             if controller.as_pointer() in registered or not controller.get('beam_group_uuid') or not controller.get('beam_group_recipe'):continue
-            recipe=json.loads(controller['beam_group_recipe'])
-            if recipe.get('version')!=1:continue
-            # Preserve a native/user-provided translation; offset coincident copies.
-            original=matrix_units(recipe['world'],context.scene.unit_settings.scale_length)
-            coincident=(controller.matrix_world.translation-original.translation).length<1e-5
-            descendants=list(controller.children_recursive)
-            # Hidden layout slots may not be selected by native hierarchy duplication.
-            # Those new projectors still point to source slots: identify their copied
-            # UUIDs, excluding every registered source member, before identity repair.
-            source_ids={m.get('source_uuid') for m in recipe['members']}
-            owned={m.projector.as_pointer() for g in context.scene.ps_study.blend_groups for m in g.members if m.projector}
-            extras=[o for o in context.selected_objects if o.ps.is_projector and o.ps.uuid in source_ids and o.as_pointer() not in owned and o not in descendants]
-            for obj in extras:
-                descendants.extend([obj,*obj.children_recursive])
-            # Recipe image dependencies belong to the controller and survive cleanup.
-            deleting=[o for o in descendants if o.ps.is_projector or o.get('beam_layout_slot') or o.get('ps_helper')]
+            encoded=controller['beam_group_recipe']
+            if _rejected.get(controller.as_pointer())==encoded:continue
+            try:recipe=json.loads(encoded)
+            except ValueError as exc:
+                reject(controller,encoded,exc);continue
+            if not isinstance(recipe,dict) or recipe.get('version')!=1:continue
+            try:
+                # Preserve a native/user-provided translation; offset coincident copies.
+                original=matrix_units(recipe['world'],context.scene.unit_settings.scale_length)
+                coincident=(controller.matrix_world.translation-original.translation).length<1e-5
+                descendants=list(controller.children_recursive)
+                # Hidden layout slots may not be selected by native hierarchy duplication.
+                # Those new projectors still point to source slots: identify their copied
+                # UUIDs, excluding every registered source member, before identity repair.
+                source_ids={m.get('source_uuid') for m in recipe['members']}
+                owned={m.projector.as_pointer() for g in context.scene.ps_study.blend_groups for m in g.members if m.projector}
+                extras=[o for o in context.selected_objects if o.ps.is_projector and o.ps.uuid in source_ids and o.as_pointer() not in owned and o not in descendants]
+                for obj in extras:
+                    descendants.extend([obj,*obj.children_recursive])
+                # Recipe image dependencies belong to the controller and survive cleanup.
+                deleting=[o for o in descendants if o.ps.is_projector or o.get('beam_layout_slot') or o.get('ps_helper')]
+                # Build first: a recipe that cannot be restored must not cost the copy its members.
+                instantiate(recipe,context,controller,controller,offset=coincident)
+            except Exception as exc:
+                reject(controller,encoded,exc);continue
             for obj in descendants:
                 if obj not in deleting and obj.parent in deleting:
                     world=obj.matrix_world.copy();obj.parent=None;obj.matrix_world=world
             for obj in reversed(deleting):bpy.data.objects.remove(obj,do_unlink=True)
-            instantiate(recipe,context,controller,controller,offset=coincident)
     finally:_reconciling=False
 
 

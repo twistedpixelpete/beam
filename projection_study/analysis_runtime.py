@@ -1,6 +1,7 @@
 """Explicit area-stratified CPU analysis against evaluated scene geometry."""
 import math,time
 import bpy
+import numpy as np
 from mathutils import Vector
 from . import runtime,scene_geometry,target_raycast,surface_analysis
 CACHE={}
@@ -25,18 +26,18 @@ def analyse(context,receiver,projectors,budget=2048):
     viewer=context.scene.ps_study.analysis_observer
     if viewer and (viewer.name not in context.scene.objects or not viewer.beam_observer.is_observer):viewer=None
     eye=observer.eye_position(viewer,unit) if viewer else None
-    triangles=[]
-    for ids in surface.triangles:
-        a,b,c=(surface.vertices[i] for i in ids);cross=(b-a).cross(c-a);area=cross.length*.5*unit*unit
-        if area>1e-14:triangles.append((a,b,c,cross.normalized(),area))
-    total=sum(t[4] for t in triangles)
+    corners=surface.vertices[surface.triangles].astype(np.float64)
+    crosses=np.cross(corners[:,1]-corners[:,0],corners[:,2]-corners[:,0])
+    lengths=np.linalg.norm(crosses,axis=1);areas=lengths*.5*unit*unit
+    usable=areas>1e-14
+    corners,crosses,lengths,areas=corners[usable],crosses[usable],lengths[usable],areas[usable]
+    total=float(areas.sum())
     if not total:raise ValueError('Receiver has no analysable area')
     # Equal-area systematic strata across the cumulative triangle-area distribution.
-    samples=[];j=0;cumulative=triangles[0][4]
+    samples=[];cumulative=np.cumsum(areas)
+    chosen=np.minimum(np.searchsorted(cumulative,(np.arange(budget)+.5)*total/budget,side='left'),len(areas)-1)
     for k in range(budget):
-        position=(k+.5)*total/budget
-        while position>cumulative and j<len(triangles)-1:j+=1;cumulative+=triangles[j][4]
-        a,b,c,n,area=triangles[j]
+        j=chosen[k];a,b,c=(Vector(v) for v in corners[j]);n=Vector(crosses[j]/lengths[j])
         f=math.sqrt((k*.7548776662466927+.5)%1);g=(k*.5698402909980532+.5)%1
         point=(1-f)*a+f*(1-g)*b+f*g*c
         facing=1 if n.dot(runtime.CACHE[projectors[0].as_pointer()]['origin']-point)>=0 else -1

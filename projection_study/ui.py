@@ -203,7 +203,17 @@ def reverse(layout,context):
         row.operator('beam.receiver_action',text='Restore Materials' if p.enabled else 'Enable on Receiver').action='DISABLE' if p.enabled else 'ENABLE'
 
 
+def draw_faults(layout):
+    from . import faults
+    lines=faults.summary()
+    if not lines:return
+    box=layout.box();box.alert=True
+    box.label(text='Beam needs attention · details in the system console',icon='ERROR')
+    for line in lines:box.label(text=line)
+
+
 def draw(layout,context):
+    draw_faults(layout)
     from . import presentation,ui_workspace
     s=context.scene.ps_study;layout.use_property_decorate=False
     row=layout.row(align=True);row.label(text='BEAM')

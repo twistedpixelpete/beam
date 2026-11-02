@@ -1,6 +1,6 @@
 """Optional native workspace and viewport-context bridges. No theme overrides."""
 import bpy
-from . import ui_context
+from . import faults,ui_context
 from .study_views import viewport
 _seen_ui={}
 
@@ -130,6 +130,7 @@ class BEAM_OT_draft_preset(bpy.types.Operator):
         return {'FINISHED'}
 
 
+@faults.guarded('Beam panel updates')
 def tick():
     if not hasattr(bpy.types.Scene,'ps_study'):return None
     # Selection and summaries update outside panel drawing, on a modest UI cadence.
@@ -147,7 +148,7 @@ def tick():
                          s.blend_group_index,s.view_index,tuple((key,id(value)) for key,value in runtime.CACHE.items()),
                          receiver.beam_reverse.status if receiver else '',receiver.as_pointer() if receiver else None,
                          bpy.context.window_manager.beam_target.field,
-                         bpy.context.window_manager.beam_target.value,bpy.context.window_manager.beam_target.message)
+                         bpy.context.window_manager.beam_target.value,bpy.context.window_manager.beam_target.message,faults.summary())
             if _seen_ui.get(window.as_pointer())!=fingerprint:
                 _seen_ui[window.as_pointer()]=fingerprint
                 for area in window.screen.areas:

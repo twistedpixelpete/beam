@@ -6,7 +6,7 @@ import time
 from mathutils import Matrix
 from .utils import new_uuid
 from .interchange import beam_filename, timestamp, write_png
-from . import runtime, viewport_display, typography
+from . import runtime, scene_geometry, viewport_display, typography
 
 _captures=[]
 _navigation={}
@@ -356,11 +356,9 @@ def depth_pass(context,graph):
             if not instance.is_instance and not obj.original.visible_get(): continue
             mesh=obj.to_mesh()
             try:
-                mesh.calc_loop_triangles()
-                if not mesh.loop_triangles: continue
-                positions=[instance.matrix_world@v.co for v in mesh.vertices]
-                indices=[tuple(t.vertices) for t in mesh.loop_triangles]
-                batch=batch_for_shader(shader,'TRIS',{'pos':positions},indices=indices)
+                local,indices=scene_geometry.mesh_arrays(mesh)
+                if not len(indices): continue
+                batch=batch_for_shader(shader,'TRIS',{'pos':scene_geometry.to_world(local,instance.matrix_world)},indices=indices)
                 shader.bind(); shader.uniform_float('color',(0,0,0,0)); batch.draw(shader)
             finally: obj.to_mesh_clear()
     finally:
