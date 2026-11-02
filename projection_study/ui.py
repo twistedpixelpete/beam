@@ -247,6 +247,8 @@ def draw(layout,context):
         current=context.view_layer.objects.active;active=ui_context.subject(context)
         if current!=active:
             row=layout.row();row.label(text='Selected: '+(current.name if current else '—'),icon='RESTRICT_SELECT_OFF')
+        if current and current.get('ps_helper') and current.parent and current.parent.ps.is_projector:
+            layout.operator('beam.select_projector',text='Select '+current.parent.ps.identifier,icon='RESTRICT_SELECT_OFF')
         row=layout.row(align=True)
         if s.inspector in {'PROJECTOR','SCREEN'}:row.prop(s,'active_projector' if s.inspector=='PROJECTOR' else 'active_screen',text='Pinned' if s.pin_context else 'Active')
         else:row.label(text=('Pinned: ' if s.pin_context else 'Active: ')+(active.name if active else '—'))
@@ -326,6 +328,16 @@ class BEAM_OT_inspector(bpy.types.Operator):
     def description(cls,context,properties):return next(t+' inspector' for k,t,i in MODULES if k==properties.kind)
     def execute(self,context):context.scene.ps_study.inspector=self.kind;return {'FINISHED'}
 
+class BEAM_OT_select_projector(bpy.types.Operator):
+    bl_idname='beam.select_projector';bl_label='Select Projector';bl_description="Select the projector this helper belongs to; helpers can't be moved themselves";bl_options={'UNDO'}
+    def execute(self,context):
+        helper=context.view_layer.objects.active
+        if not helper or not helper.get('ps_helper') or not helper.parent or not helper.parent.ps.is_projector:return {'CANCELLED'}
+        for item in context.selected_objects:item.select_set(False)
+        projector=helper.parent
+        projector.hide_set(False);projector.select_set(True);context.view_layer.objects.active=projector
+        return {'FINISHED'}
+
 class BEAM_OT_select_group(bpy.types.Operator):
     bl_idname='beam.select_group';bl_label='Select Whole Group';bl_description='Select the group controller, so moving it moves every member';bl_options={'UNDO'}
     group_uuid:bpy.props.StringProperty()
@@ -339,4 +351,4 @@ class BEAM_OT_select_group(bpy.types.Operator):
         s.blend_group_index=index;s.inspector='GROUP'
         return {'FINISHED'}
 
-CLASSES=(BEAM_UL_members,BEAM_OT_inspector,BEAM_OT_select_group,PS_PT_main,BEAM_PT_workspace,BEAM_PT_rail)
+CLASSES=(BEAM_UL_members,BEAM_OT_inspector,BEAM_OT_select_projector,BEAM_OT_select_group,PS_PT_main,BEAM_PT_workspace,BEAM_PT_rail)

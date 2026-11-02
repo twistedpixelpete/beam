@@ -24,7 +24,7 @@ Judged by planning a real job from start to finish, not by tests. From a review 
 **On a branch (`ux/move-controls`), awaiting hands-on testing**
 - Position and rotation fields for projectors, screens and Blend Groups, at the top of the inspector and in world space.
 - Aim tools moved from a closed section near the bottom to the top.
-- Selecting a helper camera or light selects its projector.
+- Selecting a helper camera or light offers a button to select its projector.
 - Select Whole Group from a group member.
 - The Beam workspace opens on the Move tool.
 - Surface Analysis stays in one place, instead of jumping above the inspector once it has a result.

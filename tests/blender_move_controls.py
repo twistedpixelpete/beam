@@ -47,15 +47,12 @@ assert (free.matrix_world.translation-held).length<1e-6,'locked position moved';
 free.lock_rotation=(True,)*3;held=free.matrix_world.to_quaternion().copy();free.beam_transform.orientation=(1,1,1);c.view_layer.update()
 assert free.matrix_world.to_quaternion().rotation_difference(held).angle<1e-5,'locked rotation moved';free.lock_rotation=(False,)*3
 
-# Clicking a helper selects its projector once, and leaves the helper active so Outliner arrow keys can move on.
+# A helper never changes selection by itself, because that traps Outliner arrow keys. One click gets to its projector.
 for item in c.selected_objects:item.select_set(False)
 optics=runtime.optics(free);c.view_layer.objects.active=optics;study_data.sync_selection(c)
-assert free.select_get() and c.view_layer.objects.active==optics and s.ps_study.active_projector==free
-free.select_set(False);study_data.sync_selection(c);assert not free.select_get(),'deselecting must stick'
-c.view_layer.objects.active=wall;study_data.sync_selection(c)
-# ...but not when the projector can't take the selection.
-free.hide_set(True);c.view_layer.objects.active=optics;study_data.sync_selection(c);assert not free.select_get();free.hide_set(False)
-c.view_layer.objects.active=wall;study_data.sync_selection(c)
+assert c.view_layer.objects.active==optics and not free.select_get(),'selection must not change on its own'
+assert bpy.ops.beam.select_projector()=={'FINISHED'} and c.view_layer.objects.active==free and free.select_get()
+c.view_layer.objects.active=wall;assert bpy.ops.beam.select_projector()=={'CANCELLED'}
 
 # Select Whole Group targets the controller.
 assert bpy.ops.beam.select_group(group_uuid=group.uuid)=={'FINISHED'}
@@ -82,5 +79,5 @@ assert panels.index('beam_position_aim')<panels.index('beam_projection'),panels
 props=[e[1] for e in log if e[0]=='prop'];assert 'position' in props and 'orientation' in props
 s.ps_study.active_projector=a;log=[];ui.projector(Layout(log),c)
 assert ('operator','beam.select_group','Select Whole Group') in log,'member offers whole-group selection'
-print('MOVE CONTROLS PASS: world fields on free and parented objects, CSV-matching pitch/yaw/roll, locks, helper redirect, whole-group selection, inspector order')
+print('MOVE CONTROLS PASS: world fields on free and parented objects, CSV-matching pitch/yaw/roll, locks, helper selection, whole-group selection, inspector order')
 addon.unregister()
