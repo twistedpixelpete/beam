@@ -5,6 +5,7 @@ from .analysis_display import MODES
 from bpy.props import PointerProperty, EnumProperty, CollectionProperty, IntProperty, StringProperty, BoolProperty, FloatProperty
 
 _seen_selection={}
+_redirected=None
 
 
 def redraw(self=None,context=None):
@@ -122,12 +123,21 @@ class PS_SceneSettings(bpy.types.PropertyGroup):
 
 
 def redirect_helper(context):
-    """Clicking a projector's Optics camera or Cycles light means the projector."""
+    """Clicking a projector's Optics camera or Cycles light means the projector.
+
+    The projector is selected once per click, so its controls and arrows appear.
+    The helper stays active: changing that would trap arrow keys in the Outliner,
+    and repeating the selection would make it impossible to deselect.
+    """
+    global _redirected
     layer=context.view_layer;obj=layer.objects.active
-    if not obj or not obj.get('ps_helper') or not obj.parent or not obj.parent.ps.is_projector:return obj
+    if not obj or not obj.get('ps_helper') or not obj.parent or not obj.parent.ps.is_projector:
+        _redirected=None
+        return obj
     parent=obj.parent
-    if parent.name not in layer.objects or not parent.visible_get(view_layer=layer) or context.mode!='OBJECT':return obj
-    obj.select_set(False);parent.select_set(True);layer.objects.active=parent
+    if _redirected==obj.as_pointer() or parent.name not in layer.objects or not parent.visible_get(view_layer=layer) or context.mode!='OBJECT':return obj
+    _redirected=obj.as_pointer()
+    parent.select_set(True)
     return parent
 
 

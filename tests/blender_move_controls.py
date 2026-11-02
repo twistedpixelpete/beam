@@ -47,12 +47,15 @@ assert (free.matrix_world.translation-held).length<1e-6,'locked position moved';
 free.lock_rotation=(True,)*3;held=free.matrix_world.to_quaternion().copy();free.beam_transform.orientation=(1,1,1);c.view_layer.update()
 assert free.matrix_world.to_quaternion().rotation_difference(held).angle<1e-5,'locked rotation moved';free.lock_rotation=(False,)*3
 
-# Clicking a helper lands on its projector.
+# Clicking a helper selects its projector once, and leaves the helper active so Outliner arrow keys can move on.
+for item in c.selected_objects:item.select_set(False)
 optics=runtime.optics(free);c.view_layer.objects.active=optics;study_data.sync_selection(c)
-assert c.view_layer.objects.active==free and free.select_get() and not optics.select_get()
-assert s.ps_study.active_projector==free
+assert free.select_get() and c.view_layer.objects.active==optics and s.ps_study.active_projector==free
+free.select_set(False);study_data.sync_selection(c);assert not free.select_get(),'deselecting must stick'
+c.view_layer.objects.active=wall;study_data.sync_selection(c)
 # ...but not when the projector can't take the selection.
-free.hide_set(True);c.view_layer.objects.active=optics;study_data.sync_selection(c);assert c.view_layer.objects.active==optics;free.hide_set(False)
+free.hide_set(True);c.view_layer.objects.active=optics;study_data.sync_selection(c);assert not free.select_get();free.hide_set(False)
+c.view_layer.objects.active=wall;study_data.sync_selection(c)
 
 # Select Whole Group targets the controller.
 assert bpy.ops.beam.select_group(group_uuid=group.uuid)=={'FINISHED'}

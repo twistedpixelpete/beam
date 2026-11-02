@@ -26,7 +26,7 @@ Each section has a numbered label on the floor. Note the Beam version and Blende
 ### Moving things
 - [ ] Clicking a projector shows its position, pitch, yaw and roll at the top of the inspector, and typing values moves it.
 - [ ] Typing `2500 mm` into a position field works.
-- [ ] Clicking `· Optics` in the Outliner selects the projector instead.
+- [ ] Clicking `· Optics` in the Outliner selects its projector, and arrow keys can still walk down the Outliner.
 - [ ] A locked object's fields are greyed out and say why.
 - [ ] A new Beam workspace opens on the Move tool, so selecting something shows the arrows.
 
