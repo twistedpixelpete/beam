@@ -15,7 +15,7 @@ Beam 0.14.0 is the current Internal Production Beta release. R1 (runtime resilie
 | OPEN | Needs testing or a decision rather than new code |
 | FUTURE | Recorded as useful; deliberately not started |
 
-Classify new findings as BUG, POLISH, DOCUMENTATION or FUTURE FEATURE. Normal fixes branch from current `main`. This page doesn't claim exhaustive testing, zero bugs or production readiness.
+Every feature is tested in the [feature test scene](TESTING.md). Classify new findings as BUG, POLISH, DOCUMENTATION or FUTURE FEATURE. Normal fixes branch from current `main`. This page doesn't claim exhaustive testing, zero bugs or production readiness.
 
 ## R0 — COMPLETE: 0.14.0 baseline
 Projector planning, Screens, Blend Groups, Auto Blend, Inverse Solver, Optics Guidance, Study Views, Reverse Mapping, Surface Intelligence, optional Cycles projection and the JSON, CSV and Study Package exports. See the [0.14.0 release notes](RELEASE-0.14.0.md).
@@ -56,6 +56,7 @@ From the code review of 2 November 2026.
 8. **POLISH.** Beam JSON export doesn't resolve `//` paths and is the only export written non-atomically.
 9. **Risk, not reproduced.** Cycles `render_pre` edits scene data from a handler that can run alongside other threads.
 10. **Risk, not reproduced.** `_owners` survives file load, so a reused memory address could rewrite projector identities. It took a forced swap to trigger, with no natural case in 100 reopens.
+11. **POLISH, raised in testing.** Moving things is harder than it should be. The Beam inspector has no position or rotation fields, its only move controls are Axis −1 m and +1 m, and the workspace opens with Blender's sidebar hidden.
 
 ## R3 — PROPOSED: Open-source readiness
 - Ship the full GPL-3.0 text and a root `LICENSE`. The current file is a short notice that still says "Projection Study".
