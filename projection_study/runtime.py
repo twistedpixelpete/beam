@@ -1,8 +1,10 @@
 """Small 30 Hz dirty scheduler. GPU drawing only consumes cached results."""
 import bpy
 import math
+import time
 from bpy.app.handlers import persistent
 from mathutils import Vector
+from . import faults
 from .projector_object import projectors, is_projector_model
 from .projection_math import calculate, image_point, camera_parameters
 
@@ -15,6 +17,15 @@ _owners = {}
 _known_objects = None
 _context = None
 _venue_membership = None
+# Whole-scene scans run only when something could have changed. Blender reports
+# edits through the depsgraph handler; the heartbeat catches anything it doesn't.
+changes = 0
+structure = 0
+_seen_changes = -1
+_seen_structure = -1
+_next_heartbeat = 0.0
+HEARTBEAT_SECONDS = 1.0
+HEARTBEAT_SHARE = .05
 
 
 def invalidate(obj=None):
@@ -77,8 +88,9 @@ def update_one(obj, scene):
                 slant=(hit[0]-origin).length*unit if hit else None)
 
 
-def refresh(force=False):
-    global _dirty, _busy, _context, _venue_membership
+def refresh(force=False,idle_ok=False):
+    """Direct calls always scan the scene; the timer passes idle_ok to skip quiet ticks."""
+    global _dirty, _busy, _context, _venue_membership, _seen_changes, _seen_structure, _next_heartbeat
     if _busy or not hasattr(bpy.types.Object,'ps'): return
     _busy = True
     did_change = False
@@ -87,30 +99,37 @@ def refresh(force=False):
         current = (scene.as_pointer(),bpy.context.view_layer.as_pointer())
         if current!=_context:
             reset(); _context=current
+        from .study_data import sync_selection
+        from . import local_orientation
+        did_change = sync_selection(bpy.context) or did_change
+        local_orientation.sync(bpy.context)
+        now = time.monotonic()
+        heartbeat = now>=_next_heartbeat
+        scan = force or not idle_ok or _dirty or heartbeat or structure!=_seen_structure
+        if not (scan or _dirty_ids or changes!=_seen_changes): return did_change
+        seen = (changes,structure)
         from . import analysis_runtime,observer
         cached=analysis_runtime.CACHE.get(scene.as_pointer())
         if cached and cached.get('observer'):
             viewer=scene.ps_study.analysis_observer
             if not viewer or viewer.name not in scene.objects or observer.record(viewer,scene.unit_settings.scale_length)!=cached['observer']:
                 analysis_runtime.invalidate('ACUITY')
-        from .study_data import sync_selection
-        did_change = sync_selection(bpy.context) or did_change
-        membership=tuple((o.as_pointer(),o.data.as_pointer() if o.data else 0,o.visible_get())
-                         for o in scene.objects if o.type in {'MESH','CURVE','SURFACE','FONT','META'} and not o.ps.is_projector and not o.get('ps_helper') and not is_projector_model(o))
-        if membership!=_venue_membership:
-            from .analysis_runtime import invalidate as invalidate_analysis
-            invalidate_analysis()
-            from . import target_raycast
-            target_raycast.invalidate(); invalidate()
-            _venue_membership=membership
-        from . import group_lifecycle,local_orientation
-        if group_lifecycle.defer_native_copy(bpy.context):return False
-        group_lifecycle.reconcile(bpy.context)
-        local_orientation.sync(bpy.context)
-        from . import observer
-        observer.repair_identities(scene)
+        if scan:
+            membership=tuple((o.as_pointer(),o.data.as_pointer() if o.data else 0,o.visible_get())
+                             for o in scene.objects if o.type in {'MESH','CURVE','SURFACE','FONT','META'} and not o.ps.is_projector and not o.get('ps_helper') and not is_projector_model(o))
+            if membership!=_venue_membership:
+                from .analysis_runtime import invalidate as invalidate_analysis
+                invalidate_analysis()
+                from . import target_raycast
+                target_raycast.invalidate(); invalidate()
+                _venue_membership=membership
+            from . import group_lifecycle
+            if group_lifecycle.defer_native_copy(bpy.context):return False
+            group_lifecycle.reconcile(bpy.context)
+            observer.repair_identities(scene)
+        from . import group_lifecycle
         live = projectors(scene)
-        repair_identities(live,scene)
+        if scan: repair_identities(live,scene)
         keys = {o.as_pointer() for o in live}
         for key in list(CACHE):
             if key not in keys:
@@ -132,13 +151,18 @@ def refresh(force=False):
         for group in scene.ps_study.blend_groups: group_lifecycle.snapshot_if_needed(group,bpy.context,force or did_change)
         _dirty = False
         _dirty_ids.clear()
+        _seen_changes,_seen_structure=seen
+        if scan:
+            finished=time.monotonic()
+            _next_heartbeat=finished+max(HEARTBEAT_SECONDS,(finished-now)/HEARTBEAT_SHARE)
     finally:
         _busy = False
     return did_change
 
 
+@faults.guarded('Live projector updates')
 def tick():
-    changed = refresh()
+    changed = refresh(idle_ok=True)
     if not changed: return 1/30
     for window in bpy.context.window_manager.windows:
         for area in window.screen.areas:
@@ -147,18 +171,27 @@ def tick():
 
 @persistent
 def depsgraph_changed(scene, depsgraph):
+    global changes,structure
+    # Reverse Mapping updates shader inputs while drawing; those change no scene data.
+    updates=[u for u in depsgraph.updates if not isinstance(u.id.original,(bpy.types.NodeTree,bpy.types.Material,bpy.types.Image))]
+    if updates:
+        changes+=1
+        if any(isinstance(u.id.original,(bpy.types.Scene,bpy.types.Collection)) for u in updates):structure+=1
     if _busy: return
     from . import target_raycast
     changed_keys=set()
+    moved=[]
     broad=False
-    for update in depsgraph.updates:
+    for update in updates:
         item=update.id.original
         if isinstance(item,bpy.types.Object):
             if item.ps.is_projector:
                 invalidate(item); continue
             if item.get('ps_helper') or item.type in {'CAMERA','LIGHT'}: continue
             if not (update.is_updated_transform or update.is_updated_geometry): continue
-            if item.type in {'MESH','CURVE','SURFACE','FONT','META'}: changed_keys.add(item.as_pointer())
+            if item.type in {'MESH','CURVE','SURFACE','FONT','META'}:
+                if update.is_updated_geometry: changed_keys.add(item.as_pointer())
+                else: moved.append(item)
             elif item.instance_type!='NONE':
                 # Instance transforms move evaluated occluders without mesh edits.
                 from .analysis_runtime import invalidate as invalidate_analysis
@@ -169,8 +202,9 @@ def depsgraph_changed(scene, depsgraph):
         elif isinstance(item,bpy.types.Collection): broad=True
     if broad:
         target_raycast.invalidate(); invalidate()
-    elif changed_keys:
-        target_raycast.invalidate(changed_keys)
+    elif changed_keys or moved:
+        if changed_keys: target_raycast.invalidate(changed_keys)
+        if moved: target_raycast.moved(moved)
         # Automatic first-hit targets mean any moved surface can become nearer.
         # One centre ray/projector is cheap; only changed surface BVHs rebuild.
         for obj in projectors(scene): invalidate(obj)
@@ -179,13 +213,15 @@ def depsgraph_changed(scene, depsgraph):
 def reset(*args):
     from . import analysis_runtime
     analysis_runtime.CACHE.clear()
-    global _venue_membership,_known_objects
+    global _venue_membership,_known_objects,structure,changes
+    structure+=1;changes+=1
     _known_objects=None
     _venue_membership=None
     from . import target_raycast
     target_raycast.clear()
     CACHE.clear(); _signatures.clear(); _dirty_ids.clear(); invalidate()
-    from . import viewport_display
+    from . import group_lifecycle,viewport_display
+    group_lifecycle._rejected.clear();faults.clear()
     viewport_display.clear()
 
 
@@ -210,7 +246,13 @@ def repair_identities(live,scene):
     global _known_objects
     from .utils import new_uuid,next_identifier,PALETTE
     from .projector_object import ensure_optics
-    existing=[o for o in bpy.data.objects if o.ps.is_projector]
+    # One pass: Object.children and users_collection each scan every object.
+    existing=[];helpers=[];optics_cameras={}
+    for o in bpy.data.objects:
+        if o.ps.is_projector:existing.append(o)
+        elif o.get('ps_helper'):
+            helpers.append(o)
+            if o.type=='CAMERA' and o.parent:optics_cameras.setdefault(o.parent.as_pointer(),o)
     used={o.ps.identifier for o in existing}
     global_ids={o.as_pointer() for o in existing}
     incoming=set() if _known_objects is None else global_ids-_known_objects
@@ -258,9 +300,11 @@ def repair_identities(live,scene):
                 if member.projector==obj and member.projector_uuid!=p.uuid:
                     if group.anchor_uuid==member.projector_uuid: group.anchor_uuid=p.uuid
                     member.projector_uuid=p.uuid
-        ensure_optics(obj,obj.users_collection[0],scene.unit_settings.scale_length)
-    for obj in list(scene.objects):
-        if obj.get('ps_helper') and (not obj.parent or not obj.parent.ps.is_projector):
+        camera=optics_cameras.get(obj.as_pointer())
+        if camera is None:ensure_optics(obj,obj.users_collection[0],scene.unit_settings.scale_length)
+        elif camera.data.users>1:camera.data=camera.data.copy()
+    for obj in helpers:
+        if (not obj.parent or not obj.parent.ps.is_projector) and obj.name in scene.objects:
             bpy.data.objects.remove(obj,do_unlink=True)
 
 

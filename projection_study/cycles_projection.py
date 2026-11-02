@@ -1,14 +1,17 @@
 """Managed Cycles projector lights. Does not participate in engineering sampling."""
 import math
+import time
 import bpy
 from bpy.app.handlers import persistent
-from mathutils import Matrix
+from . import faults
 
 TAG = 'beam_cycles_owned'
 VERSION = 1
 _signatures = {}
 _busy = False
 _rendering = False
+_seen_changes = -1
+_next_heartbeat = 0.0
 
 
 def math_group():
@@ -230,9 +233,15 @@ def changed(self,context):
         for area in window.screen.areas:area.tag_redraw()
 
 
+@faults.guarded('Cycles projection')
 def tick():
-    if not _rendering:
+    global _seen_changes,_next_heartbeat
+    from . import runtime
+    now=time.monotonic()
+    if not _rendering and (runtime.changes!=_seen_changes or now>=_next_heartbeat):
+        seen=runtime.changes
         for scene in bpy.data.scenes:sync(scene)
+        _seen_changes=seen;_next_heartbeat=now+1
     return .2
 
 
