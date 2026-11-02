@@ -18,6 +18,12 @@ from . import runtime
 from .projection_math import image_point
 
 
+def geometry_centre(obj):
+    """World centre of the bounding box. An object's origin can be far from its geometry."""
+    if obj.type not in {'MESH','CURVE','SURFACE','FONT','META'}:return obj.matrix_world.translation.copy()
+    return sum((obj.matrix_world@Vector(corner) for corner in obj.bound_box),Vector())/8
+
+
 def aim(obj, point):
     origin,_ = runtime.frame(obj)
     direction = point-origin
@@ -40,6 +46,9 @@ class PS_OT_aim(bpy.types.Operator):
     bl_options = {'REGISTER','UNDO'}
     mode: bpy.props.EnumProperty(items=[('OBJECT','Object Centre',''),('CURSOR','3D Cursor',''),('CLICK','Click Surface','')])
     @classmethod
+    def description(cls,context,properties):
+        return {'OBJECT':'Aim at the centre of the other selected object, or of what this projector currently hits','CURSOR':'Aim at the 3D Cursor','CLICK':'Click a surface to aim at it'}.get(properties.mode,'Aim the projector')
+    @classmethod
     def poll(cls, context): return selected(context) is not None
     def execute(self, context):
         obj = selected(context)
@@ -47,10 +56,11 @@ class PS_OT_aim(bpy.types.Operator):
         if self.mode=='OBJECT' and target is None:
             self.report({'WARNING'},'Select a venue object, or aim at a surface')
             return {'CANCELLED'}
-        point = context.scene.cursor.location if self.mode=='CURSOR' else target.matrix_world.translation
+        point = context.scene.cursor.location if self.mode=='CURSOR' else geometry_centre(target)
         if not aim(obj,point):
             self.report({'WARNING'},'Unlock rotation or choose a point away from the lens')
             return {'CANCELLED'}
+        if self.mode=='OBJECT':self.report({'INFO'},f'Aimed {obj.ps.identifier} at the centre of {target.name}')
         return {'FINISHED'}
     def invoke(self, context, event):
         if self.mode!='CLICK': return self.execute(context)

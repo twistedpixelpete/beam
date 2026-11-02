@@ -30,6 +30,7 @@ Each section has a numbered label on the floor. Note the Beam version and Blende
 - [ ] A locked object's fields are greyed out and say why.
 - [ ] A new Beam workspace opens on the Move tool with Drag set to Tweak.
 - [ ] Clicking a projector's body in the viewport selects it, and dragging its arrows moves it.
+- [ ] Object Centre aims at the middle of the other selected object's geometry, even when its origin is elsewhere.
 
 ### 1. Auto Blend
 - [ ] Moving the group controller moves all three projectors, using its fields or the arrows.
