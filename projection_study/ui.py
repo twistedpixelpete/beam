@@ -300,29 +300,27 @@ def project_mode(layout, context, settings):
     layout.label(text='Analysis still uses solid geometry.')
 
 
+# Blender doesn't allow layout panels inside a dropdown, so these are plain groups.
 def project_display(layout, settings):
-    box = section(layout, 'display', 'Viewport Display', True)
-    if not box:
-        return
-    box.prop(settings, 'label_detail', text='Label Detail', expand=True)
+    layout.separator()
+    layout.label(text='Viewport Display')
+    layout.prop(settings, 'label_detail', text='Label Detail', expand=True)
     for left, right in (('show_frustums', 'show_centre_rays'), ('show_labels', 'show_outputs')):
-        row = box.row(align=True)
+        row = layout.row(align=True)
         row.prop(settings, left)
         row.prop(settings, right)
     for prop in ('show_projected_identifiers', 'show_study_cameras', 'shadow_resolution'):
-        box.prop(settings, prop)
+        layout.prop(settings, prop)
 
 
 def project_workspace(layout):
-    box = section(layout, 'metadata', 'Workspace', True)
-    if not box:
-        return
-    box.operator('beam.workspace', icon='WORKSPACE')
-    box.operator('beam.ui_action', text='Organise Beam Collections', icon='OUTLINER_COLLECTION').action = 'ORGANIZE'
-    box.separator()
-    box.operator('beam.apply_theme', text='Apply Beam Theme', icon='PREFERENCES')
-    box.operator('beam.restore_theme', text='Restore Previous Theme', icon='LOOP_BACK')
-    box.label(text=f'{BEAM_VERSION} Beta · Twisted Pixel')
+    layout.separator()
+    layout.label(text='Workspace')
+    layout.operator('beam.workspace', icon='WORKSPACE')
+    layout.operator('beam.ui_action', text='Organise Beam Collections', icon='OUTLINER_COLLECTION').action = 'ORGANIZE'
+    layout.operator('beam.apply_theme', text='Apply Beam Theme', icon='PREFERENCES')
+    layout.operator('beam.restore_theme', text='Restore Previous Theme', icon='LOOP_BACK')
+    layout.label(text=f'{BEAM_VERSION} Beta · Twisted Pixel')
 
 
 def project_settings(layout, context):

@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 import projection_study as addon  # noqa: E402
-from tests.ui_recorder import before_first_panel, draw_inspector, labels  # noqa: E402
+from tests.ui_recorder import before_first_panel, draw_inspector, draw_project_settings, labels  # noqa: E402
 
 args = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 KEEP = '--keep' in args
@@ -228,6 +228,7 @@ def check_inspector_header(context):
     header = before_first_panel(log)
     require(('prop', 'project_name') not in header, 'Project name should be in the project dropdown, not the header')
     require(any(entry[0] == 'popover' for entry in header), 'The header should offer the project dropdown')
+    require(not [entry for entry in draw_project_settings(inspector_ui()) if entry[0] == 'panel'], "Blender doesn't allow layout panels in a dropdown")
     text = labels(header)
     require(not any(line.startswith(('Receiver:', 'Coverage:')) for line in text), f'Receiver status should be in its section: {text}')
     require(('panel', 'beam_reverse_mapping') not in log, 'Reverse Mapping should only be on the Surface tab')
