@@ -1,4 +1,5 @@
 """Lightweight engineering raycasts against shared evaluated surface geometry."""
+import bpy
 from mathutils.bvhtree import BVHTree
 from . import scene_geometry
 
@@ -16,6 +17,14 @@ def clear():
 
 
 def build_tree(surface):
+    # Native construction is faster and avoids a large temporary Python list.
+    source=surface.source
+    if surface.movable and source is not None:
+        try:
+            if source.type=='MESH':
+                graph=bpy.context.evaluated_depsgraph_get()
+                return BVHTree.FromObject(source.evaluated_get(graph),graph)
+        except (ReferenceError,ValueError):pass
     return BVHTree.FromPolygons(surface.local_vertices.tolist(),surface.triangles.tolist(),all_triangles=True)
 
 

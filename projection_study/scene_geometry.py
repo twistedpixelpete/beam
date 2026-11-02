@@ -24,6 +24,7 @@ class Surface:
     matrix: Matrix          # Identity when several instances were merged
     geometry_id: int        # Changes only when the mesh itself changes
     movable: bool           # One instance, so a transform can be applied alone
+    source: object = None   # Original object, when movable
 
 
 SURFACES={}
@@ -79,7 +80,7 @@ def apply_moved(graph):
         except ReferenceError:
             _dirty_keys.add(key);continue
         vertices=to_world(surface.local_vertices,matrix)
-        SURFACES[key]=Surface(surface.name,vertices,surface.triangles,world_bounds(vertices),surface.local_vertices,matrix,surface.geometry_id,True)
+        SURFACES[key]=Surface(surface.name,vertices,surface.triangles,world_bounds(vertices),surface.local_vertices,matrix,surface.geometry_id,True,surface.source)
     changed=bool(_moved)
     _moved.clear()
     return changed
@@ -98,13 +99,13 @@ def prepare():
     if not full:
         for key in _dirty_keys: SURFACES.pop(key,None)
     from .projector_object import is_projector_model
-    grouped={}; names={}
+    grouped={}; names={}; sources={}
     for instance in graph.object_instances:
         obj=instance.object; original=obj.original; key=original.as_pointer()
         if not full and key not in _dirty_keys: continue
         if obj.type not in SURFACE_TYPES or original.ps.is_projector or original.get('ps_helper') or original.get('beam_screen_detail') or is_projector_model(original): continue
         if not instance.show_self or (not instance.is_instance and not original.visible_get()): continue
-        names[key]=original.name
+        names[key]=original.name;sources[key]=original
         parts=grouped.setdefault(key,[])
         mesh=obj.to_mesh()
         if mesh is None: continue
@@ -124,7 +125,7 @@ def prepare():
             triangles=np.concatenate([part[1]+offset for part,offset in zip(parts,offsets)])
             vertices=np.concatenate([to_world(part[0],part[2]) for part in parts])
             local,matrix,movable=vertices,Matrix.Identity(4),False
-        SURFACES[key]=Surface(names[key],vertices,triangles,world_bounds(vertices),local,matrix,next(_geometry_ids),movable)
+        SURFACES[key]=Surface(names[key],vertices,triangles,world_bounds(vertices),local,matrix,next(_geometry_ids),movable,sources[key] if movable else None)
     _dirty=False; _dirty_keys.clear(); _context=context; revision+=1
 
 
