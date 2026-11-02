@@ -238,6 +238,14 @@ def draw(layout,context):
         from .analysis_ui import draw as draw_analysis
         if not analysis_runtime.CACHE.get(context.scene.as_pointer()):draw_analysis(layout,context)
         reverse(layout,context)
+    box=section(layout,'render_projection','Projection Mode')
+    if box:
+        box.prop(s,'projection_mode',text='')
+        if s.projection_mode=='CYCLES':
+            if context.scene.render.engine!='CYCLES':box.label(text='Select Cycles in Render Properties.',icon='INFO')
+            box.prop(s,'render_multiplier');box.prop(s,'render_efficacy')
+            box.label(text='Use Rendered shading or F12.')
+            box.label(text='Analysis still uses solid geometry.')
     box=section(layout,'display','Global · Viewport Display',True)
     if box:
         box.prop(s,'label_detail',text='Label Detail',expand=True)

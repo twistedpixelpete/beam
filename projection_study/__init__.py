@@ -1,6 +1,6 @@
 """Beam: Blender 4.5+ extension. GPL-3.0-or-later."""
 import bpy
-from . import analysis_ui,export_designer,observer
+from . import analysis_ui,export_designer,observer,cycles_projection
 from . import screens, inverse_solver, auto_layout, reverse_mapping, ui_workspace, ui_icons, ui_theme, ui_planning
 from . import blend_groups, presentation, local_orientation, group_lifecycle
 from . import projector_data, operators, ui, runtime, viewport_display, export_disguise, study_data, study_views, export_json
@@ -17,6 +17,7 @@ def register():
     ui_workspace.register();ui_icons.register();ui_theme.refresh()
     reverse_mapping.register()
     runtime.register()
+    cycles_projection.register()
     local_orientation.register()
     viewport_display.register()
     analysis_ui.register()
@@ -29,6 +30,7 @@ def register():
     bpy.app.handlers.save_post.append(presentation.after_save)
 
 def unregister():
+    cycles_projection.unregister()
     analysis_ui.unregister()
     ui_workspace.unregister();ui_icons.unregister()
     reverse_mapping.unregister()

@@ -81,17 +81,22 @@ def export_view(context,view,path,area=None):
             space=area.spaces.active
             old_overlays=space.overlay.show_overlays
             old_extras=space.overlay.show_extras
+            old_shading=space.shading.type
             viewport_display._suppress=True
             try:
                 from . import presentation
                 space.overlay.show_overlays=view.include_overlays and not presentation.active(area)
                 space.overlay.show_extras=False
+                # Study images remain planning exports, even from a Cycles view.
+                if context.scene.ps_study.projection_mode=='CYCLES' and old_shading=='RENDERED':
+                    space.shading.type='SOLID'
                 off.draw_view3d(context.scene,context.view_layer,space,region,view_matrix,projection,
                                 do_color_management=True,draw_background=True)
             finally:
                 viewport_display._suppress=False
                 space.overlay.show_overlays=old_overlays
                 space.overlay.show_extras=old_extras
+                space.shading.type=old_shading
             with off.bind(),gpu.matrix.push_pop(),gpu.matrix.push_pop_projection():
                 gpu.state.viewport_set(0,0,width,height)
                 gpu.matrix.load_matrix(view_matrix); gpu.matrix.load_projection_matrix(projection)

@@ -1,0 +1,24 @@
+{
+  "solid_seconds": 0.091810375044588,
+  "solid_bounds": [
+    64,
+    319,
+    56,
+    199
+  ],
+  "shift_bounds": [
+    115,
+    371,
+    41,
+    185
+  ],
+  "orientation": "PASS",
+  "rotation_and_units": "PASS",
+  "full_hd_edge_error_projector_pixels": 0.7875000000000298,
+  "alpha_pass_through": "PASS",
+  "fractional_transmission_ratio": 0.25,
+  "two_layer_transmission_ratio": 0.0625,
+  "all_modes_and_blend": "PASS",
+  "cleanup": "PASS",
+  "blender": "5.2.2 LTS"
+}

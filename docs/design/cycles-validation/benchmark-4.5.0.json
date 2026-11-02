@@ -1,0 +1,90 @@
+{
+  "blender": "4.5.0",
+  "device": "CPU",
+  "resolution": [
+    256,
+    160
+  ],
+  "samples": 8,
+  "trials": 3,
+  "cases": [
+    {
+      "lights": 1,
+      "cone": "tight",
+      "initial_seconds": 0.0143010409665294,
+      "warm_median_seconds": 0.010796250018756837,
+      "warm_trials": [
+        0.010796250018756837,
+        0.01115145900985226,
+        0.01061012502759695
+      ],
+      "idle_sync_seconds": 2.5493339635431766e-05,
+      "shared_groups": 1
+    },
+    {
+      "lights": 1,
+      "cone": "wide",
+      "initial_seconds": 0.011820709041785449,
+      "warm_median_seconds": 0.01114524999866262,
+      "warm_trials": [
+        0.011134750035125762,
+        0.01114524999866262,
+        0.011561041988898069
+      ],
+      "idle_sync_seconds": 2.5493339635431766e-05,
+      "shared_groups": 1
+    },
+    {
+      "lights": 4,
+      "cone": "tight",
+      "initial_seconds": 0.01662958401720971,
+      "warm_median_seconds": 0.011536583013366908,
+      "warm_trials": [
+        0.011536583013366908,
+        0.011417499976232648,
+        0.011703166994266212
+      ],
+      "idle_sync_seconds": 8.777833019848913e-05,
+      "shared_groups": 1
+    },
+    {
+      "lights": 4,
+      "cone": "wide",
+      "initial_seconds": 0.01520816597621888,
+      "warm_median_seconds": 0.013706083002034575,
+      "warm_trials": [
+        0.013706083002034575,
+        0.01324100000783801,
+        0.013979999988805503
+      ],
+      "idle_sync_seconds": 8.777833019848913e-05,
+      "shared_groups": 1
+    },
+    {
+      "lights": 16,
+      "cone": "tight",
+      "initial_seconds": 0.019497458008117974,
+      "warm_median_seconds": 0.014502250007353723,
+      "warm_trials": [
+        0.014354459010064602,
+        0.0145262919832021,
+        0.014502250007353723
+      ],
+      "idle_sync_seconds": 0.00041855250019580127,
+      "shared_groups": 1
+    },
+    {
+      "lights": 16,
+      "cone": "wide",
+      "initial_seconds": 0.020608499995432794,
+      "warm_median_seconds": 0.017766667006071657,
+      "warm_trials": [
+        0.017854583042208105,
+        0.017730749968905002,
+        0.017766667006071657
+      ],
+      "idle_sync_seconds": 0.00041855250019580127,
+      "shared_groups": 1
+    }
+  ]
+}
