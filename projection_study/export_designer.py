@@ -2,7 +2,7 @@
 import csv,io,json,math,hashlib,os,tempfile
 from pathlib import Path
 import bpy
-from . import runtime,transform_conversion as conversion
+from . import export_files,runtime,transform_conversion as conversion
 from .projector_object import projectors
 from .interchange import timestamp
 
@@ -39,6 +39,7 @@ def write_with_metadata(path,text,convention,identities):
             fd,name=tempfile.mkstemp(prefix='.beam-export-',dir=path.parent)
             staged.append((Path(name),destination))
             with os.fdopen(fd,'wb') as handle:handle.write(payload)
+            os.chmod(name,export_files.file_mode(destination))
         for temporary,destination in reversed(staged):os.replace(temporary,destination)
     finally:
         for temporary,_ in staged:temporary.unlink(missing_ok=True)
