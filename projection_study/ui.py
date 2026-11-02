@@ -71,6 +71,17 @@ def object_position_section(layout,obj):
     if any(obj.lock_location) or any(obj.lock_rotation):status(box,'Locked · use Unlock to move this')
 
 
+def output_section(layout, p):
+    box = section(layout, 'projector_output', 'Output')
+    if not box:
+        return
+    box.use_property_split = True
+    box.prop(p, 'output_mode', text='Output')
+    box.prop(p, 'colour', text='Study Colour')
+    if p.output_mode == 'IMAGE':
+        box.template_ID(p, 'image', open='ps.load_image')
+
+
 def projector(layout,context):
     s=context.scene.ps_study;obj=selected(context);units=s.display_units
     row=layout.row(align=True);row.operator('ps.add',text='New Projector',icon='ADD')
@@ -87,10 +98,6 @@ def projector(layout,context):
         box.use_property_split=True
         row=box.row(align=True);row.use_property_split=False;row.prop(p,'resolution_x',text='X');row.prop(p,'resolution_y',text='Y')
         box.prop(p,'throw_ratio');row=box.row(align=True);row.use_property_split=False;row.prop(p,'shift_h',text='H Shift %');row.prop(p,'shift_v',text='V Shift %')
-        box.prop(p,'output_mode',text='Output');box.prop(p,'colour',text='Study Colour')
-        if p.output_mode=='IMAGE':box.template_ID(p,'image',open='ps.load_image')
-    from .analysis_ui import optics
-    optics(layout,p)
     draft=context.window_manager.beam_target
     editing=bool(draft.field and draft.projector==obj and draft.scene==context.scene)
     box=section(layout,'calculated','Calculated')
@@ -118,6 +125,9 @@ def projector(layout,context):
             apply=row.row(align=True);apply.enabled=not reason;apply.operator('beam.apply_target',text='',icon='CHECKMARK')
             row.operator('beam.apply_target',text='',icon='X').cancel=True
             if draft.message:status(box,draft.message,error=True)
+    from .analysis_ui import optics
+    optics(layout,p)
+    output_section(layout,p)
     box=section(layout,'projector_body','Projector Body',True)
     if box:
         row=box.row();row.enabled=obj.mode=='OBJECT';row.prop(p,'show_body')
