@@ -14,7 +14,8 @@ and source images are not rewritten. Planning calculations remain unchanged.
 Unlike the initial study, this implementation now has rendered evidence. Names and
 labels are rendered into generated calibration/identifier patterns; image and Blender
 UV/colour-grid sources are used directly. Engineering annotation overlays remain
-viewport/study-export features. No public release or tag is created by this work.
+viewport/study-export features. This document records the original feature-candidate
+validation; publication and release checks are tracked in [0.14.0 release notes](../RELEASE-0.14.0.md).
 
 ## Platforms and tests
 

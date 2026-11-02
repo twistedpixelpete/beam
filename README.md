@@ -4,31 +4,31 @@ Beam is a professional projection-planning and study tool built inside Blender. 
 
 **Maintainer:** Twisted Pixel
 
-**Development branch:** Beam 0.14.0 — Cycles Render internal beta candidate
-
-**Published baseline:** Beam 0.13.0 — Internal Production Beta
+**Current release:** Beam 0.14.0 — Internal Production Beta
 
 **Tested:** Blender 5.2.2 LTS · macOS 26.7 · Apple silicon / Metal
 
 > Still in testing, not stable production software. Work on copies and independently verify geometry, measurements and exported data before production use. Windows/Linux are not yet validated.
 
-**[Download 0.13.0](https://github.com/twistedpixelpete/beam/releases/tag/v0.13.0-beta)** · **[Start Here](#start-here)** · [Enable Beam Workspace](#beam-workspace) · [User Guide](output/pdf/Beam_Onboarding/Beam_User_Guide.pdf) · [Quick Start](output/pdf/Beam_Onboarding/Beam_Quick_Start.pdf)
+**[Download 0.14.0](https://github.com/twistedpixelpete/beam/releases/tag/v0.14.0-beta)** · **[Start Here](#start-here)** · [Enable Beam Workspace](#beam-workspace) · [User Guide](output/pdf/Beam_Onboarding/Beam_User_Guide.pdf) · [Quick Start](output/pdf/Beam_Onboarding/Beam_Quick_Start.pdf)
 
 ## Download
 
-The [0.13.0 release](https://github.com/twistedpixelpete/beam/releases/tag/v0.13.0-beta) contains:
+The [0.14.0 release](https://github.com/twistedpixelpete/beam/releases/tag/v0.14.0-beta) contains:
 
-- **[beam-0.13.0.zip](https://github.com/twistedpixelpete/beam/releases/download/v0.13.0-beta/beam-0.13.0.zip)** — installable Blender extension. Keep this ZIP zipped.
-- **[Beam-Onboarding-0.13.0-beta.zip](https://github.com/twistedpixelpete/beam/releases/download/v0.13.0-beta/Beam-Onboarding-0.13.0-beta.zip)** — clean onboarding package, including the same installer.
+- **[beam-0.14.0.zip](https://github.com/twistedpixelpete/beam/releases/download/v0.14.0-beta/beam-0.14.0.zip)** — installable Blender extension. Keep this ZIP zipped.
+- **SHA256SUMS.txt** — checksum for the installer.
 
-0.13.0 is the first GitHub release after 0.8.1 and consolidates the internal 0.9–0.12 development milestones. Those milestones were not separate published GitHub releases.
+0.14.0 adds optional Cycles projection with material transparency and independent projector-body controls/custom models. See the [release notes](docs/RELEASE-0.14.0.md).
+
+The [0.13 onboarding package](https://github.com/twistedpixelpete/beam/releases/download/v0.13.0-beta/Beam-Onboarding-0.13.0-beta.zip) remains available for the core workflows. Its bundled installer is 0.13.0: use the separate 0.14.0 installer above for this release. The training files and PDFs have not been revised for Cycles Render.
 
 ## Install
 
-1. Download `beam-0.13.0.zip` and open Blender.
+1. Download `beam-0.14.0.zip` and open Blender.
 2. Open **Edit → Preferences → Get Extensions**.
 3. Open the menu at the top right and choose **Install from Disk**.
-4. Select `beam-0.13.0.zip` and enable Beam if prompted.
+4. Select `beam-0.14.0.zip` and enable Beam if prompted.
 5. Restart Blender after replacing an older build. Keep only one Beam installation enabled.
 6. With the pointer over the 3D View, press **F3**, search for **Open Beam Workspace**, and run it. If your keyboard configuration uses F3 differently, use **Edit → Menu Search**. Alternatively, press **N**, open the **Beam** tab, expand **Project / Workspace**, and click **Open Beam Workspace**.
 
@@ -53,7 +53,7 @@ The original Layout workspace and scene are retained. Resize the editor borders 
 
 ## Start Here
 
-Extract **[Beam-Onboarding-0.13.0-beta.zip](https://github.com/twistedpixelpete/beam/releases/download/v0.13.0-beta/Beam-Onboarding-0.13.0-beta.zip)** and open `Beam_Onboarding/START_HERE.pdf`. The package contains exactly six files:
+Extract **[Beam-Onboarding-0.13.0-beta.zip](https://github.com/twistedpixelpete/beam/releases/download/v0.13.0-beta/Beam-Onboarding-0.13.0-beta.zip)** and open `Beam_Onboarding/START_HERE.pdf`. This retained training package contains the older installer; install 0.14.0 from the current release instead. The package contains exactly six files:
 
 | File | Purpose |
 | --- | --- |
@@ -207,12 +207,12 @@ projector object's mesh. Beam's **Duplicate** copies that mesh and its visibilit
 setting, not separately parented model objects; duplicate the hierarchy in Blender
 when you also need those parts.
 
-### Cycles Render (0.14.0 development candidate)
+### Cycles Render (0.14.0 beta)
 
 In the Beam inspector, expand **Projection Mode** and select **Cycles Render**.
 Choose **Cycles** in Blender's Render Properties, then use **Rendered** viewport
 shading or **F12**. Beam does not switch the render engine automatically. This
-feature is not included in the published 0.13.0 download above.
+feature is included in the 0.14.0 beta installer above.
 
 Beam creates managed projector lights using the same throw, raster and shift settings.
 Receiver materials control transparency: an alpha image must actually be connected
@@ -242,6 +242,6 @@ engineering sampling. Place their lens opening at the optical origin.
 
 Switching back to Planning or disabling Beam removes its generated lights and unused
 render-only assets. User lights and source images are preserved. Save with the mode
-enabled to retain a self-contained render rig in the blend file. This candidate has
+enabled to retain a self-contained render rig in the blend file. This beta has
 been tested on macOS with Blender 4.5.0 and 5.2.2, CPU rendering; other render devices
 and platforms still need validation.
