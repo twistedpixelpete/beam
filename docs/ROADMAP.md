@@ -125,6 +125,7 @@ Recorded in [follow-up gaps](surface-intelligence/FOLLOW_UP_GAPS.md):
 - Per-surface analysis summary across several receivers.
 - Observer look-through composition controls.
 - Luminance, only with a clearly separate reflectance and observer model.
+- Alpha-aware Planning and Surface Analysis. Planning treats alpha-masked meshes as solid, and only Cycles Render honours them (issue #14).
 
 Beam won't copy an undefined focus metric or claim calibrated photometry.
 
