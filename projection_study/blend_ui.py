@@ -7,7 +7,7 @@ def overlap(value,mode):return f"{value['pixels']:,.0f} px" if mode=='PIXELS' el
 def values(v,units):return f"{v['pixels']:.0f} px · {dimension(v['metres'],units)} · {v['percent']:.1f}%"
 
 def draw_groups(layout,context):
-    from .ui import section,status,actions
+    from .ui import section,status,actions,object_position_section
     s=context.scene.ps_study;units=s.display_units
     row=layout.row(align=True);row.operator('beam.create_group',text='New Blend',icon='ADD');row.operator('beam.create_group',text='From Selection').from_selection=True
     if not s.blend_groups:status(layout,'No Blend Group');return
@@ -15,6 +15,7 @@ def draw_groups(layout,context):
     g=blend_groups.active_group(context)
     if not g:return
     layout.prop(g,'name',text='Group');actions(layout,context)
+    if g.controller:object_position_section(layout,g.controller)
     anchor=next((m.projector.ps.identifier for m in g.members if m.projector and m.projector.ps.uuid==g.anchor_uuid),'Missing')
     layout.label(text=f'{len(g.members)} members · {g.layout.title()} · Anchor {anchor}')
     if g.layout=='ARRAY':layout.label(text=f'{g.columns} columns × {g.rows} rows')

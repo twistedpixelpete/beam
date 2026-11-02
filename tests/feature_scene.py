@@ -132,6 +132,20 @@ def verify_blend(context, m, facts):
     for name in facts['members']:
         target = identifier_of(name).ps.target
         require(target and target.name == facts['screen'], f'{name} should hit the flat screen')
+    # The position fields move one member in world space, and the controller moves them all.
+    member = identifier_of(facts['members'][1])
+    start = member.matrix_world.translation.copy()
+    member.beam_transform.position = start + Vector((.5, 0, 0))
+    context.view_layer.update()
+    require((member.matrix_world.translation - start - Vector((.5, 0, 0))).length < 1e-4, 'Position field should move a member in world space')
+    member.beam_transform.position = start
+    controller = group.controller
+    origin, before = controller.matrix_world.translation.copy(), identifier_of(facts['members'][0]).matrix_world.translation.copy()
+    controller.beam_transform.position = origin + Vector((0, 0, 1))
+    context.view_layer.update()
+    require((identifier_of(facts['members'][0]).matrix_world.translation - before - Vector((0, 0, 1))).length < 1e-4, 'Moving the controller should move its members')
+    controller.beam_transform.position = origin
+    context.view_layer.update()
 
 
 def build_facade(context, m, x):

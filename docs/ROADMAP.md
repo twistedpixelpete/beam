@@ -4,18 +4,42 @@ Beam by Twisted Pixel
 Reviewed: 2 November 2026.
 
 ## Current priority
-Beam 0.14.0 is the current Internal Production Beta release. R1 (runtime resilience and scale) and the Reverse Mapping redraw fix are merged to `main`, but not yet in a release. The rest of R2 and everything after it is PROPOSED: nothing below is approved or scheduled until the maintainer says so. No committed delivery dates are implied.
+**Feature freeze.** Beam's results have held up in real use; usability is what needs work. No new features until U1 is accepted by the maintainer. Beam 0.14.0 is the current Internal Production Beta release. R1 and the Reverse Mapping redraw fix are merged to `main`, but not yet in a release. No committed delivery dates are implied.
 
 ## How to read this
 | Status | Meaning |
 |---|---|
 | COMPLETE | Released or merged, with its evidence recorded |
+| ACTIVE | Being worked on now |
 | ON A BRANCH | Implemented and awaiting review |
 | PROPOSED | Recommended, not approved |
 | OPEN | Needs testing or a decision rather than new code |
 | FUTURE | Recorded as useful; deliberately not started |
 
 Every feature is tested in the [feature test scene](TESTING.md). Classify new findings as BUG, POLISH, DOCUMENTATION or FUTURE FEATURE. Normal fixes branch from current `main`. This page doesn't claim exhaustive testing, zero bugs or production readiness.
+
+## U1 — ACTIVE: Usability
+Judged by planning a real job from start to finish, not by tests. From a review of the interface code on 2 November 2026; the maintainer's hands-on findings take priority over this order.
+
+**On a branch (`ux/move-controls`), awaiting hands-on testing**
+- Position and rotation fields for projectors, screens and Blend Groups, at the top of the inspector and in world space.
+- Aim tools moved from a closed section near the bottom to the top.
+- Selecting a helper camera or light selects its projector.
+- Select Whole Group from a group member.
+- The Beam workspace opens on the Move tool.
+- Surface Analysis stays in one place, instead of jumping above the inspector once it has a result.
+
+**Next, proposed**
+- Project name and revision take the top of every inspector for something set once. Move them to Project / Workspace.
+- "Technical" is both a status and a button, and its meaning isn't obvious.
+- "Active", "Selected" and "Pinned" can name three different objects at once. Make it clear what the controls are acting on.
+- The Projector inspector mixes everyday controls with rarely used ones. Order it by how often each is used, and open only what's needed.
+- Display units apply to Beam's readouts, while position fields use Blender's scene units. Make them agree.
+- Output, Annotations and global Viewport Display settings are separate and easy to confuse.
+- Layout slots and helper objects clutter the Outliner.
+- Exports need a clearer choice between the two CSV formats, and clearer feedback on what was written and where.
+- Error text should say what to do next, not only what's wrong.
+- Screen Builder shows every parameter at once. Show only those for the chosen type.
 
 ## R0 — COMPLETE: 0.14.0 baseline
 Projector planning, Screens, Blend Groups, Auto Blend, Inverse Solver, Optics Guidance, Study Views, Reverse Mapping, Surface Intelligence, optional Cycles projection and the JSON, CSV and Study Package exports. See the [0.14.0 release notes](RELEASE-0.14.0.md).
@@ -56,7 +80,6 @@ From the code review of 2 November 2026.
 8. **POLISH.** Beam JSON export doesn't resolve `//` paths and is the only export written non-atomically.
 9. **Risk, not reproduced.** Cycles `render_pre` edits scene data from a handler that can run alongside other threads.
 10. **Risk, not reproduced.** `_owners` survives file load, so a reused memory address could rewrite projector identities. It took a forced swap to trigger, with no natural case in 100 reopens.
-11. **POLISH, raised in testing.** Moving things is harder than it should be. The Beam inspector has no position or rotation fields, its only move controls are Axis −1 m and +1 m, and the workspace opens with Blender's sidebar hidden.
 
 ## R3 — PROPOSED: Open-source readiness
 - Ship the full GPL-3.0 text and a root `LICENSE`. The current file is a short notice that still says "Projection Study".

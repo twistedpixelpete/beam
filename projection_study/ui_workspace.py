@@ -7,6 +7,20 @@ _seen_ui={}
 
 def is_beam(context):return bool(context.workspace and context.workspace.get('beam_workspace'))
 
+
+def use_move_tool():
+    """Runs once the Beam workspace is showing. Only replaces a selection tool, never a user's other choice."""
+    window=next((w for w in bpy.context.window_manager.windows if w.workspace.get('beam_workspace')),None)
+    if not window:return None
+    area=next((a for a in window.screen.areas if a.type=='VIEW_3D'),None)
+    region=next((r for r in area.regions if r.type=='WINDOW'),None) if area else None
+    if not region:return None
+    tool=window.workspace.tools.from_space_view3d_mode('OBJECT',create=False)
+    if tool and not tool.idname.startswith('builtin.select'):return None
+    with bpy.context.temp_override(window=window,area=area,region=region):
+        if bpy.context.mode=='OBJECT':bpy.ops.wm.tool_set_by_id(name='builtin.move',space_type='VIEW_3D')
+    return None
+
 class BEAM_OT_workspace(bpy.types.Operator):
     bl_options={'REGISTER'}
     bl_idname='beam.workspace';bl_label='Open Beam Workspace';bl_description='Duplicate this native layout as Beam; keep the original workspace and scene intact'
@@ -14,6 +28,7 @@ class BEAM_OT_workspace(bpy.types.Operator):
         existing=next((w for w in bpy.data.workspaces if w.get('beam_workspace')),None)
         if existing:
             context.window.workspace=existing
+            bpy.app.timers.register(use_move_tool,first_interval=.1)
             for screen in existing.screens:
                 for area in screen.areas:
                     if area.type=='PROPERTIES':
@@ -33,6 +48,7 @@ class BEAM_OT_workspace(bpy.types.Operator):
                     if hasattr(area.spaces.active,'outliner_sync'):area.spaces.active.outliner_sync='NEVER'
                 elif area.type=='VIEW_3D':
                     area.spaces.active.show_region_ui=False;area.spaces.active.show_region_toolbar=True
+        bpy.app.timers.register(use_move_tool,first_interval=.1)
         return {'FINISHED'}
 
 class BEAM_OT_ui_action(bpy.types.Operator):

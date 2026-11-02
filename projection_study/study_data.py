@@ -121,9 +121,19 @@ class PS_SceneSettings(bpy.types.PropertyGroup):
     last_current_exported_at: StringProperty()
 
 
+def redirect_helper(context):
+    """Clicking a projector's Optics camera or Cycles light means the projector."""
+    layer=context.view_layer;obj=layer.objects.active
+    if not obj or not obj.get('ps_helper') or not obj.parent or not obj.parent.ps.is_projector:return obj
+    parent=obj.parent
+    if parent.name not in layer.objects or not parent.visible_get(view_layer=layer) or context.mode!='OBJECT':return obj
+    obj.select_set(False);parent.select_set(True);layer.objects.active=parent
+    return parent
+
+
 def sync_selection(context):
     scene=context.scene
-    obj=context.view_layer.objects.active
+    obj=redirect_helper(context)
     key=scene.as_pointer()
     selection=obj.as_pointer() if obj and obj.select_get() else None
     changed=_seen_selection.get(key,selection if scene.ps_study.active_projector else object())!=selection
