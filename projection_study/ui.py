@@ -45,6 +45,32 @@ def actions(layout,context,vertical=False):
     row.operator('beam.ui_action',text='' if compact else ('Unlock' if locked else 'Lock'),icon='LOCKED' if locked else 'UNLOCKED',depress=locked).action='LOCK'
 
 
+def position_section(layout,context,obj,record,units):
+    from . import blend_groups,transform_ui
+    box=section(layout,'position_aim','Position and Aim')
+    if not box:return
+    transform_ui.draw_position(box,obj);transform_ui.draw_projector_rotation(box,obj)
+    if any(obj.lock_location) or any(obj.lock_rotation):status(box,'Locked · use Unlock to move this projector')
+    group=blend_groups.group_for(obj,context.scene)
+    if group:
+        status(box,f'Moves this projector only · member of {group.name}')
+        box.operator('beam.select_group',text='Select Whole Group',icon='GROUP').group_uuid=group.uuid
+    box.label(text='Aim At')
+    row=box.row(align=True);row.operator('ps.aim',text='Object Centre').mode='OBJECT';row.operator('ps.aim',text='3D Cursor').mode='CURSOR'
+    row=box.row(align=True);row.operator('beam.ui_action',text='Click Surface').action='AIM_CLICK';row.operator('beam.ui_action',text='Look Through').action='LOOK'
+    box.label(text='Along Lens Axis')
+    row=box.row(align=True);row.operator('ps.move',text='−1 m').distance=-1;row.operator('ps.move',text='+1 m').distance=1
+    if record:readout(box,'Centre Ray',length(record['slant'],units) if record['hit'] else 'No hit')
+
+
+def object_position_section(layout,obj):
+    from . import transform_ui
+    box=section(layout,'object_position','Position')
+    if not box:return
+    transform_ui.draw_position(box,obj);transform_ui.draw_rotation(box,obj)
+    if any(obj.lock_location) or any(obj.lock_rotation):status(box,'Locked · use Unlock to move this')
+
+
 def projector(layout,context):
     s=context.scene.ps_study;obj=selected(context);units=s.display_units
     row=layout.row(align=True);row.operator('ps.add',text='New Projector',icon='ADD')
@@ -53,6 +79,7 @@ def projector(layout,context):
     if not obj:status(layout,'No projector selected');return
     p=obj.ps;record=runtime.CACHE.get(obj.as_pointer());status(layout,'TARGET' if record and record['hit'] else 'No Target',bool(record and record['hit']))
     actions(layout,context)
+    position_section(layout,context,obj,record,units)
     box=section(layout,'projection','Projection')
     if box:
         box.use_property_split=True
@@ -100,12 +127,6 @@ def projector(layout,context):
         for a,b in [('show_identifier','show_projected_identifier'),('show_frustum','show_centre_ray'),('show_target_marker','show_grid')]:
             row=box.row(align=True);row.prop(p,a);row.prop(p,b)
         box.prop(p,'show_output',text='Projection Output')
-    box=section(layout,'position','Aim / Position',True)
-    if box:
-        row=box.row(align=True);row.operator('ps.aim',text='Object Centre').mode='OBJECT';row.operator('ps.aim',text='3D Cursor').mode='CURSOR'
-        row=box.row(align=True);row.operator('beam.ui_action',text='Click Surface').action='AIM_CLICK';row.operator('beam.ui_action',text='Look Through').action='LOOK'
-        row=box.row(align=True);row.operator('ps.move',text='Axis −1 m').distance=-1;row.operator('ps.move',text='Axis +1 m').distance=1
-        if record:readout(box,'Centre Ray',length(record['slant'],units) if record['hit'] else 'No hit')
     box=section(layout,'projector_advanced','Advanced',True)
     if box:
         for prop in ('stack','brightness','lumens','active','notes'):box.prop(p,prop)
@@ -226,14 +247,13 @@ def draw(layout,context):
         current=context.view_layer.objects.active;active=ui_context.subject(context)
         if current!=active:
             row=layout.row();row.label(text='Selected: '+(current.name if current else '—'),icon='RESTRICT_SELECT_OFF')
+        if current and current.get('ps_helper') and current.parent and current.parent.ps.is_projector:
+            layout.operator('beam.select_projector',text='Select '+current.parent.ps.identifier,icon='RESTRICT_SELECT_OFF')
         row=layout.row(align=True)
         if s.inspector in {'PROJECTOR','SCREEN'}:row.prop(s,'active_projector' if s.inspector=='PROJECTOR' else 'active_screen',text='Pinned' if s.pin_context else 'Active')
         else:row.label(text=('Pinned: ' if s.pin_context else 'Active: ')+(active.name if active else '—'))
         row.prop(s,'pin_context',text='',icon='PINNED' if s.pin_context else 'UNPINNED',toggle=True)
         if s.inspector!='EXPORT':receiver_status(layout,context)
-    from . import analysis_runtime
-    from .analysis_ui import draw as draw_analysis
-    if s.inspector!='EXPORT' and analysis_runtime.CACHE.get(context.scene.as_pointer()):draw_analysis(layout,context)
     layout.separator(factor=.4)
     if s.inspector=='PROJECTOR':projector(layout,context)
     elif s.inspector=='SCREEN':
@@ -246,7 +266,7 @@ def draw(layout,context):
     else:exports(layout,context)
     if s.inspector!='EXPORT':
         from .analysis_ui import draw as draw_analysis
-        if not analysis_runtime.CACHE.get(context.scene.as_pointer()):draw_analysis(layout,context)
+        draw_analysis(layout,context)
         reverse(layout,context)
     box=section(layout,'render_projection','Projection Mode')
     if box:
@@ -308,4 +328,27 @@ class BEAM_OT_inspector(bpy.types.Operator):
     def description(cls,context,properties):return next(t+' inspector' for k,t,i in MODULES if k==properties.kind)
     def execute(self,context):context.scene.ps_study.inspector=self.kind;return {'FINISHED'}
 
-CLASSES=(BEAM_UL_members,BEAM_OT_inspector,PS_PT_main,BEAM_PT_workspace,BEAM_PT_rail)
+class BEAM_OT_select_projector(bpy.types.Operator):
+    bl_idname='beam.select_projector';bl_label='Select Projector';bl_description="Select the projector this helper belongs to; helpers can't be moved themselves";bl_options={'UNDO'}
+    def execute(self,context):
+        helper=context.view_layer.objects.active
+        if not helper or not helper.get('ps_helper') or not helper.parent or not helper.parent.ps.is_projector:return {'CANCELLED'}
+        for item in context.selected_objects:item.select_set(False)
+        projector=helper.parent
+        projector.hide_set(False);projector.select_set(True);context.view_layer.objects.active=projector
+        return {'FINISHED'}
+
+class BEAM_OT_select_group(bpy.types.Operator):
+    bl_idname='beam.select_group';bl_label='Select Whole Group';bl_description='Select the group controller, so moving it moves every member';bl_options={'UNDO'}
+    group_uuid:bpy.props.StringProperty()
+    def execute(self,context):
+        s=context.scene.ps_study
+        index=next((i for i,g in enumerate(s.blend_groups) if g.uuid==self.group_uuid and g.controller),None)
+        if index is None:self.report({'WARNING'},'Group controller is missing');return {'CANCELLED'}
+        controller=s.blend_groups[index].controller
+        for item in context.selected_objects:item.select_set(False)
+        controller.hide_set(False);controller.select_set(True);context.view_layer.objects.active=controller
+        s.blend_group_index=index;s.inspector='GROUP'
+        return {'FINISHED'}
+
+CLASSES=(BEAM_UL_members,BEAM_OT_inspector,BEAM_OT_select_projector,BEAM_OT_select_group,PS_PT_main,BEAM_PT_workspace,BEAM_PT_rail)

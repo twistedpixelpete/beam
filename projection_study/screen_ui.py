@@ -75,7 +75,7 @@ def parameters(layout,p,editing=False):
 
 
 def draw_screen(layout,context):
-    from .ui import status,actions
+    from .ui import status,actions,object_position_section
     s=context.scene.ps_study;obj=screen_data.active(context,persistent=True)
     layout.prop(s,'ui_create_screen',text='New Screen',icon='ADD',toggle=True)
     if s.ui_create_screen or not obj:
@@ -85,6 +85,7 @@ def draw_screen(layout,context):
             action(create,'Use Selected Source','SOURCE','EYEDROPPER');create.operator('beam.screen_create',text='Create Screen',icon='ADD')
     if not obj:status(layout,'No screen selected');return
     p=obj.beam_screen;actions(layout,context)
+    object_position_section(layout,obj)
     pending=p.built_signature!=screen_objects.signature(p)
     if abs(p.unit_scale-context.scene.unit_settings.scale_length)>1e-8:status(layout,'Scene units changed · Update Screen')
     if pending:status(layout,'Parameters changed · Update Screen')

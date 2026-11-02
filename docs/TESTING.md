@@ -23,8 +23,18 @@ When a bug is fixed, add a check for it to the section where it would show up.
 ## Hands-on checklist
 Each section has a numbered label on the floor. Note the Beam version and Blender version with your results.
 
+### Moving things
+- [ ] Clicking a projector shows its position, pitch, yaw and roll at the top of the inspector, and typing values moves it.
+- [ ] Typing `2500 mm` into a position field works.
+- [ ] Clicking `· Optics` in the Outliner offers a Select button for its projector, and arrow keys still walk down the Outliner.
+- [ ] A locked object's fields are greyed out and say why.
+- [ ] A new Beam workspace opens on the Move tool with Drag set to Tweak.
+- [ ] Clicking a projector's body in the viewport selects it, and dragging its arrows moves it.
+- [ ] Object Centre aims at the middle of the other selected object's geometry, even when its origin is elsewhere.
+
 ### 1. Auto Blend
-- [ ] Moving the group controller moves all three projectors.
+- [ ] Moving the group controller moves all three projectors, using its fields or the arrows.
+- [ ] Selecting a member offers Select Whole Group, and the member's fields move only that member.
 - [ ] Changing the overlap reflows the group, and the measured overlap matches.
 - [ ] Shift-D on the controller makes a complete, independent group with new projector names.
 - [ ] Combined Blend Preview and Preview Edge Blend look correct.
