@@ -48,7 +48,7 @@ From the code review of 2 November 2026.
 
 1. **BUG, confirmed.** Reverse Mapping redraws continuously while idle: 112 draws per second on Apple silicon/Metal, against 0 without it. Shader values are compared at a tolerance 32-bit floats can't meet, so they are rewritten on every draw.
 2. **BUG, risk.** Reverse Mapping creates and removes materials and node groups during viewport drawing. Move this out of the draw callback.
-3. **Decision needed, then BUG.** Surface Analysis "All projectors" includes projectors that are hidden, excluded from export or have output off, so they add to coverage and lux. Reverse Mapping's "All Active" excludes inactive projectors.
+3. **Decided, no change.** Surface Analysis "All projectors" keeps counting every projector in the scene, including those hidden, excluded from export or with output off. Reverse Mapping's "All Active" is a different rule and excludes inactive projectors.
 4. **BUG.** The combined blend preview uses the first member's content in the viewport and the anchor's in Cycles.
 5. **BUG.** Exported files are readable only by their owner (`0600`), study package folders likewise (`0700`), and overwriting a file changes its permissions.
 6. **BUG.** Selecting a member of another Blend Group marks analysis stale even when its scope is not Group.
