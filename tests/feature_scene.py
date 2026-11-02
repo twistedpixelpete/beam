@@ -223,12 +223,15 @@ def check_inspector_header(context):
     inspector, receiver = settings.inspector, settings.reverse_receiver
     settings.reverse_receiver = bpy.data.objects['Reverse Receiver']
     log = draw_inspector(inspector_ui(), 'PROJECTOR')
+    surface = draw_inspector(inspector_ui(), 'SURFACE')
     settings.inspector, settings.reverse_receiver = inspector, receiver
     header = before_first_panel(log)
-    require(('prop', 'project_name') not in header, 'Project name should be in Project / Workspace, not the header')
+    require(('prop', 'project_name') not in header, 'Project name should be in the project dropdown, not the header')
+    require(any(entry[0] == 'popover' for entry in header), 'The header should offer the project dropdown')
     text = labels(header)
     require(not any(line.startswith(('Receiver:', 'Coverage:')) for line in text), f'Receiver status should be in its section: {text}')
-    require(log.index(('panel', 'beam_reverse_mapping')) < log.index(('operator', 'beam.receiver_action')), 'Reverse Mapping button should be in its section')
+    require(('panel', 'beam_reverse_mapping') not in log, 'Reverse Mapping should only be on the Surface tab')
+    require(surface.index(('panel', 'beam_reverse_mapping')) < surface.index(('operator', 'beam.receiver_action')), 'Reverse Mapping button should be in its section')
 
 
 def inspector_ui():

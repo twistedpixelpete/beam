@@ -22,6 +22,8 @@ class RecordingLayout:
                 self.log.append(('operator', args[0]))
             elif name == 'label':
                 self.log.append(('label', kwargs.get('text', '')))
+            elif name == 'popover':
+                self.log.append(('popover', args[0], kwargs.get('text', '')))
             elif name == 'panel':
                 self.log.append(('panel', args[0]))
                 return RecordingLayout(self.log), RecordingLayout(self.log)
@@ -41,6 +43,12 @@ def draw_inspector(ui, inspector):
     bpy.context.scene.ps_study.inspector = inspector
     log = []
     ui.draw(RecordingLayout(log), InspectorContext())
+    return log
+
+
+def draw_project_settings(ui):
+    log = []
+    ui.project_settings(RecordingLayout(log), InspectorContext())
     return log
 
 
