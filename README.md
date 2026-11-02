@@ -170,6 +170,7 @@ python3 -m unittest discover -s tests -p 'test_*.py'
 
 Run Blender integration scripts only in disposable sessions: some create scenes and quit Blender. Consult the guides and [test records](TEST_RESULTS.txt) before running them against files you care about.
 
+- [Roadmap](docs/ROADMAP.md).
 - [Workspace reference](docs/UI-WORKSPACE.md) and [UI/UX refinement reference](docs/UI-UX-REFINEMENT.md).
 - [Optional theme installation and rollback](docs/THEME-WORKSPACE.md) — application-wide and opt-in; opening Beam does not apply it automatically.
 - [Screen appearance and labels](docs/SCREEN-BEAUTY.md).

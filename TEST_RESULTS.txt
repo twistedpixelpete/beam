@@ -1,3 +1,9 @@
+Beam 0.14.0 + fix/runtime-resilience-performance - 2 November 2026
+
+PASS: 75 pure tests; all background suites on the Blender 5.2.3 bpy package for Linux, including new resilience and scene geometry suites (blender_refinement run as its apply and restore phases).
+PASS: milestones 1-15, projection engine, view exports, review GPU, planning UI and Reverse Mapping persistence on Blender 5.2.2 / macOS Metal.
+Not tested: interactive use on a real production file. See docs/ROADMAP.md, R1.
+
 Beam 0.12.0 - pre-documentation cleanup - 2026-10-25
 
 PASS: full relevant suite, actual ZIP install/use/fresh-process reopen, eight repeated five-generation migrations, UI context regression and 32-projector soak. Source freeze: 15e054ae7d7d7700549bbeb0dc4d54c18779d39c.
