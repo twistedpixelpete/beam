@@ -47,7 +47,7 @@ def actions(layout,context,vertical=False):
 
 def position_section(layout,context,obj,record,units):
     from . import blend_groups,transform_ui
-    box=section(layout,'position','Position and Aim')
+    box=section(layout,'position_aim','Position and Aim')
     if not box:return
     transform_ui.draw_position(box,obj);transform_ui.draw_projector_rotation(box,obj)
     if any(obj.lock_location) or any(obj.lock_rotation):status(box,'Locked · use Unlock to move this projector')

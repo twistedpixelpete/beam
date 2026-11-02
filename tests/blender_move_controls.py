@@ -75,7 +75,7 @@ class Layout:
         return call
 log=[];ui.projector(Layout(log),c)
 panels=[e[1] for e in log if e[0]=='panel']
-assert panels.index('beam_position')<panels.index('beam_projection'),panels
+assert panels.index('beam_position_aim')<panels.index('beam_projection'),panels
 props=[e[1] for e in log if e[0]=='prop'];assert 'position' in props and 'orientation' in props
 s.ps_study.active_projector=a;log=[];ui.projector(Layout(log),c)
 assert ('operator','beam.select_group','Select Whole Group') in log,'member offers whole-group selection'
