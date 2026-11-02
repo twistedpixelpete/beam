@@ -220,9 +220,10 @@ def verify_reverse(context, m, facts):
 
 def check_inspector_header(context):
     settings = context.scene.ps_study
-    inspector = settings.inspector
+    inspector, receiver = settings.inspector, settings.reverse_receiver
+    settings.reverse_receiver = bpy.data.objects['Reverse Receiver']
     log = draw_inspector(inspector_ui(), 'PROJECTOR')
-    settings.inspector = inspector
+    settings.inspector, settings.reverse_receiver = inspector, receiver
     header = before_first_panel(log)
     require(('prop', 'project_name') not in header, 'Project name should be in Project / Workspace, not the header')
     text = labels(header)
