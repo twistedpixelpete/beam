@@ -18,7 +18,11 @@ def use_move_tool():
     tool=window.workspace.tools.from_space_view3d_mode('OBJECT',create=False)
     if tool and not tool.idname.startswith('builtin.select'):return None
     with bpy.context.temp_override(window=window,area=area,region=region):
-        if bpy.context.mode=='OBJECT':bpy.ops.wm.tool_set_by_id(name='builtin.move',space_type='VIEW_3D')
+        if bpy.context.mode=='OBJECT':
+            bpy.ops.wm.tool_set_by_id(name='builtin.move',space_type='VIEW_3D')
+            # Tweak lets a click pick by geometry. Select Circle only tests object origins,
+            # so with it a click on a projector's body selects nothing.
+            bpy.ops.wm.tool_set_by_id(name='builtin.select',space_type='VIEW_3D',as_fallback=True)
     return None
 
 class BEAM_OT_workspace(bpy.types.Operator):

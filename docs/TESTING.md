@@ -28,7 +28,8 @@ Each section has a numbered label on the floor. Note the Beam version and Blende
 - [ ] Typing `2500 mm` into a position field works.
 - [ ] Clicking `· Optics` in the Outliner offers a Select button for its projector, and arrow keys still walk down the Outliner.
 - [ ] A locked object's fields are greyed out and say why.
-- [ ] A new Beam workspace opens on the Move tool, so selecting something shows the arrows.
+- [ ] A new Beam workspace opens on the Move tool with Drag set to Tweak.
+- [ ] Clicking a projector's body in the viewport selects it, and dragging its arrows moves it.
 
 ### 1. Auto Blend
 - [ ] Moving the group controller moves all three projectors, using its fields or the arrows.

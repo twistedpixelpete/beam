@@ -30,6 +30,7 @@ Judged by planning a real job from start to finish, not by tests. From a review 
 - Surface Analysis stays in one place, instead of jumping above the inspector once it has a result.
 
 **Next, proposed**
+- Selecting in files with an existing Beam workspace can still land on Select Circle, where a click on a projector's body selects nothing. Decide whether Beam should warn or correct this.
 - Project name and revision take the top of every inspector for something set once. Move them to Project / Workspace.
 - "Technical" is both a status and a button, and its meaning isn't obvious.
 - "Active", "Selected" and "Pinned" can name three different objects at once. Make it clear what the controls are acting on.
