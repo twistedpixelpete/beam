@@ -4,7 +4,7 @@ Beam by Twisted Pixel
 Reviewed: 2 November 2026.
 
 ## Current priority
-Beam 0.14.0 is an Internal Production Beta. R1 (runtime resilience and scale) is ON A BRANCH and has not been merged. R2 onward is PROPOSED: nothing below is approved or scheduled until the maintainer says so. No committed delivery dates are implied.
+Beam 0.14.0 is the current Internal Production Beta release. R1 (runtime resilience and scale) and the Reverse Mapping redraw fix are merged to `main`, but not yet in a release. The rest of R2 and everything after it is PROPOSED: nothing below is approved or scheduled until the maintainer says so. No committed delivery dates are implied.
 
 ## How to read this
 | Status | Meaning |
@@ -20,17 +20,17 @@ Classify new findings as BUG, POLISH, DOCUMENTATION or FUTURE FEATURE. Normal fi
 ## R0 — COMPLETE: 0.14.0 baseline
 Projector planning, Screens, Blend Groups, Auto Blend, Inverse Solver, Optics Guidance, Study Views, Reverse Mapping, Surface Intelligence, optional Cycles projection and the JSON, CSV and Study Package exports. See the [0.14.0 release notes](RELEASE-0.14.0.md).
 
-## R1 — ON A BRANCH: Runtime resilience and scale
-Branch: `fix/runtime-resilience-performance`.
+## R1 — COMPLETE: Runtime resilience and scale
+Merged to `main`, not yet in a release.
 
 - A failing background update retries and shows in the Beam panel, instead of stopping live updates for the session.
 - A copied Blend Group that can't be rebuilt keeps its objects and is no longer retried every tick.
 - Surfaces are held in arrays, and moving an object no longer re-reads its mesh or rebuilds its ray-cast tree.
 - Quiet timer ticks skip whole-scene scans. A heartbeat of at least one second catches anything Blender doesn't report.
 
-Measured headless on Apple silicon with Blender 5.2.2, main against this branch:
+Measured headless on Apple silicon with Blender 5.2.2, before and after:
 
-| Case | Main | Branch |
+| Case | Before | After |
 |---|---:|---:|
 | Idle tick, 5,000 objects and 32 projectors | 25 ms | 0.2 ms, plus a 10 ms scan each second |
 | Idle tick, 20,000 objects and 32 projectors | 122 ms | 0.9 ms, plus a 45 ms scan each second |
@@ -41,12 +41,12 @@ Measured headless on Apple silicon with Blender 5.2.2, main against this branch:
 
 Peak memory for a 4M-vertex mesh falls from 2.4 GB to 1.0 GB, measured on Linux.
 
-Validation on the branch: 75 pure tests and all background suites on Linux, plus milestones 1–15 and the projection, view export, review, planning and Reverse Mapping persistence GPU suites on Metal. Not yet covered: interactive use on a real production file.
+Validation: 75 pure tests and all background suites on Linux, plus milestones 1–15 and the projection, view export, review, planning and Reverse Mapping persistence GPU suites on Metal. Not yet covered: interactive use on a real production file.
 
 ## R2 — PROPOSED: Correctness follow-ups
 From the code review of 2 November 2026.
 
-1. **BUG, confirmed.** Reverse Mapping redraws continuously while idle: 112 draws per second on Apple silicon/Metal, against 0 without it. Shader values are compared at a tolerance 32-bit floats can't meet, so they are rewritten on every draw.
+1. **BUG, fixed on `main`.** Reverse Mapping redrew continuously while idle: 112 draws per second on Apple silicon/Metal before the fix, 0 after. Shader values were compared at a tolerance 32-bit floats can't meet, so they were rewritten on every draw.
 2. **BUG, risk.** Reverse Mapping creates and removes materials and node groups during viewport drawing. Move this out of the draw callback.
 3. **Decided, no change.** Surface Analysis "All projectors" keeps counting every projector in the scene, including those hidden, excluded from export or with output off. Reverse Mapping's "All Active" is a different rule and excludes inactive projectors.
 4. **BUG.** The combined blend preview uses the first member's content in the viewport and the anchor's in Cycles.

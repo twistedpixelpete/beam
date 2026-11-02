@@ -6,6 +6,7 @@ space, while the source material continues to evaluate in its own UV space.
 import bpy
 import gpu
 import logging
+import math
 import numpy as np
 from . import runtime,projection_renderer
 
@@ -48,6 +49,12 @@ def managed(obj):
 
 
 def socket(value):return hasattr(value,'is_output')
+
+
+def set_input(socket,value):
+    """Write only real changes. Sockets store 32-bit floats, so an exact comparison
+    with a 64-bit value would rewrite it, and redraw the viewport, on every draw."""
+    if not math.isclose(socket.default_value,value,rel_tol=1e-6,abs_tol=1e-7):socket.default_value=value
 
 
 def build_group(projectors,mode,dim):
@@ -255,7 +262,7 @@ def refresh_object(obj):
                   'near':shadow['near'],'bias':max(.003/bpy.context.scene.unit_settings.scale_length,record['metrics'].distance/bpy.context.scene.unit_settings.scale_length/min(shadow['size'])*.5),'valid':1}
             for suffix,value in vals.items():
                 n=group.nodes.get(uuid+' '+suffix)
-                if n and abs(n.inputs[1].default_value-value)>1e-8:n.inputs[1].default_value=value
+                if n:set_input(n.inputs[1],value)
     status='Too many coverage projectors (maximum 32)' if too_many else f"{len(projectors)} coverage projectors · {dict(COVERED='Covered Only', DIM='Uncovered Dimmed', HIDDEN='Uncovered Hidden', OVERLAP='Overlap Diagnostic')[p.mode]}" if projectors else 'No visible coverage source'
     if p.status!=status:p.status=status
 
