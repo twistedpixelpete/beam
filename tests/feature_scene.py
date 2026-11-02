@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 import projection_study as addon  # noqa: E402
+from tests.ui_recorder import before_first_panel, draw_inspector, labels  # noqa: E402
 
 args = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 KEEP = '--keep' in args
@@ -214,6 +215,24 @@ def verify_reverse(context, m, facts):
     wall = bpy.data.objects['Reverse Receiver']
     require(wall.beam_reverse.enabled, 'Reverse Mapping should be enabled')
     require(wall.material_slots[0].material.get('beam_reverse'), 'Receiver should use a coverage wrapper')
+    check_inspector_header(context)
+
+
+def check_inspector_header(context):
+    settings = context.scene.ps_study
+    inspector = settings.inspector
+    log = draw_inspector(inspector_ui(), 'PROJECTOR')
+    settings.inspector = inspector
+    header = before_first_panel(log)
+    require(('prop', 'project_name') not in header, 'Project name should be in Project / Workspace, not the header')
+    text = labels(header)
+    require(not any(line.startswith(('Receiver:', 'Coverage:')) for line in text), f'Receiver status should be in its section: {text}')
+    require(log.index(('panel', 'beam_reverse_mapping')) < log.index(('operator', 'beam.receiver_action')), 'Reverse Mapping button should be in its section')
+
+
+def inspector_ui():
+    from projection_study import ui
+    return ui
 
 
 def build_heavy(context, m, x):

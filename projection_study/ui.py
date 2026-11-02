@@ -75,8 +75,10 @@ def projector(layout,context):
     s=context.scene.ps_study;obj=selected(context);units=s.display_units
     row=layout.row(align=True);row.operator('ps.add',text='New Projector',icon='ADD')
     if obj:row.operator('ps.duplicate',text='Duplicate',icon='DUPLICATE')
-    layout.prop(s,'create_projector_body')
-    if not obj:status(layout,'No projector selected');return
+    if not obj:
+        layout.prop(s,'create_projector_body')
+        status(layout,'No projector selected')
+        return
     p=obj.ps;record=runtime.CACHE.get(obj.as_pointer());status(layout,'TARGET' if record and record['hit'] else 'No Target',bool(record and record['hit']))
     actions(layout,context)
     position_section(layout,context,obj,record,units)
@@ -119,6 +121,7 @@ def projector(layout,context):
     box=section(layout,'projector_body','Projector Body',True)
     if box:
         row=box.row();row.enabled=obj.mode=='OBJECT';row.prop(p,'show_body')
+        box.prop(s,'create_projector_body')
         box.label(text='Parent custom models to this projector.')
         box.label(text='Lens origin · −Z forward · +Y up')
         box.label(text='Child models do not block projection.')
@@ -178,18 +181,27 @@ def exports(layout,context):
         else:status(box,'No screen selected')
 
 
-def receiver_status(layout,context):
-    from . import reverse_mapping
-    obj=ui_context.receiver(context)
-    if not obj or obj!=context.view_layer.objects.active and not obj.beam_reverse.enabled:return
-    p=obj.beam_reverse
-    layout.label(text='Receiver: '+obj.name,icon='MATERIAL')
-    if p.source=='ACTIVE':
-        active=context.scene.ps_study.active_projector
-        layout.label(text='Coverage: '+(active.ps.identifier if active else 'No projector'))
-    warning=receiver_warning(context,obj)
-    if warning:status(layout,warning)
-    elif p.enabled:status(layout,p.status,True)
+def reverse_problem(layout, context):
+    """Shown above the module only when Reverse Mapping is on and has stopped working."""
+    obj = ui_context.receiver(context)
+    if not obj or not obj.beam_reverse.enabled:
+        return
+    warning = receiver_warning(context, obj)
+    if warning:
+        status(layout, 'Reverse Mapping · ' + warning, error=True)
+
+
+def reverse_status(layout, context, obj, warning):
+    """Coverage and any problem, directly above the button they affect."""
+    p = obj.beam_reverse
+    if p.source == 'ACTIVE':
+        active = context.scene.ps_study.active_projector
+        layout.label(text='Coverage: ' + (active.ps.identifier if active else 'No projector'))
+    if warning:
+        status(layout, warning)
+    elif p.enabled:
+        status(layout, p.status, True)
+
 
 def receiver_warning(context,obj):
     from . import reverse_mapping
@@ -220,6 +232,7 @@ def reverse(layout,context):
             g=next((g for g in context.scene.ps_study.blend_groups if g.uuid==p.group_uuid),None)
             box.menu('BEAM_MT_receiver_groups',text=g.name if g else 'Choose Blend Group')
         if p.mode=='DIM':box.prop(p,'dim')
+        reverse_status(box,context,obj,warning)
         row=box.row();row.enabled=p.enabled or not warning
         row.operator('beam.receiver_action',text='Restore Materials' if p.enabled else 'Enable on Receiver').action='DISABLE' if p.enabled else 'ENABLE'
 
@@ -237,9 +250,7 @@ def draw(layout,context):
     draw_faults(layout)
     from . import presentation,ui_workspace
     s=context.scene.ps_study;layout.use_property_decorate=False
-    row=layout.row(align=True);row.label(text='BEAM')
-    if not ui_workspace.is_beam(context):row.operator('beam.workspace',text='',icon='WORKSPACE')
-    row.prop(s,'project_name',text='',placeholder='Project');row.prop(s,'revision',text='',placeholder='Revision')
+    if not ui_workspace.is_beam(context):layout.operator('beam.workspace',icon='WORKSPACE')
     area=next((a for a in context.screen.areas if a.type=='VIEW_3D'),None)
     row=layout.row(align=True);row.prop(s,'display_units',expand=True);row.operator('beam.ui_action',text='Presentation' if presentation.active(area) else 'Technical',icon='SHADING_SOLID',depress=presentation.active(area)).action='PRESENTATION'
     navigation(layout,context)
@@ -253,7 +264,7 @@ def draw(layout,context):
         if s.inspector in {'PROJECTOR','SCREEN'}:row.prop(s,'active_projector' if s.inspector=='PROJECTOR' else 'active_screen',text='Pinned' if s.pin_context else 'Active')
         else:row.label(text=('Pinned: ' if s.pin_context else 'Active: ')+(active.name if active else '—'))
         row.prop(s,'pin_context',text='',icon='PINNED' if s.pin_context else 'UNPINNED',toggle=True)
-        if s.inspector!='EXPORT':receiver_status(layout,context)
+        reverse_problem(layout,context)
     layout.separator(factor=.4)
     if s.inspector=='PROJECTOR':projector(layout,context)
     elif s.inspector=='SCREEN':
@@ -284,7 +295,7 @@ def draw(layout,context):
         for prop in ('show_projected_identifiers','show_study_cameras','shadow_resolution'):box.prop(s,prop)
     box=section(layout,'metadata','Project / Workspace',True)
     if box:
-        for prop in ('venue','client','author'):box.prop(s,prop)
+        for prop in ('project_name','revision','venue','client','author'):box.prop(s,prop)
         box.operator('beam.workspace',icon='WORKSPACE');box.operator('beam.ui_action',text='Organise Beam Collections',icon='OUTLINER_COLLECTION').action='ORGANIZE'
         box.separator()
         box.operator('beam.apply_theme',text='Apply Beam Theme',icon='PREFERENCES')

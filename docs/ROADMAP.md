@@ -21,7 +21,7 @@ Every feature is tested in the [feature test scene](TESTING.md). Classify new fi
 ## U1 — ACTIVE: Usability
 Judged by planning a real job from start to finish, not by tests. From a review of the interface code on 2 November 2026; the maintainer's hands-on findings take priority over this order.
 
-**On a branch (`ux/move-controls`), awaiting hands-on testing**
+**Merged to `main`**
 - Position and rotation fields for projectors, screens and Blend Groups, at the top of the inspector and in world space.
 - Aim tools moved from a closed section near the bottom to the top.
 - Selecting a helper camera or light offers a button to select its projector.
@@ -29,17 +29,21 @@ Judged by planning a real job from start to finish, not by tests. From a review 
 - The Beam workspace opens on the Move tool.
 - Surface Analysis stays in one place, instead of jumping above the inspector once it has a result.
 
+**Agreed direction (maintainer, 2 November 2026)**
+Beam stays in the right-hand column. Tabs follow the job: Projector, Screen, Blend, Surface, Views, Export. Each stage is its own pull request with no change to calculated or export values.
+
+1. **On a branch (`ux/compact-header`).** Shorter header, with warnings beside what they affect.
+2. Add a Surface tab for Surface Analysis and Reverse Mapping, and a project dropdown for project details, units, display and mode. This removes the sections repeated on every tab.
+3. Order each tab by how often it's used, and choose what opens by default.
+4. Plain names and clearer errors, using a word list the maintainer approves first.
+
 **Next, proposed**
 - Selecting in files with an existing Beam workspace can still land on Select Circle, where a click on a projector's body selects nothing. Decide whether Beam should warn or correct this.
-- Project name and revision take the top of every inspector for something set once. Move them to Project / Workspace.
 - "Technical" is both a status and a button, and its meaning isn't obvious.
 - "Active", "Selected" and "Pinned" can name three different objects at once. Make it clear what the controls are acting on.
-- The Projector inspector mixes everyday controls with rarely used ones. Order it by how often each is used, and open only what's needed.
 - Display units apply to Beam's readouts, while position fields use Blender's scene units. Make them agree.
-- Output, Annotations and global Viewport Display settings are separate and easy to confuse.
 - Layout slots and helper objects clutter the Outliner.
 - Exports need a clearer choice between the two CSV formats, and clearer feedback on what was written and where.
-- Error text should say what to do next, not only what's wrong.
 - Screen Builder shows every parameter at once. Show only those for the chosen type.
 
 ## R0 — COMPLETE: 0.14.0 baseline
