@@ -9,7 +9,7 @@ Run it in a new Blender, never one with work open:
 blender --factory-startup --python tests/feature_scene.py -- ~/Desktop/Beam-Test-Scene.blend --keep
 ```
 
-The script builds and checks the scene, saves it, reopens it and checks it again, then measures idle redraws with Reverse Mapping on. It writes the outcome to `Beam-Test-Scene.blend.result.json` next to the scene. With `--keep`, Blender stays open for hands-on testing. Without it, Blender quits, which suits automated runs. It needs a GPU viewport, so it can't run in background mode.
+The script builds and checks the scene, opens the Beam workspace, saves it, reopens it and checks it again, then measures idle redraws with Reverse Mapping on. It writes the outcome to `Beam-Test-Scene.blend.result.json` next to the scene. With `--keep`, Blender stays open for hands-on testing. Without it, Blender quits, which suits automated runs. It needs a GPU viewport, so it can't run in background mode.
 
 ## The rule for new features
 A feature isn't finished until it's in the scene. Each one adds:
@@ -31,6 +31,13 @@ Each section has a numbered label on the floor. Note the Beam version and Blende
 - [ ] A new Beam workspace opens on the Move tool with Drag set to Tweak.
 - [ ] Clicking a projector's body in the viewport selects it, and dragging its arrows moves it.
 - [ ] Object Centre aims at the middle of the other selected object's geometry, even when its origin is elsewhere.
+
+### Inspector layout
+- [ ] With a projector selected, Position and Aim is visible without scrolling.
+- [ ] Project name and revision are in Project / Workspace, and they still reach the exports.
+- [ ] Body for New Projectors is in Projector Body, or beside New Projector when no projector exists.
+- [ ] Selecting a mesh without UVs shows no warning above the module. Reverse Mapping shows "Receiver needs UVs" just above the greyed-out button.
+- [ ] If Reverse Mapping is on and stops working, a warning shows above the module.
 
 ### 1. Auto Blend
 - [ ] Moving the group controller moves all three projectors, using its fields or the arrows.

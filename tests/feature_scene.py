@@ -29,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 import projection_study as addon  # noqa: E402
+from tests.ui_recorder import before_first_panel, draw_inspector, labels  # noqa: E402
 
 args = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 KEEP = '--keep' in args
@@ -233,6 +234,25 @@ def verify_reverse(context, m, facts):
     wall = bpy.data.objects['Reverse Receiver']
     require(wall.beam_reverse.enabled, 'Reverse Mapping should be enabled')
     require(wall.material_slots[0].material.get('beam_reverse'), 'Receiver should use a coverage wrapper')
+    check_inspector_header(context)
+
+
+def check_inspector_header(context):
+    settings = context.scene.ps_study
+    inspector, receiver = settings.inspector, settings.reverse_receiver
+    settings.reverse_receiver = bpy.data.objects['Reverse Receiver']
+    log = draw_inspector(inspector_ui(), 'PROJECTOR')
+    settings.inspector, settings.reverse_receiver = inspector, receiver
+    header = before_first_panel(log)
+    require(('prop', 'project_name') not in header, 'Project name should be in Project / Workspace, not the header')
+    text = labels(header)
+    require(not any(line.startswith(('Receiver:', 'Coverage:')) for line in text), f'Receiver status should be in its section: {text}')
+    require(log.index(('panel', 'beam_reverse_mapping')) < log.index(('operator', 'beam.receiver_action')), 'Reverse Mapping button should be in its section')
+
+
+def inspector_ui():
+    from projection_study import ui
+    return ui
 
 
 def build_heavy(context, m, x):
@@ -445,7 +465,17 @@ def build():
             view.view_rotation = (Vector((12, 6, 3)) - Vector((12, -90, 60))).to_track_quat('-Z', 'Y')
             view.view_distance, view.view_perspective = 135, 'PERSP'
             check_all('checks')
-            OUT.parent.mkdir(parents=True, exist_ok=True)
+            bpy.ops.beam.workspace()
+        # The window changes workspace on its next update, so save after that.
+        bpy.app.timers.register(save, first_interval=.5)
+    except Exception:
+        finish(traceback.format_exc())
+
+
+def save():
+    try:
+        OUT.parent.mkdir(parents=True, exist_ok=True)
+        with in_viewport():
             bpy.ops.wm.save_as_mainfile(filepath=str(OUT))
         bpy.app.timers.register(reopen, first_interval=.5)
     except Exception:
@@ -469,6 +499,8 @@ def after_reopen():
         if now != identities:
             report['failures'].append(f'Projector identities changed on reopen: {identities} became {now}')
         check_all('reopened')
+        if not bpy.context.window_manager.windows[0].workspace.get('beam_workspace'):
+            report['failures'].append('The scene should open on the Beam workspace')
         bpy.ops.wm.revert_mainfile()
         bpy.app.timers.register(idle_start, first_interval=4)
     except Exception:
