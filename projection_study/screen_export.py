@@ -3,7 +3,7 @@ from pathlib import Path
 import os,tempfile,json
 import bpy
 from mathutils import Matrix
-from . import screen_uv,screen_objects
+from . import export_files,screen_uv,screen_objects
 
 
 def export(context,obj,filepath,fmt,mode='PRODUCTION',space='WORLD',overwrite=False):
@@ -50,7 +50,7 @@ def export(context,obj,filepath,fmt,mode='PRODUCTION',space='WORLD',overwrite=Fa
             else:
                 status=bpy.ops.export_scene.fbx(filepath=draftpath,use_selection=True,object_types={'MESH'},axis_forward='Y',axis_up='Z',global_scale=1,apply_unit_scale=True,apply_scale_options='FBX_SCALE_UNITS',use_mesh_modifiers=False,colors_type='NONE',bake_anim=False,add_leaf_bones=False,path_mode='STRIP')
         if 'FINISHED' not in status or not Path(draftpath).stat().st_size:raise ValueError('Blender exporter did not produce a file')
-        os.replace(draftpath,path);draftpath=None
+        os.chmod(draftpath,export_files.file_mode(path));os.replace(draftpath,path);draftpath=None
         return path
     finally:
         if window and original_scene:window.scene=original_scene
