@@ -86,6 +86,12 @@ Each section has a numbered label on the floor. Note the Beam version and Blende
 - [ ] Hide, unhide, duplicate, undo, redo, save and reopen all behave.
 - [ ] No red "Beam needs attention" box appears. If one does, record its text and what you were doing.
 
+## Learn Beam scene
+[`tools/learn_scene.py`](../tools/learn_scene.py) checks itself when it builds. When the interface changes, also check by hand:
+
+- [ ] The Views tab tours every station with View and Next, and each sign is readable.
+- [ ] Each step on each sign can be followed as written, with the controls named as they are in the interface.
+
 ## Other tests
 - **Pure tests:** `python3 -m unittest discover -s tests -p 'test_*.py'`
 - **Background suites:** `tests/blender_*.py` and `tests/validate_*.py` run without a GPU. Some need a `work/` folder or other setup, and `blender_refinement.py` needs its `apply` and `restore` phases run separately.

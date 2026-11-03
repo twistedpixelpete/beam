@@ -53,6 +53,8 @@ The original Layout workspace and scene are retained. Resize the editor borders 
 
 ## Start Here
 
+To learn by doing, build the [Learn Beam scene](docs/LEARN-BEAM.md): working setups for each part of Beam, with instructions in the scene.
+
 Extract **[Beam-Onboarding-0.13.0-beta.zip](https://github.com/twistedpixelpete/beam/releases/download/v0.13.0-beta/Beam-Onboarding-0.13.0-beta.zip)** and open `Beam_Onboarding/START_HERE.pdf`. This retained training package contains the older installer; install 0.14.0 from the current release instead. The package contains exactly six files:
 
 | File | Purpose |
