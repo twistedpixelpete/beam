@@ -13,7 +13,9 @@ to docs/TESTING.md. See that page for the rule.
 """
 import json
 import math
+import os
 import sys
+import tempfile
 import time
 import traceback
 from dataclasses import dataclass
@@ -178,7 +180,24 @@ def build_facade(context, m, x):
     return dict(projector=p.identifier, optics=f'{model_id} / {model.lenses[0]}', observer=observer.name)
 
 
+def check_group_selection_keeps_analysis(context, m):
+    settings = context.scene.ps_study
+    key = context.scene.as_pointer()
+    held, scope, index = m.analysis.CACHE.get(key), settings.analysis_scope, settings.blend_group_index
+    m.analysis.CACHE[key] = dict(stale=False)
+    settings.analysis_scope = 'ALL'
+    m.analysis.CACHE[key]['stale'] = False
+    settings.blend_group_index = index
+    require(not m.analysis.CACHE[key]['stale'], 'Selecting a group should not stale an All Projectors analysis')
+    settings.analysis_scope = scope
+    if held:
+        m.analysis.CACHE[key] = held
+    else:
+        m.analysis.CACHE.pop(key)
+
+
 def verify_facade(context, m, facts):
+    check_group_selection_keeps_analysis(context, m)
     obj = identifier_of(facts['projector'])
     require(obj.ps.target and obj.ps.target.name == 'Facade Wall', 'Facade projector should hit the wall')
     context.view_layer.update()
@@ -291,12 +310,23 @@ def build_screens(context, m, x):
 
 
 def verify_screens(context, m, facts):
+    check_export_permissions()
     grid = identifier_of(facts['grid'])
     require(grid.ps.target and grid.ps.target.name == facts['screen'], 'UV grid projector should hit the arc')
     open_air = identifier_of(facts['open_air'])
     require(open_air.ps.target is None, 'Open-air projector should have no target')
     _, errors = m.disguise.collect_rows(context)
     require(any(e['projector_name'] == open_air.ps.identifier and e['code'] == 'NO_TARGET' for e in errors), 'CSV checks should report No Target')
+
+
+def check_export_permissions():
+    with tempfile.TemporaryDirectory() as name:
+        path = Path(name) / 'beam.json'
+        require(bpy.ops.ps.export_json(filepath=str(path)) == {'FINISHED'}, 'Beam JSON should export')
+        mask = os.umask(0)
+        os.umask(mask)
+        require(path.stat().st_mode & 0o777 == 0o666 & ~mask, 'Exports should have normal file permissions')
+        require([item.name for item in Path(name).iterdir()] == ['beam.json'], 'Exports should leave no temporary files')
 
 
 def build_cycles(context, m, x):
