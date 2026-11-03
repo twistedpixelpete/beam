@@ -75,10 +75,10 @@ From the code review of 2 November 2026.
 2. **BUG, risk.** Reverse Mapping creates and removes materials and node groups during viewport drawing. Move this out of the draw callback.
 3. **Decided, no change.** Surface Analysis "All projectors" keeps counting every projector in the scene, including those hidden, excluded from export or with output off. Reverse Mapping's "All Active" is a different rule and excludes inactive projectors.
 4. **BUG.** The combined blend preview uses the first member's content in the viewport and the anchor's in Cycles.
-5. **BUG.** Exported files are readable only by their owner (`0600`), study package folders likewise (`0700`), and overwriting a file changes its permissions.
-6. **BUG, on a branch (`fix/analysis-stale`).** Selecting a member of another Blend Group marked analysis stale even when its scope wasn't Group.
+5. **BUG, fixed on `main`.** Exported files were readable only by their owner (`0600`), study package folders likewise (`0700`), and overwriting a file changed its permissions.
+6. **BUG, fixed on `main`.** Selecting a member of another Blend Group marked analysis stale even when its scope wasn't Group.
 7. **POLISH.** `Venue_r1.5` and `Venue_r1.4` both export as `Venue_r1.csv`.
-8. **POLISH.** Beam JSON export doesn't resolve `//` paths and is the only export written non-atomically.
+8. **POLISH, fixed on `main`.** Beam JSON export didn't resolve `//` paths and was the only export written non-atomically.
 9. **Risk, not reproduced.** Cycles `render_pre` edits scene data from a handler that can run alongside other threads.
 10. **Risk, not reproduced.** `_owners` survives file load, so a reused memory address could rewrite projector identities. It took a forced swap to trigger, with no natural case in 100 reopens.
 

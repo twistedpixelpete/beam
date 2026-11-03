@@ -13,7 +13,9 @@ to docs/TESTING.md. See that page for the rule.
 """
 import json
 import math
+import os
 import sys
+import tempfile
 import time
 import traceback
 from dataclasses import dataclass
@@ -288,12 +290,23 @@ def build_screens(context, m, x):
 
 
 def verify_screens(context, m, facts):
+    check_export_permissions()
     grid = identifier_of(facts['grid'])
     require(grid.ps.target and grid.ps.target.name == facts['screen'], 'UV grid projector should hit the arc')
     open_air = identifier_of(facts['open_air'])
     require(open_air.ps.target is None, 'Open-air projector should have no target')
     _, errors = m.disguise.collect_rows(context)
     require(any(e['projector_name'] == open_air.ps.identifier and e['code'] == 'NO_TARGET' for e in errors), 'CSV checks should report No Target')
+
+
+def check_export_permissions():
+    with tempfile.TemporaryDirectory() as name:
+        path = Path(name) / 'beam.json'
+        require(bpy.ops.ps.export_json(filepath=str(path)) == {'FINISHED'}, 'Beam JSON should export')
+        mask = os.umask(0)
+        os.umask(mask)
+        require(path.stat().st_mode & 0o777 == 0o666 & ~mask, 'Exports should have normal file permissions')
+        require([item.name for item in Path(name).iterdir()] == ['beam.json'], 'Exports should leave no temporary files')
 
 
 def build_cycles(context, m, x):

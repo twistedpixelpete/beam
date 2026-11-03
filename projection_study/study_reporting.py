@@ -3,7 +3,7 @@ import json,html,shutil,tempfile,os
 from dataclasses import asdict
 from uuid import UUID
 from pathlib import Path
-from . import export_json,analysis_runtime,optics_validation,observer
+from . import export_files,export_json,analysis_runtime,optics_validation,observer
 
 
 def document(context):
@@ -129,7 +129,7 @@ def export(context,destination,include_views=True,area=None):
             else:data['warnings'].append(dict(code='VIEW_NOT_RENDERED',uuid=view.uuid,message='View metadata only; image export disabled'))
         validate(data)
         (temp/'beam-study.json').write_text(json.dumps(data,indent=2,allow_nan=False)+'\n')
-        (temp/'index.html').write_text(html_sheet(data));os.rename(temp,destination)
+        (temp/'index.html').write_text(html_sheet(data));os.chmod(temp,export_files.new_folder_mode());os.rename(temp,destination)
         return data
     except Exception:
         for view,name,date in view_state:view.image_filename=name;view.exported_at=date
