@@ -114,8 +114,9 @@ class PS_OT_export_json(bpy.types.Operator):
         context.window_manager.fileselect_add(self); return {'RUNNING_MODAL'}
     def execute(self,context):
         try:
-            path=Path(bpy.path.ensure_ext(self.filepath,'.json'))
-            path.write_text(json.dumps(document(context),indent=2,allow_nan=False)+'\n',encoding='utf-8')
+            from .export_files import write_atomic
+            path=Path(bpy.path.abspath(bpy.path.ensure_ext(self.filepath,'.json')))
+            write_atomic(path,(json.dumps(document(context),indent=2,allow_nan=False)+'\n').encode('utf-8'))
         except (OSError,ValueError) as exc:
             self.report({'ERROR'},str(exc)); return {'CANCELLED'}
         self.report({'INFO'},'Study data exported'); return {'FINISHED'}

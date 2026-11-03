@@ -57,6 +57,12 @@ def analysis_changed(self,context):
     from .analysis_runtime import invalidate
     invalidate();redraw(self,context)
 
+def group_changed(self,context):
+    # Only a Group-scope analysis depends on which group is selected.
+    if self.analysis_scope=='GROUP':analysis_changed(self,context)
+    else:redraw(self,context)
+
+
 def observer_changed(self,context):
     from .analysis_runtime import invalidate
     invalidate('ACUITY');redraw(self,context)
@@ -111,7 +117,7 @@ class PS_SceneSettings(bpy.types.PropertyGroup):
     client: StringProperty(name='Client')
     author: StringProperty(name='Author')
     blend_groups: CollectionProperty(type=BeamBlendGroup)
-    blend_group_index: IntProperty(default=0,update=analysis_changed)
+    blend_group_index: IntProperty(default=0,update=group_changed)
     ui_member_index: IntProperty(default=0)
     label_detail: EnumProperty(name='Label Detail',description='Viewport annotations: Off keeps IDs; Minimal shows width/height; Full adds throw and blend measurements',items=[('OFF','Off','Keep projector IDs only'),('MINIMAL','Minimal','Discreet image width and height'),('FULL','Full','All technical viewport annotations')],default='MINIMAL',update=redraw)
     show_frustums: BoolProperty(name='Frustums',default=True,update=redraw)
