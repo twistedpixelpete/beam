@@ -34,10 +34,13 @@ Each section has a numbered label on the floor. Note the Beam version and Blende
 
 ### Inspector layout
 - [ ] With a projector selected, Position and Aim is visible without scrolling.
-- [ ] Project name and revision are in Project / Workspace, and they still reach the exports.
+- [ ] The project dropdown at the top holds project details, units, Technical, Projection Mode, Viewport Display and Workspace. Project name and revision still reach the exports.
 - [ ] Body for New Projectors is in Projector Body, or beside New Projector when no projector exists.
-- [ ] Selecting a mesh without UVs shows no warning above the module. Reverse Mapping shows "Receiver needs UVs" just above the greyed-out button.
-- [ ] If Reverse Mapping is on and stops working, a warning shows above the module.
+- [ ] Surface Analysis and Reverse Mapping appear only on the Surface tab.
+- [ ] On the Surface tab, selecting a projector keeps you on the tab and updates Active Projector coverage.
+- [ ] Selecting a mesh without UVs shows no warning on other tabs. Reverse Mapping shows "Receiver needs UVs" just above the greyed-out button.
+- [ ] If Reverse Mapping is on and stops working, a warning shows at the top of the other tabs.
+- [ ] A file saved on the Views or Export tab reopens on that tab.
 
 ### 1. Auto Blend
 - [ ] Moving the group controller moves all three projectors, using its fields or the arrows.

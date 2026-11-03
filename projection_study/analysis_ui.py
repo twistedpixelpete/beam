@@ -52,7 +52,7 @@ class BEAM_OT_study_package(bpy.types.Operator):
 
 def draw(layout,context):
     has_result=bool(analysis_runtime.CACHE.get(context.scene.as_pointer()))
-    header,body=layout.panel('beam_surface_analysis_result' if has_result else 'beam_surface_analysis',default_closed=not has_result);header.label(text='Surface Analysis')
+    header,body=layout.panel('beam_surface_analysis_result' if has_result else 'beam_surface_analysis',default_closed=False);header.label(text='Surface Analysis')
     if body is None:return
     s=context.scene.ps_study
     body.prop(s,'analysis_mode')

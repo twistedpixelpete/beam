@@ -80,6 +80,15 @@ def source_changed(self,context):
 
 from .cycles_projection import changed as render_changed
 
+# Saved files store the tab as this number, so existing tabs must keep theirs.
+INSPECTORS=[('PROJECTOR','Projector','','NONE',0),('SCREEN','Screen','','NONE',1),('GROUP','Blend','','NONE',2),('SURFACE','Surface','','NONE',5),('VIEW','Views','','NONE',3),('EXPORT','Export','','NONE',4)]
+
+
+def follow_selection(settings,kind):
+    # The Surface tab compares projectors, so choosing one there must not leave it.
+    if settings.inspector!='SURFACE':settings.inspector=kind
+
+
 class PS_SceneSettings(bpy.types.PropertyGroup):
     projection_mode: EnumProperty(name='Projection Mode', items=[('PLANNING','Planning','Fast geometry-based viewport projection'),('CYCLES','Cycles Render','Material-aware projection in Cycles rendered views and F12; analysis remains geometry-based')], default='PLANNING',update=render_changed)
     render_multiplier: FloatProperty(name='Render Intensity',description='Look-development multiplier; does not change engineering lux',default=1,min=0,max=1000,update=render_changed)
@@ -97,7 +106,7 @@ class PS_SceneSettings(bpy.types.PropertyGroup):
     use_target_illuminance: BoolProperty(name='Target Illuminance',default=False,update=display_changed)
     target_illuminance: FloatProperty(name='Target Lux',default=300,min=0,update=display_changed)
 
-    inspector: EnumProperty(name='Inspector',items=[('PROJECTOR','Projector',''),('SCREEN','Screen',''),('GROUP','Blend',''),('VIEW','Views',''),('EXPORT','Export','')],default='PROJECTOR',update=redraw)
+    inspector: EnumProperty(name='Inspector',items=INSPECTORS,default='PROJECTOR',update=redraw)
     pin_context: BoolProperty(name='Pin Beam Context',description='Keep the active Beam objects and module when Blender selection changes',default=False,update=redraw)
     ui_create_screen: BoolProperty(default=False,update=redraw)
     reverse_receiver: PointerProperty(name='Receiver',type=bpy.types.Object,poll=lambda self,obj:obj.type=='MESH' and not obj.ps.is_projector,update=redraw)
@@ -141,18 +150,18 @@ def sync_selection(context):
     if changed and obj and obj.select_get() and obj.type=='MESH' and not obj.ps.is_projector and not obj.get('beam_screen_detail'):settings.reverse_receiver=obj
     if settings.pin_context:return changed
     if changed and obj and obj.select_get() and obj.ps.is_projector:
-        settings.active_projector=obj;settings.inspector='PROJECTOR'
+        settings.active_projector=obj;follow_selection(settings,'PROJECTOR')
     if changed and obj and obj.select_get() and obj.beam_screen.is_screen:
-        settings.active_screen=obj;settings.inspector='SCREEN'
+        settings.active_screen=obj;follow_selection(settings,'SCREEN')
     if settings.active_screen and settings.active_screen.name not in scene.objects:settings.active_screen=None
     if changed and obj and obj.select_get():
         for i,group in enumerate(settings.blend_groups):
             if group.controller==obj or any(m.projector==obj for m in group.members):
                 settings.blend_group_index=i
-                if group.controller==obj:settings.inspector='GROUP'
+                if group.controller==obj:follow_selection(settings,'GROUP')
                 break
         for i,view in enumerate(settings.views):
-            if view.camera==obj:settings.view_index=i;settings.inspector='VIEW';break
+            if view.camera==obj:settings.view_index=i;follow_selection(settings,'VIEW');break
     return changed
 
 

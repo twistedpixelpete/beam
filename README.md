@@ -45,11 +45,11 @@ The optional **Beam** workspace brings projection planning into one Blender layo
 3. In the 3D View, choose **View → Open Beam Workspace**. Alternatively, press **F3** and search for **Open Beam Workspace**, or use **Edit → Menu Search**.
 4. Beam creates a **Beam** workspace tab from your current layout. Click that tab to return to it later; running **Open Beam Workspace** again opens the existing Beam workspace.
 
-You can also open it from the regular sidebar: place the pointer over the 3D View, press **N**, choose **Beam**, expand **Project / Workspace**, and click **Open Beam Workspace**.
+You can also open it from the regular sidebar: place the pointer over the 3D View, press **N**, choose **Beam**, and click **Open Beam Workspace** at the top.
 
 The original Layout workspace and scene are retained. Resize the editor borders to suit your screen. If the Beam inspector disappears after choosing another Properties tab, select **Scene Properties**, or run **Open Beam Workspace** again. If the left toolbar is hidden, press **T** over the 3D View or use the inspector's module buttons. If Beam reports missing editors, return to a Layout containing all three editors listed above and retry.
 
-**The workspace and colour theme are separate.** Under **Project / Workspace**, **Apply Beam Theme** optionally changes Blender's application-wide theme; **Restore Previous Theme** restores the saved backup. Opening the workspace does not apply the theme. You can also use Beam through **N → Beam** without creating its workspace.
+**The workspace and colour theme are separate.** In the project dropdown at the top of the inspector, under **Workspace**, **Apply Beam Theme** optionally changes Blender's application-wide theme; **Restore Previous Theme** restores the saved backup. Opening the workspace does not apply the theme. You can also use Beam through **N → Beam** without creating its workspace.
 
 ## Start Here
 
@@ -143,7 +143,7 @@ Screen OBJ/FBX exports use metres, Blender +Z up / +Y forward. Check destination
 | --- | --- |
 | Beam is missing | Enable the extension, restart after upgrading, then use Open Beam Workspace or the 3D View's N → Beam tab. |
 | No centre hit | Aim at visible geometry and check intervening objects. Off-centre coverage can still exist. |
-| Projection is missing | Check Global · Viewport Display → Projected Output, the projector's output and Solo settings. |
+| Projection is missing | Check Viewport Display in the project dropdown → Projected Output, the projector's output and Solo settings. |
 | Projector cannot move or aim | Check Beam and Blender transform locks and keep projector/parent scale at one. |
 | Screen edits have not appeared | Select the screen and click Update Screen. |
 | Analysis is stale | Select the intended receiver and run Analyse Surface again. |
@@ -210,7 +210,7 @@ when you also need those parts.
 
 ### Cycles Render (0.14.0 beta)
 
-In the Beam inspector, expand **Projection Mode** and select **Cycles Render**.
+In the project dropdown at the top of the Beam inspector, set **Projection Mode** to **Cycles Render**.
 Choose **Cycles** in Blender's Render Properties, then use **Rendered** viewport
 shading or **F12**. Beam does not switch the render engine automatically. This
 feature is included in the 0.14.0 beta installer above.

@@ -6,7 +6,7 @@ BEAM_VERSION = tomllib.loads((Path(__file__).parent / "blender_manifest.toml").r
 from . import runtime,ui_context
 from .projector_object import selected
 from .study_views import selected_view
-MODULES=[('PROJECTOR','Projector','OUTLINER_OB_CAMERA'),('SCREEN','Screen','MESH_PLANE'),('GROUP','Blend','GROUP'),('VIEW','Views','CAMERA_DATA'),('EXPORT','Export','EXPORT')]
+MODULES=[('PROJECTOR','Projector','OUTLINER_OB_CAMERA'),('SCREEN','Screen','MESH_PLANE'),('GROUP','Blend','GROUP'),('SURFACE','Surface','SHADING_RENDERED'),('VIEW','Views','CAMERA_DATA'),('EXPORT','Export','EXPORT')]
 
 
 def section(layout,key,title,closed=False):
@@ -216,25 +216,36 @@ def receiver_warning(context,obj):
     if p.enabled and ('unavailable' in p.status.lower() or 'maximum' in p.status.lower()):return p.status
     return ''
 
-def reverse(layout,context):
-    from . import reverse_mapping
-    obj=ui_context.receiver(context)
-    if not obj:return
-    selected_object=context.view_layer.objects.active
-    if obj!=selected_object and not obj.beam_reverse.enabled:return
-    p=obj.beam_reverse
-    warning=receiver_warning(context,obj)
-    box=section(layout,'reverse_mapping','Reverse Mapping',True)
-    if box:
-        box.prop(context.scene.ps_study,'reverse_receiver',text='Receiver');box.prop(p,'source');box.prop(p,'mode')
-        if p.source=='SELECTED':box.prop(p,'projector')
-        if p.source=='GROUP':
-            g=next((g for g in context.scene.ps_study.blend_groups if g.uuid==p.group_uuid),None)
-            box.menu('BEAM_MT_receiver_groups',text=g.name if g else 'Choose Blend Group')
-        if p.mode=='DIM':box.prop(p,'dim')
-        reverse_status(box,context,obj,warning)
-        row=box.row();row.enabled=p.enabled or not warning
-        row.operator('beam.receiver_action',text='Restore Materials' if p.enabled else 'Enable on Receiver').action='DISABLE' if p.enabled else 'ENABLE'
+def reverse(layout, context):
+    box = section(layout, 'reverse_mapping', 'Reverse Mapping')
+    if not box:
+        return
+    box.prop(context.scene.ps_study, 'reverse_receiver', text='Receiver')
+    obj = ui_context.receiver(context)
+    if not obj:
+        status(box, 'Choose a mesh to show coverage on')
+        return
+    p = obj.beam_reverse
+    warning = receiver_warning(context, obj)
+    box.prop(p, 'source')
+    box.prop(p, 'mode')
+    if p.source == 'SELECTED':
+        box.prop(p, 'projector')
+    if p.source == 'GROUP':
+        group = next((g for g in context.scene.ps_study.blend_groups if g.uuid == p.group_uuid), None)
+        box.menu('BEAM_MT_receiver_groups', text=group.name if group else 'Choose Blend Group')
+    if p.mode == 'DIM':
+        box.prop(p, 'dim')
+    reverse_status(box, context, obj, warning)
+    row = box.row()
+    row.enabled = p.enabled or not warning
+    row.operator('beam.receiver_action', text='Restore Materials' if p.enabled else 'Enable on Receiver').action = 'DISABLE' if p.enabled else 'ENABLE'
+
+
+def surface(layout, context):
+    from .analysis_ui import draw as draw_analysis
+    draw_analysis(layout, context)
+    reverse(layout, context)
 
 
 def draw_faults(layout):
@@ -246,61 +257,120 @@ def draw_faults(layout):
     for line in lines:box.label(text=line)
 
 
-def draw(layout,context):
-    draw_faults(layout)
-    from . import presentation,ui_workspace
-    s=context.scene.ps_study;layout.use_property_decorate=False
-    if not ui_workspace.is_beam(context):layout.operator('beam.workspace',icon='WORKSPACE')
-    area=next((a for a in context.screen.areas if a.type=='VIEW_3D'),None)
-    row=layout.row(align=True);row.prop(s,'display_units',expand=True);row.operator('beam.ui_action',text='Presentation' if presentation.active(area) else 'Technical',icon='SHADING_SOLID',depress=presentation.active(area)).action='PRESENTATION'
-    navigation(layout,context)
-    if s.inspector!='EXPORT':
-        current=context.view_layer.objects.active;active=ui_context.subject(context)
-        if current!=active:
-            row=layout.row();row.label(text='Selected: '+(current.name if current else '—'),icon='RESTRICT_SELECT_OFF')
-        if current and current.get('ps_helper') and current.parent and current.parent.ps.is_projector:
-            layout.operator('beam.select_projector',text='Select '+current.parent.ps.identifier,icon='RESTRICT_SELECT_OFF')
-        row=layout.row(align=True)
-        if s.inspector in {'PROJECTOR','SCREEN'}:row.prop(s,'active_projector' if s.inspector=='PROJECTOR' else 'active_screen',text='Pinned' if s.pin_context else 'Active')
-        else:row.label(text=('Pinned: ' if s.pin_context else 'Active: ')+(active.name if active else '—'))
-        row.prop(s,'pin_context',text='',icon='PINNED' if s.pin_context else 'UNPINNED',toggle=True)
-        reverse_problem(layout,context)
-    layout.separator(factor=.4)
-    if s.inspector=='PROJECTOR':projector(layout,context)
-    elif s.inspector=='SCREEN':
+def project_label(settings):
+    return ' · '.join(part for part in (settings.project_name, settings.revision) if part) or 'Project'
+
+
+def project_details(layout, settings):
+    layout.use_property_decorate = False
+    for prop in ('project_name', 'revision', 'venue', 'client', 'author'):
+        layout.prop(settings, prop)
+
+
+def project_view(layout, context, settings):
+    from . import presentation
+    area = next((a for a in context.screen.areas if a.type == 'VIEW_3D'), None)
+    layout.separator()
+    layout.row(align=True).prop(settings, 'display_units', expand=True)
+    active = presentation.active(area)
+    layout.operator('beam.ui_action', text='Presentation' if active else 'Technical', icon='SHADING_SOLID', depress=active).action = 'PRESENTATION'
+
+
+def project_mode(layout, context, settings):
+    layout.separator()
+    layout.label(text='Projection Mode')
+    layout.prop(settings, 'projection_mode', text='')
+    if settings.projection_mode != 'CYCLES':
+        return
+    if context.scene.render.engine != 'CYCLES':
+        layout.label(text='Select Cycles in Render Properties.', icon='INFO')
+    layout.prop(settings, 'render_multiplier')
+    layout.prop(settings, 'render_efficacy')
+    layout.label(text='Use Rendered shading or F12.')
+    layout.label(text='Analysis still uses solid geometry.')
+
+
+# Blender doesn't allow layout panels inside a dropdown, so these are plain groups.
+def project_display(layout, settings):
+    layout.separator()
+    layout.label(text='Viewport Display')
+    layout.prop(settings, 'label_detail', text='Label Detail', expand=True)
+    for left, right in (('show_frustums', 'show_centre_rays'), ('show_labels', 'show_outputs')):
+        row = layout.row(align=True)
+        row.prop(settings, left)
+        row.prop(settings, right)
+    for prop in ('show_projected_identifiers', 'show_study_cameras', 'shadow_resolution'):
+        layout.prop(settings, prop)
+
+
+def project_workspace(layout):
+    layout.separator()
+    layout.label(text='Workspace')
+    layout.operator('beam.workspace', icon='WORKSPACE')
+    layout.operator('beam.ui_action', text='Organise Beam Collections', icon='OUTLINER_COLLECTION').action = 'ORGANIZE'
+    layout.operator('beam.apply_theme', text='Apply Beam Theme', icon='PREFERENCES')
+    layout.operator('beam.restore_theme', text='Restore Previous Theme', icon='LOOP_BACK')
+    layout.label(text=f'{BEAM_VERSION} Beta · Twisted Pixel')
+
+
+def project_settings(layout, context):
+    settings = context.scene.ps_study
+    project_details(layout, settings)
+    project_view(layout, context, settings)
+    project_mode(layout, context, settings)
+    project_display(layout, settings)
+    project_workspace(layout)
+
+
+def draw_subject(layout, context, settings):
+    """What the controls below act on. Surface and Export have no single subject."""
+    current = context.view_layer.objects.active
+    active = ui_context.subject(context)
+    if current != active:
+        layout.row().label(text='Selected: ' + (current.name if current else '—'), icon='RESTRICT_SELECT_OFF')
+    if current and current.get('ps_helper') and current.parent and current.parent.ps.is_projector:
+        layout.operator('beam.select_projector', text='Select ' + current.parent.ps.identifier, icon='RESTRICT_SELECT_OFF')
+    row = layout.row(align=True)
+    label = 'Pinned' if settings.pin_context else 'Active'
+    if settings.inspector in {'PROJECTOR', 'SCREEN'}:
+        row.prop(settings, 'active_projector' if settings.inspector == 'PROJECTOR' else 'active_screen', text=label)
+    else:
+        row.label(text=f'{label}: ' + (active.name if active else '—'))
+    row.prop(settings, 'pin_context', text='', icon='PINNED' if settings.pin_context else 'UNPINNED', toggle=True)
+    reverse_problem(layout, context)
+
+
+def draw_module(layout, context, kind):
+    if kind == 'PROJECTOR':
+        projector(layout, context)
+    elif kind == 'SCREEN':
         from .screen_ui import draw_screen
-        draw_screen(layout,context)
-    elif s.inspector=='GROUP':
+        draw_screen(layout, context)
+    elif kind == 'GROUP':
         from .blend_ui import draw_groups
-        draw_groups(layout,context)
-    elif s.inspector=='VIEW':views(layout,context)
-    else:exports(layout,context)
-    if s.inspector!='EXPORT':
-        from .analysis_ui import draw as draw_analysis
-        draw_analysis(layout,context)
-        reverse(layout,context)
-    box=section(layout,'render_projection','Projection Mode')
-    if box:
-        box.prop(s,'projection_mode',text='')
-        if s.projection_mode=='CYCLES':
-            if context.scene.render.engine!='CYCLES':box.label(text='Select Cycles in Render Properties.',icon='INFO')
-            box.prop(s,'render_multiplier');box.prop(s,'render_efficacy')
-            box.label(text='Use Rendered shading or F12.')
-            box.label(text='Analysis still uses solid geometry.')
-    box=section(layout,'display','Global · Viewport Display',True)
-    if box:
-        box.prop(s,'label_detail',text='Label Detail',expand=True)
-        for a,b in [('show_frustums','show_centre_rays'),('show_labels','show_outputs')]:
-            row=box.row(align=True);row.prop(s,a);row.prop(s,b)
-        for prop in ('show_projected_identifiers','show_study_cameras','shadow_resolution'):box.prop(s,prop)
-    box=section(layout,'metadata','Project / Workspace',True)
-    if box:
-        for prop in ('project_name','revision','venue','client','author'):box.prop(s,prop)
-        box.operator('beam.workspace',icon='WORKSPACE');box.operator('beam.ui_action',text='Organise Beam Collections',icon='OUTLINER_COLLECTION').action='ORGANIZE'
-        box.separator()
-        box.operator('beam.apply_theme',text='Apply Beam Theme',icon='PREFERENCES')
-        box.operator('beam.restore_theme',text='Restore Previous Theme',icon='LOOP_BACK')
-        box.label(text=f'{BEAM_VERSION} Beta · Twisted Pixel')
+        draw_groups(layout, context)
+    elif kind == 'SURFACE':
+        surface(layout, context)
+    elif kind == 'VIEW':
+        views(layout, context)
+    else:
+        exports(layout, context)
+
+
+def draw(layout, context):
+    from . import ui_workspace
+    draw_faults(layout)
+    settings = context.scene.ps_study
+    layout.use_property_decorate = False
+    if not ui_workspace.is_beam(context):
+        layout.operator('beam.workspace', icon='WORKSPACE')
+    layout.popover('BEAM_PT_project', text=project_label(settings), icon='FILE_BLEND')
+    navigation(layout, context)
+    if settings.inspector in {'PROJECTOR', 'SCREEN', 'GROUP', 'VIEW'}:
+        draw_subject(layout, context, settings)
+    layout.separator(factor=.4)
+    draw_module(layout, context, settings.inspector)
+
 
 class BEAM_UL_members(bpy.types.UIList):
     def draw_item(self,context,layout,data,item,icon,active_data,active_propname,index):
@@ -332,6 +402,18 @@ class BEAM_PT_workspace(bpy.types.Panel):
         return is_beam(context)
     def draw(self,context):draw(self.layout,context)
 
+class BEAM_PT_project(bpy.types.Panel):
+    """Project-wide settings, opened from the dropdown at the top of the inspector."""
+    bl_label = 'Project'
+    bl_idname = 'BEAM_PT_project'
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'HEADER'
+    bl_ui_units_x = 15
+
+    def draw(self, context):
+        project_settings(self.layout, context)
+
+
 class BEAM_OT_inspector(bpy.types.Operator):
     bl_idname='beam.inspector';bl_label='Beam Module'
     kind:bpy.props.EnumProperty(items=[(k,t,t+' inspector') for k,t,i in MODULES])
@@ -362,4 +444,4 @@ class BEAM_OT_select_group(bpy.types.Operator):
         s.blend_group_index=index;s.inspector='GROUP'
         return {'FINISHED'}
 
-CLASSES=(BEAM_UL_members,BEAM_OT_inspector,BEAM_OT_select_projector,BEAM_OT_select_group,PS_PT_main,BEAM_PT_workspace,BEAM_PT_rail)
+CLASSES=(BEAM_UL_members,BEAM_OT_inspector,BEAM_OT_select_projector,BEAM_OT_select_group,PS_PT_main,BEAM_PT_workspace,BEAM_PT_rail,BEAM_PT_project)

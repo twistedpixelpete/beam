@@ -67,9 +67,9 @@ Annotation scopes are explicit:
 - **This Projector · Annotations** affects one PJ.
 - **This Screen · Technical / Appearance** affects one screen.
 - **This View · Export Annotations** affects one saved view's export.
-- **Global · Viewport Display** contains label detail, global helpers/output and preview quality.
+- **Viewport Display**, in the project dropdown, contains label detail, global helpers/output and preview quality.
 
-Units and Technical/Presentation appear once in the header. Project name/revision appear there; venue/client/author and workspace utilities are in Project/Workspace. Reverse Mapping source/GPU/material warnings appear in the context header even when its detailed controls are collapsed.
+Project details, units, Technical/Presentation, Projection Mode and workspace utilities are in the project dropdown at the top of the inspector. Surface Analysis and Reverse Mapping are on the Surface tab. Reverse Mapping source/GPU/material warnings appear in that section, just above the button they affect, and at the top of the other tabs only when Reverse Mapping is on and has stopped working.
 
 ![Separate selected object, active projector and Reverse Mapping receiver](../examples/ui-workspace/reverse-mapping-state.png)
 

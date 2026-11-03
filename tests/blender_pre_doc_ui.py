@@ -14,11 +14,11 @@ class Layout:
  def row(self,**kw):return self
  def operator(self,name,**kw):self.calls.append((name,kw));return SimpleNamespace()
 for width in (60,200):
- for active in ('PROJECTOR','SCREEN','GROUP','VIEW','EXPORT'):
+ for active in ('PROJECTOR','SCREEN','GROUP','SURFACE','VIEW','EXPORT'):
   layout=Layout();context=SimpleNamespace(region=SimpleNamespace(width=width),scene=SimpleNamespace(ps_study=SimpleNamespace(inspector=active)))
   ui.navigation(layout,context,True)
-  assert len(layout.calls)==5 and sum(x[1]['depress'] for x in layout.calls)==1
-  assert [x[1]['text'] for x in layout.calls]==(['']*5 if width==60 else ['Projector','Screen','Blend','Views','Export'])
+  assert len(layout.calls)==6 and sum(x[1]['depress'] for x in layout.calls)==1
+  assert [x[1]['text'] for x in layout.calls]==(['']*6 if width==60 else ['Projector','Screen','Blend','Surface','Views','Export'])
   for kind,title,icon in ui.MODULES:
    assert ui.BEAM_OT_inspector.description(context,SimpleNamespace(kind=kind))==title+' inspector'
 for visible,expected in ((True,0),(False,3)):
@@ -28,4 +28,4 @@ for visible,expected in ((True,0),(False,3)):
 assert bpy.ops.ps.export_json.get_rna_type().name=='Export Beam JSON'
 import tomllib
 assert ui.BEAM_VERSION==tomllib.loads((root/'projection_study/blender_manifest.toml').read_text())['version']
-addon.unregister();print('PRE-DOC UI PASS: five modules, narrow icons, wide labels, each active state/tooltips, hidden rail action fallback, current JSON search name/version')
+addon.unregister();print('PRE-DOC UI PASS: six modules, narrow icons, wide labels, each active state/tooltips, hidden rail action fallback, current JSON search name/version')
