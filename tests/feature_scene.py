@@ -179,7 +179,24 @@ def build_facade(context, m, x):
     return dict(projector=p.identifier, optics=f'{model_id} / {model.lenses[0]}', observer=observer.name)
 
 
+def check_group_selection_keeps_analysis(context, m):
+    settings = context.scene.ps_study
+    key = context.scene.as_pointer()
+    held, scope, index = m.analysis.CACHE.get(key), settings.analysis_scope, settings.blend_group_index
+    m.analysis.CACHE[key] = dict(stale=False)
+    settings.analysis_scope = 'ALL'
+    m.analysis.CACHE[key]['stale'] = False
+    settings.blend_group_index = index
+    require(not m.analysis.CACHE[key]['stale'], 'Selecting a group should not stale an All Projectors analysis')
+    settings.analysis_scope = scope
+    if held:
+        m.analysis.CACHE[key] = held
+    else:
+        m.analysis.CACHE.pop(key)
+
+
 def verify_facade(context, m, facts):
+    check_group_selection_keeps_analysis(context, m)
     obj = identifier_of(facts['projector'])
     require(obj.ps.target and obj.ps.target.name == 'Facade Wall', 'Facade projector should hit the wall')
     context.view_layer.update()
