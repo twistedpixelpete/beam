@@ -34,7 +34,7 @@ Beam stays in the right-hand column. Tabs follow the job: Projector, Screen, Ble
 
 1. **On a branch (`ux/compact-header`).** Shorter header, with warnings beside what they affect.
 2. **On a branch (`ux/surface-tab`).** A Surface tab for Surface Analysis and Reverse Mapping, and a project dropdown for project details, units, display and mode. This removes the sections repeated on every tab.
-3. Order each tab by how often it's used, and choose what opens by default.
+3. **On a branch (`ux/tab-order`).** Order each tab by how often it's used, and choose what opens by default.
 4. Plain names and clearer errors, using a word list the maintainer approves first.
 
 **Next, proposed**
@@ -125,6 +125,7 @@ Recorded in [follow-up gaps](surface-intelligence/FOLLOW_UP_GAPS.md):
 - Per-surface analysis summary across several receivers.
 - Observer look-through composition controls.
 - Luminance, only with a clearly separate reflectance and observer model.
+- Alpha-aware Planning and Surface Analysis. Planning treats alpha-masked meshes as solid, and only Cycles Render honours them (issue #14).
 
 Beam won't copy an undefined focus metric or claim calibrated photometry.
 

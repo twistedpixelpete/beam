@@ -34,6 +34,7 @@ Each section has a numbered label on the floor. Note the Beam version and Blende
 
 ### Inspector layout
 - [ ] With a projector selected, Position and Aim is visible without scrolling.
+- [ ] The Projector tab runs in job order: Position and Aim, Projection, Calculated, Solver, Optics Guidance, Output, then Body, Annotations and Advanced closed.
 - [ ] The project dropdown at the top holds project details, units, Technical, Projection Mode, Viewport Display and Workspace. Project name and revision still reach the exports.
 - [ ] Body for New Projectors is in Projector Body, or beside New Projector when no projector exists.
 - [ ] Surface Analysis and Reverse Mapping appear only on the Surface tab.

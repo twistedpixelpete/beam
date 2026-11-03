@@ -40,6 +40,12 @@ def check_projector_header(settings):
     assert settings.project_name == '', 'drawing must not change values'
 
 
+def check_projector_order():
+    panels = [entry[1] for entry in draw_inspector(ui, 'PROJECTOR') if entry[0] == 'panel']
+    order = ['beam_position_aim', 'beam_projection', 'beam_calculated', 'beam_solver', 'beam_optics', 'beam_projector_output', 'beam_projector_body']
+    assert [name for name in panels if name in order] == order, panels
+
+
 def check_project_dropdown(settings):
     log = draw_project_settings(ui)
     assert not [entry for entry in log if entry[0] == 'panel'], "Blender doesn't allow layout panels in a dropdown"
@@ -115,6 +121,7 @@ def main():
     context.view_layer.update()
     runtime.refresh(True)
     check_projector_header(settings)
+    check_projector_order()
     check_project_dropdown(settings)
     check_sections_appear_once()
     check_surface_without_receiver(settings)

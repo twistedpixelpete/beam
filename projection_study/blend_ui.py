@@ -14,6 +14,7 @@ def draw_groups(layout,context):
     if len(s.blend_groups)>1:layout.template_list('UI_UL_list','beam_groups',s,'blend_groups',s,'blend_group_index',rows=2)
     g=blend_groups.active_group(context)
     if not g:return
+    if g.layout_screen:layout.operator('beam.ui_new_auto',text='New Auto Blend',icon='ADD')
     layout.prop(g,'name',text='Group');actions(layout,context)
     if g.controller:object_position_section(layout,g.controller)
     anchor=next((m.projector.ps.identifier for m in g.members if m.projector and m.projector.ps.uuid==g.anchor_uuid),'Missing')
@@ -42,9 +43,7 @@ def draw_groups(layout,context):
             for pair in pairs:
                 detail.label(text=f"{pair['a']} ↔ {pair['b']} · {pair['axis']}")
                 detail.label(text='Request '+values(pair['desired'],units));detail.label(text='Actual '+values(pair['actual'],units))
-    row=layout.row(align=True);row.operator('beam.reflow',text='Reflow Group',icon='FILE_REFRESH')
-    if g.layout_screen:
-        row.operator('beam.ui_new_auto',text='New Auto Blend',icon='ADD')
+    layout.operator('beam.reflow',text='Reflow Group',icon='FILE_REFRESH')
     box=section(layout,'blend_members','Members')
     if box:
         box.template_list('BEAM_UL_members','beam_members',g,'members',s,'ui_member_index',rows=3,maxrows=4)
