@@ -37,6 +37,9 @@ Beam stays in the right-hand column. Tabs follow the job: Projector, Screen, Ble
 3. **On a branch (`ux/tab-order`).** Order each tab by how often it's used, and choose what opens by default.
 4. Plain names and clearer errors, using a word list the maintainer approves first.
 
+**On a branch (`docs/learn-scene`)**
+- A learning scene, built by `tools/learn_scene.py`, with a working setup and instructions for each part of Beam. See [Learn Beam](LEARN-BEAM.md).
+
 **Next, proposed**
 - Selecting in files with an existing Beam workspace can still land on Select Circle, where a click on a projector's body selects nothing. Decide whether Beam should warn or correct this.
 - "Technical" is both a status and a button, and its meaning isn't obvious.
