@@ -92,6 +92,9 @@ Each section has a numbered label on the floor. Note the Beam version and Blende
 - [ ] The Views tab tours every station with View and Next, and each sign is readable.
 - [ ] Each step on each sign can be followed as written, with the controls named as they are in the interface.
 
+## Handing off to a tester
+[`tools/tester_package.py`](../tools/tester_package.py) writes a guide and a report template from the checklist above. Add the extension zip and both generated scenes, and the tester has everything they need.
+
 ## Other tests
 - **Pure tests:** `python3 -m unittest discover -s tests -p 'test_*.py'`
 - **Background suites:** `tests/blender_*.py` and `tests/validate_*.py` run without a GPU. Some need a `work/` folder or other setup, and `blender_refinement.py` needs its `apply` and `restore` phases run separately.
